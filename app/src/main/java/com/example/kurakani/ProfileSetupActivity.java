@@ -29,31 +29,22 @@ public class ProfileSetupActivity extends AppCompatActivity {
 
         loadFragment(new ProfileSetup());
         nextBtn.setOnClickListener(view -> {
-            if (currentPage == 0) {
-                loadFragment(new ProfileGender());
-                currentPage = 1;
-            }
+            if (currentPage == 0) loadFragment(new ProfileGender());
+            else if (currentPage == 1) loadFragment(new AgeSelect());
+            else if (currentPage == 2) loadFragment(new Location());
+            else if (currentPage == 3) loadFragment(new Purpose());
+            else return;
+            currentPage++;
         });
 
         backBtn.setOnClickListener(view -> {
-            if (currentPage == 1) {
-                loadFragment(new ProfileSetup());
-                currentPage = 0;
-            }
+            if (currentPage == 4) loadFragment(new Location());
+            else if (currentPage == 3) loadFragment(new AgeSelect());
+            else if (currentPage == 2) loadFragment(new ProfileGender());
+            else if (currentPage == 1) loadFragment(new ProfileSetup());
+            else return;
+            currentPage--;
         });
-//        nextBtn.setOnClickListener(view -> {
-//            if (currentPage == 0) loadFragment(new ProfileGender());
-////            else if (currentPage == 1) loadFragment(new ThirdFragment());
-////            else return;
-//            currentPage++;
-//        });
-////
-//        backBtn.setOnClickListener(view -> {
-//            if (currentPage == 2) loadFragment(new ProfileGender());
-////            else if (currentPage == 1) loadFragment(new FirstFragment());
-////            else return;
-//            currentPage--;
-//        });
 
     }
     private  void loadFragment(Fragment fragment){

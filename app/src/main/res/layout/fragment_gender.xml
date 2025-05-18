@@ -44,12 +44,12 @@
                 android:layout_height="wrap_content"
                 android:orientation="vertical"
                 android:background="@drawable/border"
-                android:padding="10dp"
+                android:padding="16dp"
                 android:gravity="center">
 
                 <ImageButton
-                    android:layout_width="72dp"
-                    android:layout_height="72dp"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
                     android:layout_gravity="center"
                     android:backgroundTint="@color/background"
                     android:src="@drawable/male"
@@ -71,13 +71,13 @@
                 android:layout_height="wrap_content"
                 android:orientation="vertical"
                 android:background="@drawable/border"
-                android:padding="10dp"
-                android:layout_marginTop="20dp"
+                android:layout_marginTop="10dp"
+                android:padding="16dp"
                 android:gravity="center">
 
                 <ImageButton
-                    android:layout_width="72dp"
-                    android:layout_height="72dp"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
                     android:backgroundTint="@color/background"
                     android:src="@drawable/female"
                     android:contentDescription="male"

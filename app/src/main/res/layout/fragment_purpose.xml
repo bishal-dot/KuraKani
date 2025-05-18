@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/background"
+    tools:context=".Purpose">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:padding="16dp"
+        android:layout_marginTop="10dp" >
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Tell people why you're here."
+            android:textSize="28sp"
+            android:textStyle="bold"
+            android:textColor="@color/black"
+            />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Be confident about what you want, and find the right people for you. You can change this anytime.."
+            android:textSize="16sp"
+            android:layout_marginTop="20dp"
+            />
+
+        <RadioGroup
+            android:id="@+id/purposeRadioGroup"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="20dp"
+            android:orientation="vertical">
+
+            <RadioButton
+                android:id="@+id/rbDating"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Dating"
+                android:textSize="18sp"
+                />
+
+            <RadioButton
+                android:id="@+id/rbFriendship"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Friendship"
+                android:textSize="18sp"/>
+
+            <RadioButton
+                android:id="@+id/rbCasual"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Something Casual"
+                android:textSize="18sp"/>
+
+            <RadioButton
+                android:id="@+id/rbSerious"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Long-term Relationship"
+                android:textSize="18sp"/>
+        </RadioGroup>
+
+    </LinearLayout>
+
+</FrameLayout>

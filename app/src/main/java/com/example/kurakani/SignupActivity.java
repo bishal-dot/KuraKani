@@ -13,6 +13,8 @@ import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
 
+import com.google.android.material.button.MaterialButton;
+
 public class SignupActivity extends AppCompatActivity {
 
 
@@ -27,6 +29,13 @@ public class SignupActivity extends AppCompatActivity {
             Intent intent = new Intent(SignupActivity.this, AuthActivity.class);
             overridePendingTransition(android.R.anim.slide_in_left, android.R.anim.slide_out_right);
             finish();
+        });
+
+        MaterialButton signUp = findViewById(R.id.btnSignup);
+        signUp.setOnClickListener(v -> {
+            Intent intent = new Intent(SignupActivity.this, ProfileSetupActivity.class);
+            startActivity(intent);
+            overridePendingTransition(android.R.anim.fade_in, android.R.anim.fade_out);
         });
     }
 }
