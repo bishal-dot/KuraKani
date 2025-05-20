@@ -39,15 +39,15 @@ public class ProfileSetupActivity extends AppCompatActivity {
         });
 
         backBtn.setOnClickListener(view -> {
-            if (currentPage == 8) loadFragment(new Interests());
-            else if (currentPage == 7) loadFragment(new Education());
-            else if (currentPage == 6) loadFragment(new JobTitle());
-            else if (currentPage == 5) loadFragment(new Purpose());
-            else if (currentPage == 4) loadFragment(new Location());
-            else if (currentPage == 3) loadFragment(new ProfilePicture());
-            else if (currentPage == 2) loadFragment(new ProfileGender());
-            else if (currentPage == 1) loadFragment(new AgeSelect());
-            else if (currentPage == 0) loadFragment(new ProfileSetup());
+            if (currentPage == 9) loadFragment(new Interests());
+            else if (currentPage == 8) loadFragment(new Education());
+            else if (currentPage == 7) loadFragment(new JobTitle());
+            else if (currentPage == 6) loadFragment(new Purpose());
+            else if (currentPage == 5) loadFragment(new Location());
+            else if (currentPage == 4) loadFragment(new ProfilePicture());
+            else if (currentPage == 3) loadFragment(new ProfileGender());
+            else if (currentPage == 2) loadFragment(new AgeSelect());
+            else if (currentPage == 1) loadFragment(new ProfileSetup());
             else return;
             currentPage--;
         });
