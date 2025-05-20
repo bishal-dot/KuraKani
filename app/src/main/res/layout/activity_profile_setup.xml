@@ -51,16 +51,16 @@
             android:layout_gravity="center"
             />
 
-        <TextView
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="Build your profile, break some hearts (in a good way)."
-            android:textAlignment="center"
-            android:textSize="24sp"
-            android:textStyle="italic"
-            android:textColor="#FF6B81"
-            android:layout_marginTop="20dp"
-            />
+<!--        <TextView-->
+<!--            android:layout_width="match_parent"-->
+<!--            android:layout_height="wrap_content"-->
+<!--            android:text="Build your profile, break some hearts (in a good way)."-->
+<!--            android:textAlignment="center"-->
+<!--            android:textSize="24sp"-->
+<!--            android:textStyle="italic"-->
+<!--            android:textColor="#FF6B81"-->
+<!--            android:layout_marginTop="20dp"-->
+<!--            />-->
 
 <!--        Middle Fragment Container-->
         <FrameLayout

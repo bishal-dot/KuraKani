@@ -6,6 +6,9 @@ import android.widget.Button;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import com.example.kurakani.views.LoginActivity;
+import com.example.kurakani.views.PhoneActivity;
+import com.example.kurakani.views.SignupActivity;
 import com.google.android.material.button.MaterialButton;
 
 public class AuthActivity extends AppCompatActivity {

@@ -5,20 +5,20 @@
     android:layout_height="match_parent"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:background="@color/background"
-    tools:context=".Location">
+    tools:context=".Interests">
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="vertical"
         android:padding="16dp"
-        android:layout_marginTop="10dp" >
+        android:layout_marginTop="10dp">
 
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="What's your location?"
-            android:textSize="30sp"
+            android:text="What are your interests and Hobbies?"
+            android:textSize="28sp"
             android:textStyle="bold"
             android:textColor="@color/black"
             />
@@ -26,34 +26,27 @@
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Tell us where you are to see people in your area."
+            android:text="Pick up to 5 so we can match you better!"
             android:textSize="18sp"
-            android:layout_marginTop="20dp"
+            android:textColor="@color/black"
+            android:layout_marginTop="10dp"
             />
 
-        <LinearLayout
+<!--        search box-->
+        <com.google.android.material.textfield.TextInputLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="horizontal"
-            android:gravity="center"
+            app:endIconMode="custom"
+            app:endIconDrawable="@drawable/search"
             android:layout_marginTop="20dp"
-            android:backgroundTint="@color/black"
-            >
-            <com.google.android.material.button.MaterialButton
-                android:id="@+id/useLocationBtn"
+            android:hint="Search">
+
+            <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/searchInput"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="Enter your city or town"
-                android:textAlignment="textStart"
-                android:textSize="18sp"
-                android:textColor="@color/black"
-                android:padding="20dp"
-                android:clickable="true"
-                app:icon="@drawable/search"
-                android:backgroundTint="#F1F1F1"
-                />
-        </LinearLayout>
-
+                android:inputType="text"/>
+        </com.google.android.material.textfield.TextInputLayout>
 
     </LinearLayout>
 

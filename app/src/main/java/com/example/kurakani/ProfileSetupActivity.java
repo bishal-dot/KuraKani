@@ -3,11 +3,7 @@ package com.example.kurakani;
 import android.os.Bundle;
 import android.widget.FrameLayout;
 
-import androidx.activity.EdgeToEdge;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.core.graphics.Insets;
-import androidx.core.view.ViewCompat;
-import androidx.core.view.WindowInsetsCompat;
 import androidx.fragment.app.Fragment;
 
 import com.google.android.material.button.MaterialButton;
@@ -29,19 +25,29 @@ public class ProfileSetupActivity extends AppCompatActivity {
 
         loadFragment(new ProfileSetup());
         nextBtn.setOnClickListener(view -> {
-            if (currentPage == 0) loadFragment(new ProfileGender());
-            else if (currentPage == 1) loadFragment(new AgeSelect());
-            else if (currentPage == 2) loadFragment(new Location());
-            else if (currentPage == 3) loadFragment(new Purpose());
+            if (currentPage == 0) loadFragment(new AgeSelect());
+            else if (currentPage == 1) loadFragment(new ProfileGender());
+            else if (currentPage == 2) loadFragment(new ProfilePicture());
+            else if (currentPage == 3) loadFragment(new Location());
+            else if (currentPage == 4) loadFragment(new Purpose());
+            else if (currentPage == 5) loadFragment(new JobTitle());
+            else if (currentPage == 6) loadFragment(new Education());
+            else if (currentPage == 7) loadFragment(new Interests());
+            else if (currentPage == 8) loadFragment(new Aboutme());
             else return;
             currentPage++;
         });
 
         backBtn.setOnClickListener(view -> {
-            if (currentPage == 4) loadFragment(new Location());
-            else if (currentPage == 3) loadFragment(new AgeSelect());
+            if (currentPage == 8) loadFragment(new Interests());
+            else if (currentPage == 7) loadFragment(new Education());
+            else if (currentPage == 6) loadFragment(new JobTitle());
+            else if (currentPage == 5) loadFragment(new Purpose());
+            else if (currentPage == 4) loadFragment(new Location());
+            else if (currentPage == 3) loadFragment(new ProfilePicture());
             else if (currentPage == 2) loadFragment(new ProfileGender());
-            else if (currentPage == 1) loadFragment(new ProfileSetup());
+            else if (currentPage == 1) loadFragment(new AgeSelect());
+            else if (currentPage == 0) loadFragment(new ProfileSetup());
             else return;
             currentPage--;
         });

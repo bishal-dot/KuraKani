@@ -8,7 +8,7 @@
     android:layout_height="match_parent"
     android:background="#D6EAF8"
     android:fillViewport="true"
-    tools:context=".SignupActivity">
+    tools:context=".views.SignupActivity">
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"

@@ -20,12 +20,14 @@
             android:text="How old are you?"
             android:textSize="30sp"
             android:textStyle="bold"
+            android:textColor="@color/black"
             />
 
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="This helps us to find your match."
+            android:textColor="@color/black"
             android:textSize="18sp"
             android:layout_marginTop="20dp"
             />
@@ -42,6 +44,7 @@
                 android:text="Enter your age"
                 android:textSize="20sp"
                 android:textStyle="bold"
+                android:textColor="@color/black"
                 />
 
             <com.google.android.material.textfield.TextInputLayout

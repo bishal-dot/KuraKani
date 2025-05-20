@@ -16,33 +16,23 @@
             android:name=".ProfileSetupActivity"
             android:exported="false" />
         <activity
-            android:name=".Practise"
+            android:name=".views.PhoneVerifyActivity"
             android:exported="false" />
         <activity
-            android:name=".PractiseActivity"
+            android:name=".views.PhoneActivity"
             android:exported="false" />
         <activity
-            android:name=".PhoneVerifyActivity"
+            android:name=".views.ResetPasswordActivity"
             android:exported="false" />
         <activity
-            android:name=".PhoneActivity"
+            android:name=".views.ForgotPasswordActivity"
             android:exported="false" />
         <activity
-            android:name=".ResetPasswordActivity"
+            android:name=".views.SignupActivity"
             android:exported="false" />
         <activity
-            android:name=".ForgotPasswordActivity"
+            android:name=".views.LoginActivity"
             android:exported="false" />
-        <activity
-            android:name=".SignupActivity"
-            android:exported="false" />
-        <activity
-            android:name=".LoginActivity"
-            android:exported="false" />
-        <activity
-            android:name=".ui.login.LoginActivity"
-            android:exported="false"
-            android:label="@string/title_activity_login" />
         <activity
             android:name=".AuthActivity"
             android:exported="false" />
