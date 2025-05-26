@@ -13,24 +13,6 @@
         android:theme="@style/Theme.KuraKani"
         tools:targetApi="31">
         <activity
-            android:name=".HomePageActivity"
-            android:exported="false" />
-        <activity
-            android:name=".GettingStarted"
-            android:exported="false" />
-        <activity
-            android:name=".GettingStarted"
-            android:exported="false" />
-        <activity
-            android:name=".MoreInfo"
-            android:exported="false" />
-        <activity
-            android:name=".AdditionalInfo"
-            android:exported="false" />
-        <activity
-            android:name=".AdditionalPrompt"
-            android:exported="false" />
-        <activity
             android:name=".ProfileSetupActivity"
             android:exported="false" />
         <activity

@@ -13,5 +13,6 @@ public class HomePageActivity extends AppCompatActivity {
         EdgeToEdge.enable(this);
         setContentView(R.layout.activity_home_page);
 
+
     }
 }
