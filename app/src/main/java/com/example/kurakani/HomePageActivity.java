@@ -1,17 +1,15 @@
 package com.example.kurakani;
 
-import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.ImageView;
 
 import androidx.activity.EdgeToEdge;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.fragment.app.Fragment;
 
 public class HomePageActivity extends AppCompatActivity {
 
-    ImageView v_profile;
+    ImageView v_setting;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -21,18 +19,18 @@ public class HomePageActivity extends AppCompatActivity {
 
         findview();
 
-        v_profile.setOnClickListener(new View.OnClickListener() {
+        v_setting.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 getSupportFragmentManager().beginTransaction()
-                        .replace(R.id.fragmentContainer, new MainProfile())
+                        .replace(R.id.fragmentContainer, new ProfileSetting())
                         .addToBackStack(null)
                         .commit();
             }
         });
     }
     private void findview(){
-        v_profile = findViewById(R.id.v_profile);
+        v_setting = findViewById(R.id.v_setting);
 
     }
 
