@@ -40,7 +40,7 @@
                 <TextView
                     android:layout_width="80dp"
                     android:layout_height="20dp"
-                    android:fontFamily="@font/baloo_bhai2_variable_font_wght"
+                    android:fontFamily="@font/baloo_bhai"
                     android:text="Add a story"
                     android:textAlignment="center" />
             </LinearLayout>
@@ -62,7 +62,7 @@
                 <TextView
                     android:layout_width="80dp"
                     android:layout_height="20dp"
-                    android:fontFamily="@font/baloo_bhai2_variable_font_wght"
+                    android:fontFamily="@font/baloo_bhai"
                     android:text="Bishwash"
                     android:textAlignment="center" />
             </LinearLayout>
@@ -84,7 +84,7 @@
                 <TextView
                     android:layout_width="80dp"
                     android:layout_height="20dp"
-                    android:fontFamily="@font/baloo_bhai2_variable_font_wght"
+                    android:fontFamily="@font/baloo_bhai"
                     android:text="Bishal"
                     android:textAlignment="center" />
             </LinearLayout>
@@ -106,7 +106,7 @@
                 <TextView
                     android:layout_width="80dp"
                     android:layout_height="20dp"
-                    android:fontFamily="@font/baloo_bhai2_variable_font_wght"
+                    android:fontFamily="@font/baloo_bhai"
                     android:text="Binay"
                     android:textAlignment="center" />
             </LinearLayout>
@@ -157,7 +157,7 @@
                         android:text="Hancy Bishwash"
                         android:textStyle="bold"
                         android:textSize="20sp"
-                        android:fontFamily="@font/baloo_bhai2_variable_font_wght"
+                        android:fontFamily="@font/baloo_bhai"
                         app:layout_constraintEnd_toEndOf="parent"
                         app:layout_constraintStart_toStartOf="parent"
                         app:layout_constraintTop_toBottomOf="@+id/imageView6" />
@@ -165,7 +165,7 @@
                     <TextView
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:fontFamily="@font/baloo_bhai2_variable_font_wght"
+                        android:fontFamily="@font/baloo_bhai"
                         android:text="Age: 23 years"
                         android:textAlignment="center"
                         android:id="@+id/tv_name1"
@@ -177,7 +177,7 @@
                     <TextView
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:fontFamily="@font/baloo_bhai2_variable_font_wght"
+                        android:fontFamily="@font/baloo_bhai"
                         android:text="Address: Kshetrapur"
                         android:textAlignment="center"
                         android:textSize="15sp"

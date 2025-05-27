@@ -34,7 +34,7 @@
         app:layout_constraintGuide_begin="20dp" />
 
     <FrameLayout
-        android:id="@+id/framehomepage"
+        android:id="@+id/fragmentContainer"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         app:layout_constraintBottom_toTopOf="@+id/linearLayout5"
