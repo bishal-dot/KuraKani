@@ -7,6 +7,9 @@ import android.widget.FrameLayout;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
 
+import com.example.kurakani.fragments.ProfilePicture;
+import com.example.kurakani.fragments.ProfileSetup;
+import com.example.kurakani.fragments.Purpose;
 import com.google.android.material.button.MaterialButton;
 
 public class ProfileSetupActivity extends AppCompatActivity {

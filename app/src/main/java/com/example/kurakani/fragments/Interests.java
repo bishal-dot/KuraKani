@@ -1,4 +1,4 @@
-package com.example.kurakani;
+package com.example.kurakani.fragments;
 
 import android.os.Bundle;
 
@@ -8,17 +8,21 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
-public class JobTitle extends Fragment {
+import com.example.kurakani.R;
 
 
-    public JobTitle() {
+public class Interests extends Fragment {
+
+    public Interests() {
         // Required empty public constructor
     }
+
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_job_title, container, false);
+        return inflater.inflate(R.layout.fragment_interests, container, false);
+
     }
 }

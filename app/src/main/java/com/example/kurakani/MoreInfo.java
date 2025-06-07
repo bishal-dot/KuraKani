@@ -8,6 +8,10 @@ import android.widget.FrameLayout;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
 
+import com.example.kurakani.fragments.Aboutme;
+import com.example.kurakani.fragments.Interests;
+import com.example.kurakani.fragments.JobTitle;
+
 public class MoreInfo extends AppCompatActivity {
 
     FrameLayout moreInfo;

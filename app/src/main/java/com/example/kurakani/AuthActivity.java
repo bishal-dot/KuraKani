@@ -13,10 +13,14 @@ import com.google.android.material.button.MaterialButton;
 
 public class AuthActivity extends AppCompatActivity {
 
+    MaterialButton loginBtn, googleLogin;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_auth);
+
+        findview();
 
         MaterialButton phoneLogin = findViewById(R.id.phonelogin);
         phoneLogin.setOnClickListener(v -> {
@@ -32,11 +36,23 @@ public class AuthActivity extends AppCompatActivity {
             overridePendingTransition(android.R.anim.fade_in, android.R.anim.fade_out);
         });
 
-        Button loginButton = findViewById(R.id.loginbtn);
-        loginButton.setOnClickListener(v -> {
+        loginBtn.setOnClickListener(v -> {
             Intent intent = new Intent(AuthActivity.this, LoginActivity.class);
             startActivity(intent);
             overridePendingTransition(android.R.anim.fade_in, android.R.anim.fade_out);
         });
+
+        googleLogin.setOnClickListener(v -> {
+            Intent intent = new Intent(AuthActivity.this, HomePageActivity.class);
+            startActivity(intent);
+            overridePendingTransition(android.R.anim.fade_in, android.R.anim.fade_out);
+        });
+
+
+    }
+
+    private void findview(){
+        loginBtn = findViewById(R.id.loginbtn);
+        googleLogin = findViewById(R.id.googlelogin);
     }
 }

@@ -49,13 +49,6 @@
         app:layout_constraintStart_toStartOf="@+id/guideline1"
         app:layout_constraintTop_toTopOf="@+id/guideline3">
 
-        <ImageButton
-            android:id="@+id/imgBtnBack"
-            android:layout_width="32dp"
-            android:background="@android:color/transparent"
-            android:layout_height="wrap_content"
-            android:scaleType="centerCrop"
-            app:srcCompat="@drawable/arrow_back" />
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -71,7 +64,7 @@
         android:id="@+id/tvOtpSubtitle"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="We’ve sent a 6-digit code to your phone number."
+        android:text="We’ve sent a 6-digit code to your phone number or email"
         android:textColor="@color/black"
         android:textSize="14sp"
         android:layout_marginTop="40dp"
@@ -185,12 +178,29 @@
         android:layout_height="wrap_content"
         android:text="Didn’t receive it? Resend"
         android:textColor="#3F51B5"
-        android:textSize="14sp"
+        android:textSize="16sp"
+        android:textStyle="bold"
         android:layout_marginTop="50dp"
         app:layout_constraintEnd_toStartOf="@+id/guideline2"
         app:layout_constraintHorizontal_bias="0.518"
         app:layout_constraintStart_toStartOf="@+id/guideline1"
         app:layout_constraintTop_toBottomOf="@+id/btnVerifyOtp" />
+
+    <TextView
+        android:id="@+id/goback"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:clickable="true"
+        android:drawableLeft="@drawable/arrow_back"
+        android:focusable="true"
+        android:text="Go Back"
+        android:textAlignment="center"
+        android:textSize="18sp"
+        android:textStyle="bold"
+        android:layout_marginTop="20dp"
+        app:layout_constraintEnd_toStartOf="@+id/guideline2"
+        app:layout_constraintStart_toStartOf="@+id/guideline1"
+        app:layout_constraintTop_toBottomOf="@+id/tvResendOtp" />
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>

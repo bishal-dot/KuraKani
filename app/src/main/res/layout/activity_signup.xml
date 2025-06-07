@@ -6,7 +6,7 @@
     android:id="@+id/Signup"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="#D6EAF8"
+    android:background="@color/light_blue_bg"
     android:fillViewport="true"
     tools:context=".views.SignupActivity">
 
@@ -59,7 +59,7 @@
             android:id="@+id/cardTop"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:backgroundTint="#D6EAF8"
+            android:backgroundTint="@color/background"
             app:cardCornerRadius="7dp"
             app:cardElevation="5dp"
             android:layout_marginTop="10dp"
@@ -81,15 +81,6 @@
                     android:background="@drawable/kurakani_logo"
                     android:clipToOutline="true"
                     android:src="@drawable/kurakanilogo" />
-
-                <TextView
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:text="Join today, love tomorrow."
-                    android:textAlignment="center"
-                    android:textColor="#4A4A4A"
-                    android:textSize="18sp"
-                    android:textStyle="bold" />
             </LinearLayout>
         </androidx.cardview.widget.CardView>
 
@@ -131,6 +122,7 @@
                     android:id="@+id/tilName"
                     >
                     <com.google.android.material.textfield.TextInputEditText
+                        android:id="@+id/etName"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:inputType="textPersonName" />
@@ -143,7 +135,7 @@
                     app:helperText="Make sure your email is not used."
                     android:hint="Email Address">
                     <com.google.android.material.textfield.TextInputEditText
-                        android:id="@+id/textEmail"
+                        android:id="@+id/etEmail"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"/>
                 </com.google.android.material.textfield.TextInputLayout>
@@ -157,18 +149,25 @@
                     app:endIconMode="password_toggle"
                     android:hint="Password">
                     <com.google.android.material.textfield.TextInputEditText
+                        android:id="@+id/etPassword"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:inputType="textPassword"/>
                 </com.google.android.material.textfield.TextInputLayout>
-                <LinearLayout
+                <com.google.android.material.textfield.TextInputLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
+                    android:id="@+id/tilConfirmPassword"
+                    app:helperText="Both password must be same"
                     android:layout_marginTop="10dp"
-                    android:gravity="center_vertical"
-                    android:orientation="horizontal">
-
-                </LinearLayout>
+                    app:endIconMode="password_toggle"
+                    android:hint="Confirm password">
+                    <com.google.android.material.textfield.TextInputEditText
+                        android:id="@+id/etConfirmPassword"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:inputType="textPassword"/>
+                </com.google.android.material.textfield.TextInputLayout>
             </LinearLayout>
         </androidx.cardview.widget.CardView>
 

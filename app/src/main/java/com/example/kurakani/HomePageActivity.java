@@ -7,9 +7,12 @@ import android.widget.ImageView;
 import androidx.activity.EdgeToEdge;
 import androidx.appcompat.app.AppCompatActivity;
 
+import com.example.kurakani.fragments.ProfileScreen;
+import com.example.kurakani.fragments.ProfileSetting;
+
 public class HomePageActivity extends AppCompatActivity {
 
-    ImageView v_setting;
+    ImageView v_profileSetting;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -19,18 +22,18 @@ public class HomePageActivity extends AppCompatActivity {
 
         findview();
 
-        v_setting.setOnClickListener(new View.OnClickListener() {
+        v_profileSetting.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 getSupportFragmentManager().beginTransaction()
-                        .replace(R.id.fragmentContainer, new ProfileSetting())
+                        .replace(R.id.fragmentContainer, new ProfileScreen())
                         .addToBackStack(null)
                         .commit();
             }
         });
     }
     private void findview(){
-        v_setting = findViewById(R.id.v_setting);
+        v_profileSetting = findViewById(R.id.v_profileSetting);
 
     }
 
