@@ -9,10 +9,8 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import com.example.kurakani.AuthActivity;
 import com.example.kurakani.HomePageActivity;
-import com.example.kurakani.ProfileSetupActivity;
 import com.example.kurakani.R;
 import com.example.kurakani.controller.LoginController;
-import com.example.kurakani.fragments.HomePage;
 import com.google.android.material.button.MaterialButton;
 import com.google.android.material.snackbar.Snackbar;
 import com.google.android.material.textfield.TextInputEditText;

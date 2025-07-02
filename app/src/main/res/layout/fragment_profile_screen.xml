@@ -11,23 +11,8 @@
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:padding="16dp"
-        android:layout_gravity="top"
+        android:layout_marginTop="10dp"
         tools:context=".fragments.ProfileScreen">
-
-        <TextView
-            android:id="@+id/backButton"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:clickable="true"
-            android:drawableLeft="@drawable/arrow_back"
-            android:focusable="true"
-            android:text="Back"
-            android:textAlignment="center"
-            android:textSize="18sp"
-            android:textStyle="bold"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
 
         <TextView
             android:id="@+id/appTitle"
@@ -35,7 +20,7 @@
             android:layout_height="wrap_content"
             android:text="Kurakani"
             android:textColor="@color/primary_color"
-            android:textSize="20sp"
+            android:textSize="25sp"
             android:textStyle="bold"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"

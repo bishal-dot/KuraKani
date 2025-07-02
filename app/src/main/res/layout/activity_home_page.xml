@@ -36,7 +36,8 @@
     <FrameLayout
         android:id="@+id/fragmentContainer"
         android:layout_width="0dp"
-        android:layout_height="wrap_content"
+        android:layout_height="0dp"
+        android:layout_marginTop="10dp"
         app:layout_constraintBottom_toTopOf="@+id/linearLayout5"
         app:layout_constraintEnd_toStartOf="@+id/guideline2"
         app:layout_constraintStart_toStartOf="@+id/guideline1"
@@ -61,7 +62,7 @@
             android:scaleType="centerInside"
             android:src="@drawable/home_icon" />
         <ImageView
-            android:id="@+id/v_likes"
+            android:id="@+id/v_match"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
