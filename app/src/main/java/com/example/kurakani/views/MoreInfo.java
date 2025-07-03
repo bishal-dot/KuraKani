@@ -1,4 +1,4 @@
-package com.example.kurakani;
+package com.example.kurakani.views;
 
 import android.content.Intent;
 import android.os.Bundle;
@@ -8,6 +8,7 @@ import android.widget.FrameLayout;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
 
+import com.example.kurakani.R;
 import com.example.kurakani.fragments.Aboutme;
 import com.example.kurakani.fragments.Interests;
 import com.example.kurakani.fragments.JobTitle;

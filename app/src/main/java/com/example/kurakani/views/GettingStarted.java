@@ -1,4 +1,4 @@
-package com.example.kurakani;
+package com.example.kurakani.views;
 
 import android.content.Intent;
 import android.os.Bundle;
@@ -6,6 +6,7 @@ import android.os.Bundle;
 import androidx.activity.EdgeToEdge;
 import androidx.appcompat.app.AppCompatActivity;
 
+import com.example.kurakani.R;
 import com.google.android.material.button.MaterialButton;
 
 public class GettingStarted extends AppCompatActivity {

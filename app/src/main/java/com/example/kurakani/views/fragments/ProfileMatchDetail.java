@@ -1,4 +1,4 @@
-package com.example.kurakani.fragments;
+package com.example.kurakani.views.fragments;
 
 import android.os.Bundle;
 

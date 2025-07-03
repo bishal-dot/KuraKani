@@ -1,4 +1,4 @@
-package com.example.kurakani;
+package com.example.kurakani.Adapter;
 
 import android.content.Context;
 import android.view.LayoutInflater;

@@ -1,7 +1,6 @@
-package com.example.kurakani;
+package com.example.kurakani.Adapter;
 
 import android.content.Context;
-import android.content.Intent;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -14,7 +13,8 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.example.kurakani.fragments.ProfileMatchDetail;
+import com.example.kurakani.R;
+import com.example.kurakani.views.fragments.ProfileMatchDetail;
 import com.example.kurakani.model.Match;
 
 import java.util.List;

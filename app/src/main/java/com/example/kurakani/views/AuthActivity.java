@@ -1,4 +1,4 @@
-package com.example.kurakani;
+package com.example.kurakani.views;
 
 import android.content.Intent;
 import android.os.Bundle;
@@ -6,6 +6,7 @@ import android.widget.Button;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import com.example.kurakani.R;
 import com.example.kurakani.views.LoginActivity;
 import com.example.kurakani.views.PhoneActivity;
 import com.example.kurakani.views.SignupActivity;

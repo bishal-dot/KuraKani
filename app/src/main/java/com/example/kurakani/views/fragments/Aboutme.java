@@ -1,4 +1,4 @@
-package com.example.kurakani.fragments;
+package com.example.kurakani.views.fragments;
 
 import android.os.Bundle;
 
@@ -11,16 +11,16 @@ import android.view.ViewGroup;
 import com.example.kurakani.R;
 
 
-public class Purpose extends Fragment {
+public class Aboutme extends Fragment {
 
-    public Purpose() {
+
+    public Aboutme() {
         // Required empty public constructor
     }
-
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_purpose, container, false);
+        return inflater.inflate(R.layout.fragment_aboutme, container, false);
     }
 }

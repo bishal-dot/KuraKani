@@ -1,4 +1,4 @@
-package com.example.kurakani;
+package com.example.kurakani.views;
 
 import android.os.Bundle;
 import android.view.View;
@@ -7,6 +7,7 @@ import android.widget.ImageView;
 import androidx.activity.EdgeToEdge;
 import androidx.appcompat.app.AppCompatActivity;
 
+import com.example.kurakani.R;
 import com.example.kurakani.fragments.HomePageFragment;
 import com.example.kurakani.fragments.ProfileScreen;
 import com.example.kurakani.fragments.ProfileSetting;

@@ -1,4 +1,4 @@
-package com.example.kurakani;
+package com.example.kurakani.views;
 
 import android.os.Bundle;
 
@@ -10,6 +10,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import com.example.kurakani.R;
 import com.example.kurakani.model.Match;
 
 import java.util.Arrays;
