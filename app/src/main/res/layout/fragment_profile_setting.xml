@@ -16,19 +16,7 @@
         tools:context=".fragments.ProfileSetting"
         android:layout_marginTop="10dp">
 
-        <TextView
-            android:id="@+id/backButton"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:clickable="true"
-            android:drawableLeft="@drawable/arrow_back"
-            android:focusable="true"
-            android:text="Back"
-            android:textAlignment="center"
-            android:textSize="20sp"
-            android:textStyle="bold"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
+
 
         <TextView
             android:id="@+id/appTitle"
@@ -139,10 +127,10 @@
                         android:layout_marginTop="28dp"
                         android:background="@android:color/transparent"
                         android:contentDescription="arrow"
-                        android:src="@drawable/arrow_forward"
+                        android:src="@drawable/right_arrow"
+                        android:layout_marginRight="10dp"
+                        android:scaleType="centerCrop"
                         app:layout_constraintEnd_toEndOf="parent"
-                        app:layout_constraintHorizontal_bias="0.931"
-                        app:layout_constraintStart_toEndOf="@+id/imageView5"
                         app:layout_constraintTop_toTopOf="parent" />
 
                 </androidx.constraintlayout.widget.ConstraintLayout>
@@ -173,7 +161,7 @@
                         android:backgroundTint="@android:color/transparent"
                         android:contentDescription="profile"
                         android:scaleType="centerInside"
-                        android:src="@drawable/profile_small"
+                        android:src="@drawable/profile_icon"
                         app:layout_constraintBottom_toBottomOf="parent"
                         app:layout_constraintEnd_toEndOf="parent"
                         app:layout_constraintHorizontal_bias="0.05"
@@ -181,7 +169,7 @@
                         app:layout_constraintTop_toTopOf="parent" />
 
                     <TextView
-                        android:id="@+id/textView11"
+                        android:id="@+id/tvProfileView"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginStart="20dp"
@@ -197,80 +185,15 @@
                     <ImageButton
                         android:layout_width="30dp"
                         android:layout_height="30dp"
-                        android:layout_marginStart="105dp"
                         android:background="@drawable/circle_shape"
                         android:backgroundTint="@android:color/transparent"
                         android:contentDescription="arrow"
-                        android:scaleType="centerInside"
-                        android:src="@drawable/arrow_forward_black"
+                        android:scaleType="centerCrop"
+                        android:src="@drawable/right_arrow"
+                        android:layout_marginRight="10dp"
                         app:layout_constraintBottom_toBottomOf="parent"
                         app:layout_constraintEnd_toEndOf="parent"
-                        app:layout_constraintStart_toEndOf="@+id/textView11"
                         app:layout_constraintTop_toTopOf="parent" />
-
-                </androidx.constraintlayout.widget.ConstraintLayout>
-
-
-            </androidx.cardview.widget.CardView>
-
-            <androidx.cardview.widget.CardView
-                android:id="@+id/cardview4"
-                android:layout_width="350dp"
-                android:layout_height="50dp"
-                android:layout_marginTop="16dp"
-                app:cardCornerRadius="15dp"
-                android:layout_gravity="center"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/cardview3">
-
-                <androidx.constraintlayout.widget.ConstraintLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent">
-
-                    <ImageButton
-                        android:id="@+id/imageButton1"
-                        android:layout_width="40dp"
-                        android:layout_height="40dp"
-                        android:background="@drawable/circle_shape"
-                        android:backgroundTint="@android:color/transparent"
-                        android:contentDescription="payment"
-                        android:scaleType="centerInside"
-                        android:src="@drawable/credit_card"
-                        app:layout_constraintBottom_toBottomOf="parent"
-                        app:layout_constraintEnd_toEndOf="parent"
-                        app:layout_constraintHorizontal_bias="0.051"
-                        app:layout_constraintStart_toStartOf="parent"
-                        app:layout_constraintTop_toTopOf="parent"
-                        app:layout_constraintVertical_bias="0.4" />
-
-                    <TextView
-                        android:id="@+id/textView12"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_marginStart="20dp"
-                        android:fontFamily="@font/baloo_bhai"
-                        android:text="Payment Methods"
-                        android:textSize="23sp"
-                        app:layout_constraintBottom_toBottomOf="parent"
-                        app:layout_constraintEnd_toEndOf="parent"
-                        app:layout_constraintHorizontal_bias="0.041"
-                        app:layout_constraintStart_toEndOf="@+id/imageButton1"
-                        app:layout_constraintTop_toTopOf="parent" />
-
-                    <ImageButton
-                        android:layout_width="30dp"
-                        android:layout_height="30dp"
-                        android:background="@drawable/circle_shape"
-                        android:backgroundTint="@android:color/transparent"
-                        android:contentDescription="arrow"
-                        android:src="@drawable/arrow_forward_black"
-                        app:layout_constraintBottom_toBottomOf="parent"
-                        app:layout_constraintEnd_toEndOf="parent"
-                        app:layout_constraintHorizontal_bias="0.78"
-                        app:layout_constraintStart_toEndOf="@+id/textView12"
-                        app:layout_constraintTop_toTopOf="parent"
-                        app:layout_constraintVertical_bias="0.35" />
 
                 </androidx.constraintlayout.widget.ConstraintLayout>
 
@@ -327,11 +250,11 @@
                         android:background="@drawable/circle_shape"
                         android:backgroundTint="@android:color/transparent"
                         android:contentDescription="arrow"
-                        android:src="@drawable/arrow_forward_black"
+                        android:src="@drawable/right_arrow"
+                        android:layout_marginRight="10dp"
+                        android:scaleType="centerCrop"
                         app:layout_constraintBottom_toBottomOf="parent"
                         app:layout_constraintEnd_toEndOf="parent"
-                        app:layout_constraintHorizontal_bias="0.903"
-                        app:layout_constraintStart_toEndOf="@+id/textView13"
                         app:layout_constraintTop_toTopOf="parent" />
 
                 </androidx.constraintlayout.widget.ConstraintLayout>
@@ -389,11 +312,11 @@
                         android:background="@drawable/circle_shape"
                         android:backgroundTint="@android:color/transparent"
                         android:contentDescription="arrow"
-                        android:src="@drawable/arrow_forward_black"
+                        android:src="@drawable/right_arrow"
+                        android:layout_marginRight="10dp"
+                        android:scaleType="centerCrop"
                         app:layout_constraintBottom_toBottomOf="parent"
                         app:layout_constraintEnd_toEndOf="parent"
-                        app:layout_constraintHorizontal_bias="0.903"
-                        app:layout_constraintStart_toEndOf="@+id/textView14"
                         app:layout_constraintTop_toTopOf="parent" />
 
                 </androidx.constraintlayout.widget.ConstraintLayout>
@@ -451,11 +374,11 @@
                         android:background="@drawable/circle_shape"
                         android:backgroundTint="@android:color/transparent"
                         android:contentDescription="arrow"
-                        android:src="@drawable/arrow_forward_black"
+                        android:src="@drawable/right_arrow"
+                        android:layout_marginRight="10dp"
+                        android:scaleType="centerCrop"
                         app:layout_constraintBottom_toBottomOf="parent"
                         app:layout_constraintEnd_toEndOf="parent"
-                        app:layout_constraintHorizontal_bias="0.903"
-                        app:layout_constraintStart_toEndOf="@+id/textView15"
                         app:layout_constraintTop_toTopOf="parent" />
 
                 </androidx.constraintlayout.widget.ConstraintLayout>
@@ -513,11 +436,11 @@
                         android:background="@drawable/circle_shape"
                         android:backgroundTint="@android:color/transparent"
                         android:contentDescription="arrow"
-                        android:src="@drawable/arrow_forward_black"
+                        android:src="@drawable/right_arrow"
+                        android:layout_marginRight="10dp"
+                        android:scaleType="centerCrop"
                         app:layout_constraintBottom_toBottomOf="parent"
                         app:layout_constraintEnd_toEndOf="parent"
-                        app:layout_constraintHorizontal_bias="0.903"
-                        app:layout_constraintStart_toEndOf="@+id/textView16"
                         app:layout_constraintTop_toTopOf="parent" />
 
                 </androidx.constraintlayout.widget.ConstraintLayout>
@@ -575,11 +498,11 @@
                         android:background="@drawable/circle_shape"
                         android:backgroundTint="@android:color/transparent"
                         android:contentDescription="arrow"
-                        android:src="@drawable/arrow_forward_black"
+                        android:src="@drawable/right_arrow"
+                        android:layout_marginRight="10dp"
+                        android:scaleType="centerCrop"
                         app:layout_constraintBottom_toBottomOf="parent"
                         app:layout_constraintEnd_toEndOf="parent"
-                        app:layout_constraintHorizontal_bias="0.903"
-                        app:layout_constraintStart_toEndOf="@+id/textView16"
                         app:layout_constraintTop_toTopOf="parent" />
 
                 </androidx.constraintlayout.widget.ConstraintLayout>

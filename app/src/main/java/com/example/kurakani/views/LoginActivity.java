@@ -7,8 +7,6 @@ import android.widget.TextView;
 
 import androidx.appcompat.app.AppCompatActivity;
 
-import com.example.kurakani.AuthActivity;
-import com.example.kurakani.HomePageActivity;
 import com.example.kurakani.R;
 import com.example.kurakani.controller.LoginController;
 import com.google.android.material.button.MaterialButton;
@@ -48,7 +46,7 @@ public class LoginActivity extends AppCompatActivity {
         });
 
         goBack.setOnClickListener(v -> {
-            Intent intent = new Intent(LoginActivity.this, AuthActivity.class);
+            Intent intent = new Intent(LoginActivity.this, com.example.kurakani.views.AuthActivity.class);
             overridePendingTransition(android.R.anim.slide_in_left, android.R.anim.slide_out_right);
             finish();
         });
@@ -75,7 +73,7 @@ public class LoginActivity extends AppCompatActivity {
     }
 
     public void showHomePage(){
-        Intent intent = new Intent(LoginActivity.this, HomePageActivity.class);
+        Intent intent = new Intent(LoginActivity.this, com.example.kurakani.views.HomePageActivity.class);
         startActivity(intent);
         finish();
     }

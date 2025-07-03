@@ -1,10 +1,11 @@
-package com.example.kurakani.views.fragments;
+package com.example.kurakani.fragments;
 
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
+import android.widget.TextView;
 
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentTransaction;
@@ -13,7 +14,7 @@ import com.example.kurakani.R;
 
 public class ProfileScreen extends Fragment {
 
-    private ImageView settingIcon;
+    private TextView backButton;
 
     public ProfileScreen() {
         // Required empty public constructor
@@ -25,16 +26,12 @@ public class ProfileScreen extends Fragment {
         // Inflate layout
         View view = inflater.inflate(R.layout.fragment_profile_screen, container, false);
 
-        // Find the settings icon
-        settingIcon = view.findViewById(R.id.settingIcon);
 
-        // Handle click → navigate to ProfileSetting fragment
-        settingIcon.setOnClickListener(v -> {
-            FragmentTransaction transaction = getParentFragmentManager().beginTransaction();
-            transaction.replace(R.id.fragmentContainer, new ProfileSetting());
-            transaction.addToBackStack(null);
-            transaction.commit();
-        });
+
+        // Find the back button
+        backButton = view.findViewById(R.id.backButton);
+        backButton.setOnClickListener(v -> requireActivity().onBackPressed());
+
 
         return view;
     }

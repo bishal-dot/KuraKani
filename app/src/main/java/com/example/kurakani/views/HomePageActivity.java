@@ -34,7 +34,7 @@ public class HomePageActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 getSupportFragmentManager().beginTransaction()
-                        .replace(R.id.fragmentContainer, new ProfileScreen())
+                        .replace(R.id.fragmentContainer, new ProfileSetting())
                         .addToBackStack(null)
                         .commit();
             }

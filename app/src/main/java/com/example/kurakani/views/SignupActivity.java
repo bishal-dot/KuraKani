@@ -7,8 +7,6 @@ import android.widget.TextView;
 
 import androidx.appcompat.app.AppCompatActivity;
 
-import com.example.kurakani.AuthActivity;
-import com.example.kurakani.ProfileSetupActivity;
 import com.example.kurakani.R;
 import com.example.kurakani.controller.SignUpController;
 import com.google.android.material.button.MaterialButton;
@@ -102,7 +100,7 @@ public class SignupActivity extends AppCompatActivity {
     }
 
     public void showProfileSetup(){
-        startActivity(new Intent(SignupActivity.this, ProfileSetupActivity.class));
+        startActivity(new Intent(SignupActivity.this, com.example.kurakani.views.ProfileSetupActivity.class));
         finish();
     }
 }

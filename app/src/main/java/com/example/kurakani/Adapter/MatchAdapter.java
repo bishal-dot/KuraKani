@@ -14,18 +14,24 @@ import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.kurakani.R;
-import com.example.kurakani.views.fragments.ProfileMatchDetail;
-import com.example.kurakani.model.Match;
+import com.example.kurakani.fragments.ProfileMatchDetail;
+import com.example.kurakani.model.MatchModel;
 
 import java.util.List;
 
 public class MatchAdapter extends RecyclerView.Adapter<MatchAdapter.MatchViewHolder> {
-    private List<Match> matchList;
-    private Context context;
 
-    public MatchAdapter(Context context, List<Match> matchList) {
+    private final List<MatchModel> matchList;
+    private final Context context;
+    private OnMatchClickListener matchClickListener;
+
+    public MatchAdapter(Context context, List<MatchModel> matchList) {
         this.context = context;
         this.matchList = matchList;
+    }
+
+    public void setOnMatchClickListener(OnMatchClickListener listener) {
+        this.matchClickListener = listener;
     }
 
     @NonNull
@@ -37,30 +43,29 @@ public class MatchAdapter extends RecyclerView.Adapter<MatchAdapter.MatchViewHol
 
     @Override
     public void onBindViewHolder(@NonNull MatchViewHolder holder, int position) {
-        Match match = matchList.get(position);
-
-        // Set name + age in one TextView
-        String nameAgeText = match.name + ", " + match.age;
-        holder.nameAge.setText(nameAgeText);
-
+        MatchModel match = matchList.get(position);
+        holder.nameAge.setText(match.name + ", " + match.age);
         holder.bio.setText(match.bio);
         holder.avatar.setImageResource(match.avatarResId);
 
-        // Navigate to MatchDetailActivity on click
         holder.itemView.setOnClickListener(v -> {
             Fragment detailFragment = new ProfileMatchDetail();
             Bundle bundle = new Bundle();
-            bundle.putString("name" , match.name);
-            bundle.putString("bio" , match.bio);
-            bundle.putInt("age" , match.age);
-            bundle.putInt("avatar" , match.avatarResId);
+            bundle.putString("name", match.name);
+            bundle.putString("bio", match.bio);
+            bundle.putInt("age", match.age);
+            bundle.putInt("avatar", match.avatarResId);
             detailFragment.setArguments(bundle);
 
             ((AppCompatActivity) context).getSupportFragmentManager()
                     .beginTransaction()
-                    .replace(R.id.fragmentContainer,detailFragment)
+                    .replace(R.id.fragmentContainer, detailFragment)
                     .addToBackStack(null)
                     .commit();
+
+            if (matchClickListener != null) {
+                matchClickListener.onMatchClicked(match);
+            }
         });
     }
 
@@ -79,5 +84,9 @@ public class MatchAdapter extends RecyclerView.Adapter<MatchAdapter.MatchViewHol
             bio = itemView.findViewById(R.id.textBio);
             avatar = itemView.findViewById(R.id.profileAvatar);
         }
+    }
+
+    public interface OnMatchClickListener {
+        void onMatchClicked(MatchModel user);
     }
 }
