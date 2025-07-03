@@ -7,9 +7,6 @@ import android.widget.Button;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.example.kurakani.R;
-import com.example.kurakani.views.LoginActivity;
-import com.example.kurakani.views.PhoneActivity;
-import com.example.kurakani.views.SignupActivity;
 import com.google.android.material.button.MaterialButton;
 
 public class AuthActivity extends AppCompatActivity {
@@ -25,20 +22,20 @@ public class AuthActivity extends AppCompatActivity {
 
         MaterialButton phoneLogin = findViewById(R.id.phonelogin);
         phoneLogin.setOnClickListener(v -> {
-            Intent intent = new Intent(AuthActivity.this, PhoneActivity.class);
+            Intent intent = new Intent(AuthActivity.this, com.example.kurakani.views.PhoneActivity.class);
             startActivity(intent);
             overridePendingTransition(android.R.anim.fade_in, android.R.anim.fade_out);
         });
 
         Button signUpButton = findViewById(R.id.signupbtn);
         signUpButton.setOnClickListener(v -> {
-            Intent intent = new Intent(AuthActivity.this, SignupActivity.class);
+            Intent intent = new Intent(AuthActivity.this, com.example.kurakani.views.SignupActivity.class);
             startActivity(intent);
             overridePendingTransition(android.R.anim.fade_in, android.R.anim.fade_out);
         });
 
         loginBtn.setOnClickListener(v -> {
-            Intent intent = new Intent(AuthActivity.this, LoginActivity.class);
+            Intent intent = new Intent(AuthActivity.this, com.example.kurakani.views.LoginActivity.class);
             startActivity(intent);
             overridePendingTransition(android.R.anim.fade_in, android.R.anim.fade_out);
         });

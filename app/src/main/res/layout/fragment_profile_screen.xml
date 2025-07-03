@@ -15,6 +15,20 @@
         tools:context=".fragments.ProfileScreen">
 
         <TextView
+            android:id="@+id/backButton"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:clickable="true"
+            android:drawableLeft="@drawable/left_arrow"
+            android:focusable="true"
+            android:text="Back"
+            android:textAlignment="center"
+            android:textSize="20sp"
+            android:textStyle="bold"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <TextView
             android:id="@+id/appTitle"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -26,15 +40,22 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
 
-        <ImageView
-            android:id="@+id/settingIcon"
+        <!--    Profile Picture-->
+
+        <TextView
+            android:id="@+id/editProfileButton"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:src="@drawable/menuicon"
+            android:backgroundTint="@color/light_blue_bg"
+            android:drawableRight="@drawable/editicon"
+            android:drawablePadding="8dp"
+            android:text="Edit"
+            android:textSize="22sp"
+            android:textStyle="bold"
+            android:textColor="@color/black"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
 
-        <!--    Profile Picture-->
         <RelativeLayout
             android:id="@+id/relativeLayout"
             android:layout_width="wrap_content"
@@ -65,45 +86,94 @@
                 android:background="@drawable/circle_shape"
                 android:clipToOutline="true"
                 android:padding="8dp"
-                android:src="@drawable/editicon" />
+                android:src="@drawable/editicon"/>
         </RelativeLayout>
 
         <LinearLayout
+            android:id="@+id/linearLayout7"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="10dp"
-            android:orientation="vertical"
             android:gravity="center"
+            android:orientation="vertical"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/relativeLayout">
 
             <TextView
+                android:id="@+id/nametext"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:id="@+id/nametext"
                 android:layout_below="@id/profilePicture"
                 android:layout_centerHorizontal="true"
+                android:layout_marginTop="10dp"
                 android:text="John Wick"
-                android:textStyle="bold"
-                android:textSize="24sp"
                 android:textAlignment="center"
                 android:textColor="@color/black"
-                android:layout_marginTop="10dp"
-                />
+                android:textSize="24sp"
+                android:textStyle="bold" />
+
             <TextView
                 android:id="@+id/alias"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:layout_below="@id/nametext"
                 android:layout_centerHorizontal="true"
                 android:text="Alias: Baba Yaga"
-                android:textStyle="italic"
                 android:textAlignment="center"
-                android:layout_below="@id/nametext"
                 android:textColor="@color/black"
                 android:textSize="20sp"
-                />
+                android:textStyle="italic" />
+            <!-- Bio -->
+            <TextView
+                android:id="@+id/tv_bio"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="5dp"
+                android:text="Exploring code, cosmos"
+                android:textAlignment="center"
+                android:textColor="@color/black"
+                android:textSize="18sp" />
+
+            <TextView
+                android:id="@+id/tv_hobbies"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="5dp"
+                android:text="Art   Photography   Acoustic Music"
+                android:textAlignment="center"
+                android:textColor="@color/black"
+                android:textSize="16sp" />
+
         </LinearLayout>
 
+        <LinearLayout
+            android:id="@+id/photoStrip"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:layout_marginTop="20dp"
+            android:background="#F5F5F5"
+
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/linearLayout7">
+
+            <ImageView
+                android:layout_width="120dp"
+                android:layout_height="120dp"
+                android:layout_margin="4dp"
+                android:clipToOutline="true"
+                android:scaleType="centerCrop"
+                android:src="@drawable/john" />
+            <ImageView
+                android:layout_width="120dp"
+                android:layout_height="120dp"
+                android:layout_margin="4dp"
+                android:clipToOutline="true"
+                android:scaleType="centerCrop"
+                android:src="@drawable/john" />
+
+        </LinearLayout>
     </androidx.constraintlayout.widget.ConstraintLayout>
 </androidx.core.widget.NestedScrollView>

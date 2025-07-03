@@ -1,8 +1,9 @@
-package com.example.kurakani.views.fragments;
+package com.example.kurakani.fragments;
 
 import android.os.Bundle;
 
 import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentTransaction;
 
 import android.view.LayoutInflater;
 import android.view.View;
@@ -13,7 +14,7 @@ import com.example.kurakani.R;
 
 public class ProfileSetting extends Fragment {
 
-    TextView backButton;
+    TextView tvProfileView;
 
     public ProfileSetting() {
         // Required empty public constructor
@@ -25,9 +26,14 @@ public class ProfileSetting extends Fragment {
                              Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_profile_setting, container, false);
 
-        // Find the back button
-        backButton = view.findViewById(R.id.backButton);
-        backButton.setOnClickListener(v -> requireActivity().onBackPressed());
+        tvProfileView = view.findViewById(R.id.tvProfileView);
+
+        tvProfileView.setOnClickListener(v -> {
+            FragmentTransaction transaction = getParentFragmentManager().beginTransaction();
+            transaction.replace(R.id.fragmentContainer, new ProfileScreen());
+            transaction.addToBackStack(null);
+            transaction.commit();
+        });
 
         return view;
 
