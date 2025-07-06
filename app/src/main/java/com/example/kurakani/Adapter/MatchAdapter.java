@@ -15,7 +15,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.kurakani.R;
 import com.example.kurakani.fragments.ProfileMatchDetail;
-import com.example.kurakani.model.MatchModel;
+import com.example.kurakani.viewmodel.MatchModel;
 
 import java.util.List;
 

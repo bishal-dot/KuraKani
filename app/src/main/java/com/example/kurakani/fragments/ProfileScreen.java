@@ -14,7 +14,8 @@ import com.example.kurakani.R;
 
 public class ProfileScreen extends Fragment {
 
-    private TextView backButton;
+    private TextView backButton, editProfileButton;
+
 
     public ProfileScreen() {
         // Required empty public constructor
@@ -30,8 +31,15 @@ public class ProfileScreen extends Fragment {
 
         // Find the back button
         backButton = view.findViewById(R.id.backButton);
+        editProfileButton = view.findViewById(R.id.editProfileButton);
         backButton.setOnClickListener(v -> requireActivity().onBackPressed());
 
+        editProfileButton.setOnClickListener(v -> {
+            FragmentTransaction transaction = getParentFragmentManager().beginTransaction();
+            transaction.replace(R.id.fragmentContainer, new EditProfileFragment());
+            transaction.addToBackStack(null);
+            transaction.commit();
+        });
 
         return view;
     }

@@ -49,7 +49,7 @@
         android:layout_height="wrap_content"
         android:background="@color/white"
         android:orientation="horizontal"
-        android:padding="20dp"
+        android:padding="16dp"
         app:layout_constraintBottom_toTopOf="@+id/guideline3"
         app:layout_constraintEnd_toStartOf="@+id/guideline2"
         app:layout_constraintStart_toStartOf="@+id/guideline1">
@@ -57,14 +57,14 @@
         <ImageView
             android:id="@+id/v_home"
             android:layout_width="0dp"
-            android:layout_height="wrap_content"
+            android:layout_height="48dp"
             android:layout_weight="1"
             android:scaleType="centerInside"
             android:src="@drawable/home_icon" />
         <ImageView
             android:id="@+id/v_match"
             android:layout_width="0dp"
-            android:layout_height="wrap_content"
+            android:layout_height="48dp"
             android:layout_weight="1"
             android:scaleType="centerInside"
             android:src="@drawable/heart_icon" />
@@ -72,7 +72,7 @@
         <ImageView
             android:id="@+id/v_chat"
             android:layout_width="0dp"
-            android:layout_height="wrap_content"
+            android:layout_height="48dp"
             android:layout_weight="1"
             android:scaleType="centerInside"
             android:src="@drawable/chat_icon" />
@@ -80,7 +80,7 @@
         <ImageView
             android:id="@+id/v_profileSetting"
             android:layout_width="0dp"
-            android:layout_height="wrap_content"
+            android:layout_height="48dp"
             android:layout_weight="1"
             android:scaleType="centerInside"
             android:src="@drawable/profile_icon" />

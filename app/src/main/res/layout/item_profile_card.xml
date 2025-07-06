@@ -2,22 +2,22 @@
 <androidx.cardview.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content"
+    android:layout_height="match_parent"
     android:layout_margin="6dp"
     android:padding="20dp"
     app:cardCornerRadius="16dp"
-    app:cardElevation="6dp">
+    app:cardElevation="0dp">
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="match_parent"
         >
 
         <!-- Profile Image -->
         <ImageView
             android:id="@+id/profileImageView"
             android:layout_width="0dp"
-            android:layout_height="220dp"
+            android:layout_height="400dp"
             android:scaleType="centerCrop"
             android:src="@drawable/kori"
             app:layout_constraintTop_toTopOf="parent"
@@ -33,9 +33,8 @@
             android:text="Hancy Bishwash, 23"
             android:textAlignment="center"
             android:textStyle="bold"
-            android:textSize="18sp"
-            android:textColor="@color/black"
-            android:fontFamily="@font/baloo_bhai"
+            android:textSize="24sp"
+            android:textColor="@color/primary_color"
             app:layout_constraintTop_toBottomOf="@id/profileImageView"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintEnd_toEndOf="parent" />
@@ -46,7 +45,7 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:text="Exploring code, cosmos"
-            android:textSize="14sp"
+            android:textSize="18sp"
             android:textColor="@color/black"
             android:textAlignment="center"
             app:layout_constraintTop_toBottomOf="@id/tv_nameAge"
@@ -59,7 +58,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="Art   Photography   Acoustic Music"
-            android:textSize="13sp"
+            android:textSize="18sp"
             android:textColor="@color/black"
             android:textAlignment="center"
             app:layout_constraintTop_toBottomOf="@id/tv_bio"
@@ -67,39 +66,63 @@
             app:layout_constraintEnd_toEndOf="parent" />
 
         <!-- Action Buttons -->
-        <LinearLayout
-            android:id="@+id/actionBar"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:orientation="horizontal"
-            android:gravity="center"
-            app:layout_constraintTop_toBottomOf="@id/tv_hobbies"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintEnd_toEndOf="parent">
+<!--        <LinearLayout-->
+<!--            android:id="@+id/actionBar"-->
+<!--            android:layout_width="wrap_content"-->
+<!--            android:layout_height="wrap_content"-->
+<!--            android:orientation="horizontal"-->
+<!--            android:gravity="center"-->
+<!--            app:layout_constraintTop_toBottomOf="@id/tv_hobbies"-->
+<!--            app:layout_constraintBottom_toBottomOf="parent"-->
+<!--            app:layout_constraintStart_toStartOf="parent"-->
+<!--            app:layout_constraintEnd_toEndOf="parent">-->
 
-            <ImageButton
-                android:id="@+id/btnReject"
-                android:layout_width="48dp"
-                android:layout_height="48dp"
-                android:background="?attr/selectableItemBackgroundBorderless"
-                android:src="@drawable/reject"
-                android:contentDescription="Reject"
-                android:tint="#F44336" />
+<!--            <ImageButton-->
+<!--                android:id="@+id/btnReject"-->
+<!--                android:layout_width="48dp"-->
+<!--                android:layout_height="48dp"-->
+<!--                android:background="?attr/selectableItemBackgroundBorderless"-->
+<!--                android:src="@drawable/reject"-->
+<!--                android:contentDescription="Reject"-->
+<!--                android:tint="#F44336" />-->
 
-            <Space
-                android:layout_width="24dp"
-                android:layout_height="1dp" />
+<!--            <Space-->
+<!--                android:layout_width="24dp"-->
+<!--                android:layout_height="1dp" />-->
 
-            <ImageButton
-                android:id="@+id/btnMatch"
-                android:layout_width="48dp"
-                android:layout_height="48dp"
-                android:background="?attr/selectableItemBackgroundBorderless"
-                android:src="@drawable/matched"
-                android:contentDescription="Match"
-                 />
-        </LinearLayout>
+<!--            <ImageButton-->
+<!--                android:id="@+id/btnMatch"-->
+<!--                android:layout_width="48dp"-->
+<!--                android:layout_height="48dp"-->
+<!--                android:background="?attr/selectableItemBackgroundBorderless"-->
+<!--                android:src="@drawable/matched"-->
+<!--                android:contentDescription="Match"-->
+<!--                 />-->
+<!--        </LinearLayout>-->
+
+        <com.airbnb.lottie.LottieAnimationView
+            android:id="@+id/lottieMatch"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_gravity="center"
+            android:visibility="gone"
+            app:lottie_rawRes="@raw/matched_animation"
+            app:lottie_autoPlay="false"
+            app:lottie_loop="false"
+            android:scaleX="1.0"
+            />
+
+        <com.airbnb.lottie.LottieAnimationView
+            android:id="@+id/lottieReject"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_gravity="center"
+            android:visibility="gone"
+            app:lottie_rawRes="@raw/rejected_animation"
+            app:lottie_autoPlay="false"
+            app:lottie_loop="false"
+            android:scaleX="1.0"
+            />
 
 
     </androidx.constraintlayout.widget.ConstraintLayout>

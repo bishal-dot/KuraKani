@@ -1,4 +1,4 @@
-package com.example.kurakani.model;
+package com.example.kurakani.viewmodel;
 
 public class MatchModel {
     public String name;

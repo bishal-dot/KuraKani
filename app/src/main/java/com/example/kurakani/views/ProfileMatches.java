@@ -15,11 +15,10 @@ import android.view.ViewGroup;
 
 import com.example.kurakani.Adapter.MatchAdapter;
 import com.example.kurakani.R;
-import com.example.kurakani.model.MatchModel;
+import com.example.kurakani.viewmodel.MatchModel;
 import com.example.kurakani.viewmodel.MatchViewModel;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
 public class ProfileMatches extends Fragment {

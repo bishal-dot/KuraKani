@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/nav_graph"
+    app:startDestination="@id/homePageFragment">
+
+    <fragment
+        android:id="@+id/homePageFragment"
+        android:name="com.example.kurakani.fragments.HomePageFragment"
+        android:label="Home" >
+        <action
+            android:id="@+id/action_homePageFragment_to_profileDetailFragment"
+            app:destination="@id/profileDetailFragment" />
+    </fragment>
+
+    <fragment
+        android:id="@+id/profileDetailFragment"
+        android:name="com.example.kurakani.fragments.ProfileExpanded"
+        android:label="Profile Detail" >
+        <argument android:name="name" app:argType="string" />
+        <argument android:name="age" app:argType="integer" />
+        <argument android:name="bio" app:argType="string" />
+        <argument android:name="hobbies" app:argType="string" />
+        <argument android:name="imageResId" app:argType="integer" />
+
+<!--        <action-->
+<!--            android:id="@+id/action_profileDetailFragment_to_editProfileFragment"-->
+<!--            app:destination="@id/editProfileFragment" />-->
+    </fragment>
+
+<!--    <fragment-->
+<!--        android:id="@+id/editProfileFragment"-->
+<!--        android:name="com.example.kurakani.fragments.EditProfileFragment"-->
+<!--        android:label="Edit Profile" />-->
+</navigation>

@@ -11,7 +11,7 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.kurakani.R;
-import com.example.kurakani.model.StoryModel;
+import com.example.kurakani.viewmodel.StoryModel;
 
 import java.util.List;
 

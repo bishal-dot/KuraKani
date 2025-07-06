@@ -9,4 +9,5 @@
     <color name="gray">#d3d3d3</color>
     <color name="dark_gray">#6E6A6A</color>
     <color name="primary_color">#eb5b78</color>
+    <color name="reject">#d32f2f</color>
 </resources>

@@ -1,4 +1,4 @@
-package com.example.kurakani.controller;
+package com.example.kurakani.Controlller;
 
 import com.example.kurakani.model.LoginModel;
 import com.example.kurakani.views.LoginActivity;
