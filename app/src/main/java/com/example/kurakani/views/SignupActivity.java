@@ -27,22 +27,11 @@ public class SignupActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_signup);
-        controller = new SignUpController(this);
 
-//        goBack.setOnClickListener(v -> {
-//            Intent intent = new Intent(SignupActivity.this, LoginActivity.class);
-//            overridePendingTransition(android.R.anim.slide_in_left, android.R.anim.slide_out_right);
-//            finish();
-//        });
+        controller = new SignUpController(this);
 
         findViewById();
         registerEvents();
-
-//        signUp.setOnClickListener(v -> {
-//            Intent intent = new Intent(SignupActivity.this, LoginActivity.class);
-//            startActivity(intent);
-//            overridePendingTransition(android.R.anim.fade_in, android.R.anim.fade_out);
-//        });
     }
 
     private void findViewById(){
@@ -67,11 +56,12 @@ public class SignupActivity extends AppCompatActivity {
         });
     }
 
+    // Getters for controller
     public String getName(){
-        return etName.getText().toString();
+        return etName.getText().toString().trim();
     }
     public String getEmail() {
-        return etEmail.getText().toString();
+        return etEmail.getText().toString().trim();
     }
     public String getPassword(){
         return etPassword.getText().toString();
@@ -79,6 +69,11 @@ public class SignupActivity extends AppCompatActivity {
     public String getConfirmPassword(){
         return etConfirmPassword.getText().toString();
     }
+    public boolean isTermsChecked(){
+        return chkTerms.isChecked();
+    }
+
+    // Error setters for fields
     public void setNameError(String message) {
         tilName.setError(message);
     }
@@ -90,9 +85,6 @@ public class SignupActivity extends AppCompatActivity {
     }
     public void setConfirmPasswordError(String message){
         tilConfirmPassword.setError(message);
-    }
-    public  boolean isTermsChecked(){
-        return chkTerms.isChecked();
     }
 
     public void showError(String message){

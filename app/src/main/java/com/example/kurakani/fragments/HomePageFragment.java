@@ -4,6 +4,7 @@ import android.content.Context;
 import android.graphics.Canvas;
 import android.os.Bundle;
 import android.os.Handler;
+import android.widget.Toast;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -79,8 +80,8 @@ public class HomePageFragment extends Fragment {
         recyclerViewStory.setAdapter(new StoryAdapter(getContext(), storyList, story -> {}));
 
         // Setup Profile List
+        fullProfileList.add(new ProfileModel(R.drawable.john, "Bishal", 23, "Exploring code, cosmos", "Anime, Music"));
         fullProfileList.add(new ProfileModel(R.drawable.kori, "Bishwash", 23, "Exploring code, cosmos", "Acoustic Music"));
-        fullProfileList.add(new ProfileModel(R.drawable.john, "Bishal", 23, "Exploring code, cosmos", "Acoustic Music"));
         fullProfileList.add(new ProfileModel(R.drawable.john, "Kushal", 23, "Exploring code, cosmos", "Acoustic Music"));
         filteredProfileList.addAll(fullProfileList);
 
@@ -153,11 +154,27 @@ public class HomePageFragment extends Fragment {
                     new Handler().postDelayed(() -> {
                         holder.lottieMatch.cancelAnimation();
                         holder.lottieMatch.setVisibility(View.GONE);
+
+                        // 🔔 Toast message for matched
+                        Toast.makeText(requireContext(),
+                                "Matched with " + swipedUser.getName(), Toast.LENGTH_SHORT).show();
+
+                        //  Add to MatchViewModel
+                        matchViewModel.addMatch(new MatchModel(
+                                swipedUser.getName(),
+                                swipedUser.getBio(),
+                                swipedUser.getImageResId(),
+                                swipedUser.getAge()
+                        ));
+
+                        //  Optional Notification
                         adapter.sendMatchNotification(swipedUser);
+
+                        //  Remove swiped profile
                         removeProfileAtPosition(position, swipedUser);
                     }, 100);
-
-                } else {
+                }
+                else {
                     holder.lottieReject.setVisibility(View.VISIBLE);
                     holder.lottieReject.playAnimation();
 

@@ -11,13 +11,14 @@
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
+        android:paddingBottom="10dp"
         >
 
         <!-- Profile Image -->
         <ImageView
             android:id="@+id/profileImageView"
             android:layout_width="0dp"
-            android:layout_height="400dp"
+            android:layout_height="300dp"
             android:scaleType="centerCrop"
             android:src="@drawable/kori"
             app:layout_constraintTop_toTopOf="parent"
@@ -59,46 +60,37 @@
             android:layout_height="wrap_content"
             android:text="Art   Photography   Acoustic Music"
             android:textSize="18sp"
+            android:textStyle="italic"
             android:textColor="@color/black"
             android:textAlignment="center"
             app:layout_constraintTop_toBottomOf="@id/tv_bio"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintEnd_toEndOf="parent" />
 
-        <!-- Action Buttons -->
-<!--        <LinearLayout-->
-<!--            android:id="@+id/actionBar"-->
-<!--            android:layout_width="wrap_content"-->
-<!--            android:layout_height="wrap_content"-->
-<!--            android:orientation="horizontal"-->
-<!--            android:gravity="center"-->
-<!--            app:layout_constraintTop_toBottomOf="@id/tv_hobbies"-->
-<!--            app:layout_constraintBottom_toBottomOf="parent"-->
-<!--            app:layout_constraintStart_toStartOf="parent"-->
-<!--            app:layout_constraintEnd_toEndOf="parent">-->
 
-<!--            <ImageButton-->
-<!--                android:id="@+id/btnReject"-->
-<!--                android:layout_width="48dp"-->
-<!--                android:layout_height="48dp"-->
-<!--                android:background="?attr/selectableItemBackgroundBorderless"-->
-<!--                android:src="@drawable/reject"-->
-<!--                android:contentDescription="Reject"-->
-<!--                android:tint="#F44336" />-->
+        <LinearLayout
+            android:id="@+id/actionBar"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:gravity="center"
+            android:layout_marginTop="10dp"
+            app:layout_constraintTop_toBottomOf="@id/tv_hobbies"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent">
 
-<!--            <Space-->
-<!--                android:layout_width="24dp"-->
-<!--                android:layout_height="1dp" />-->
 
-<!--            <ImageButton-->
-<!--                android:id="@+id/btnMatch"-->
-<!--                android:layout_width="48dp"-->
-<!--                android:layout_height="48dp"-->
-<!--                android:background="?attr/selectableItemBackgroundBorderless"-->
-<!--                android:src="@drawable/matched"-->
-<!--                android:contentDescription="Match"-->
-<!--                 />-->
-<!--        </LinearLayout>-->
+            <ImageButton
+                android:id="@+id/btnMatch"
+                android:layout_width="48dp"
+                android:layout_height="48dp"
+                android:scaleType="centerCrop"
+                android:background="?attr/selectableItemBackgroundBorderless"
+                android:src="@drawable/heart_icon"
+                android:contentDescription="Match"
+                 />
+        </LinearLayout>
 
         <com.airbnb.lottie.LottieAnimationView
             android:id="@+id/lottieMatch"

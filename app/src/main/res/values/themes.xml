@@ -5,9 +5,9 @@
         <!-- <item name="colorPrimary">@color/my_light_primary</item> -->
     </style>
 
-    <style name="Theme.KuraKani" parent="Base.Theme.KuraKani" >
-        <item name="android:fontFamily">@font/baloo_bhai</item>
-        <item name="fontFamily">@font/baloo_bhai</item>
+    <style name="Theme.KuraKani" parent="Base.Theme.KuraKani">
+        <item name="android:fontFamily">@font/quicksand</item>
+        <item name="fontFamily">@font/quicksand</item>
     </style>
 
 </resources>

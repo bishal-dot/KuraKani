@@ -10,11 +10,11 @@ import java.util.List;
 public class MatchViewModel extends ViewModel {
     private final MutableLiveData<List<MatchModel>> matchList = new MutableLiveData<>(new ArrayList<>());
 
-    public LiveData<List<MatchModel>> getMatchList(){
+    public LiveData<List<MatchModel>> getMatchList() {
         return matchList;
     }
 
-    public void addMatch(MatchModel match){
+    public void addMatch(MatchModel match) {
         List<MatchModel> currentList = matchList.getValue();
         if (currentList == null) currentList = new ArrayList<>();
         currentList.add(0, match);

@@ -1,10 +1,10 @@
 package com.example.kurakani.Adapter;
 
 import android.content.Context;
-import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.os.Bundle;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -23,15 +23,10 @@ public class MatchAdapter extends RecyclerView.Adapter<MatchAdapter.MatchViewHol
 
     private final List<MatchModel> matchList;
     private final Context context;
-    private OnMatchClickListener matchClickListener;
 
     public MatchAdapter(Context context, List<MatchModel> matchList) {
         this.context = context;
         this.matchList = matchList;
-    }
-
-    public void setOnMatchClickListener(OnMatchClickListener listener) {
-        this.matchClickListener = listener;
     }
 
     @NonNull
@@ -49,23 +44,15 @@ public class MatchAdapter extends RecyclerView.Adapter<MatchAdapter.MatchViewHol
         holder.avatar.setImageResource(match.avatarResId);
 
         holder.itemView.setOnClickListener(v -> {
-            Fragment detailFragment = new ProfileMatchDetail();
-            Bundle bundle = new Bundle();
-            bundle.putString("name", match.name);
-            bundle.putString("bio", match.bio);
-            bundle.putInt("age", match.age);
-            bundle.putInt("avatar", match.avatarResId);
-            detailFragment.setArguments(bundle);
+            Fragment detailFragment = ProfileMatchDetail.newInstance(
+                    match.name, match.age, match.bio, match.avatarResId
+            );
 
             ((AppCompatActivity) context).getSupportFragmentManager()
                     .beginTransaction()
                     .replace(R.id.fragmentContainer, detailFragment)
                     .addToBackStack(null)
                     .commit();
-
-            if (matchClickListener != null) {
-                matchClickListener.onMatchClicked(match);
-            }
         });
     }
 
@@ -84,9 +71,5 @@ public class MatchAdapter extends RecyclerView.Adapter<MatchAdapter.MatchViewHol
             bio = itemView.findViewById(R.id.textBio);
             avatar = itemView.findViewById(R.id.profileAvatar);
         }
-    }
-
-    public interface OnMatchClickListener {
-        void onMatchClicked(MatchModel user);
     }
 }

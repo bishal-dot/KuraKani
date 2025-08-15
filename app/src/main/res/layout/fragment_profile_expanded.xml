@@ -140,7 +140,7 @@
             android:layout_weight="1"
             android:text="Reject"
             android:textColor="@color/white"
-            android:drawableLeft="@drawable/reject"
+            android:drawableLeft="@drawable/rejectgif"
             android:textStyle="bold"
             android:textSize="18sp"
             android:drawableTint="@color/white"

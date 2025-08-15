@@ -6,7 +6,7 @@
     android:layout_height="match_parent"
     android:orientation="vertical"
     android:layout_marginTop="10dp"
-    tools:context=".ProfileMatches">
+    tools:context=".fragments.ProfileMatches">
 
     <!-- Top Heading -->
     <TextView
