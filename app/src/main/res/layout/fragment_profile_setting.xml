@@ -126,6 +126,7 @@
             android:layout_height="wrap_content"
             app:cardCornerRadius="12dp"
             app:cardElevation="2dp"
+            android:backgroundTint="@color/white"
             android:layout_marginBottom="16dp">
 
             <LinearLayout
@@ -150,6 +151,7 @@
                         android:layout_weight="1"
                         android:text="Your Profile"
                         android:textSize="16sp"
+                        android:textColor="@color/black"
                         android:layout_marginStart="16dp"/>
 
                     <ImageView
@@ -181,6 +183,7 @@
                         android:layout_height="wrap_content"
                         android:layout_weight="1"
                         android:text="Change Password"
+                        android:textColor="@color/black"
                         android:textSize="16sp"
                         android:clickable="true"
                         android:focusable="true"
@@ -218,6 +221,7 @@
                         android:layout_weight="1"
                         android:text="Settings"
                         android:textSize="16sp"
+                        android:textColor="@color/black"
                         android:layout_marginStart="16dp"/>
 
                     <ImageView
@@ -250,6 +254,7 @@
                         android:layout_weight="1"
                         android:text="Help Center"
                         android:textSize="16sp"
+                        android:textColor="@color/black"
                         android:layout_marginStart="16dp"/>
 
                     <ImageView
@@ -283,6 +288,7 @@
                         android:layout_weight="1"
                         android:text="Privacy Policy"
                         android:textSize="16sp"
+                        android:textColor="@color/black"
                         android:layout_marginStart="16dp"/>
 
                     <ImageView

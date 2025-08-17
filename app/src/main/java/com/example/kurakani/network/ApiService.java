@@ -48,7 +48,6 @@
         // Matches your protected route: Route::post('user/completeProfile' ...)
         @POST("user/complete/profile")
         Call<ProfileResponse> completeProfile(
-                @Header("Authorization") String token,
                 @Body ProfileRequest profileRequest);
 
         @GET("user/profile")

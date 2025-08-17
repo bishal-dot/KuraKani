@@ -10,7 +10,7 @@ public class ProfileRequest {
     public String profile_photo_base64;  // matches Laravel
     public String purpose;
     public String job;
-    public List<String> interests;
+    public List<String>  interests;
     public String education;
     public String about;
 

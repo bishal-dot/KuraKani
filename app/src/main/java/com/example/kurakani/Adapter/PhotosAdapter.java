@@ -11,17 +11,24 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
 import com.example.kurakani.R;
+import com.example.kurakani.model.ProfileResponse;
 
 import java.util.List;
 
 public class PhotosAdapter extends RecyclerView.Adapter<PhotosAdapter.PhotoViewHolder> {
 
-    private Context context;
-    private List<String> photos;
+    private final Context context;
+    private final List<ProfileResponse.UserPhoto> photos;
+    private final PhotoClickListener listener;
 
-    public PhotosAdapter(Context context, List<String> photos) {
+    public interface PhotoClickListener {
+        void onPhotoDeleteClick(int position, ProfileResponse.UserPhoto photo);
+    }
+
+    public PhotosAdapter(Context context, List<ProfileResponse.UserPhoto> photos, PhotoClickListener listener) {
         this.context = context;
         this.photos = photos;
+        this.listener = listener;
     }
 
     @NonNull
@@ -33,12 +40,15 @@ public class PhotosAdapter extends RecyclerView.Adapter<PhotosAdapter.PhotoViewH
 
     @Override
     public void onBindViewHolder(@NonNull PhotoViewHolder holder, int position) {
-        String photoUrl = photos.get(position);
+        ProfileResponse.UserPhoto photo = photos.get(position);
+
         Glide.with(context)
-                .load(photoUrl) // full URL from server
+                .load(photo.url)
                 .placeholder(R.drawable.john)
                 .error(R.drawable.john)
                 .into(holder.ivPhoto);
+
+        holder.btnDelete.setOnClickListener(v -> listener.onPhotoDeleteClick(position, photo));
     }
 
     @Override
@@ -48,9 +58,12 @@ public class PhotosAdapter extends RecyclerView.Adapter<PhotosAdapter.PhotoViewH
 
     static class PhotoViewHolder extends RecyclerView.ViewHolder {
         ImageView ivPhoto;
+        ImageView btnDelete;
+
         public PhotoViewHolder(@NonNull View itemView) {
             super(itemView);
             ivPhoto = itemView.findViewById(R.id.ivPhoto);
+            btnDelete = itemView.findViewById(R.id.ivDelete);
         }
     }
 }
