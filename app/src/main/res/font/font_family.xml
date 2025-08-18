@@ -7,7 +7,7 @@
         android:fontWeight="400"
         android:font="@font/quicksand"
         app:fontStyle="normal"
-        app:fontWeight="500"
+        app:fontWeight="400"
         app:font="@font/quicksand" />
 
 </font-family>
