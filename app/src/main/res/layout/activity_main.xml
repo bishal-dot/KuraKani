@@ -38,7 +38,7 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:scaleType="centerCrop"
-        android:src="@drawable/splashbg"
+        android:background="@color/background"
         />
 
     <ImageView
@@ -56,6 +56,31 @@
         app:layout_constraintStart_toStartOf="@+id/guideline5"
         app:layout_constraintTop_toTopOf="@+id/guideline" />
 
+    <TextView
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:text="Welcome to KuraKani"
+        android:gravity="center"
+        android:textSize="25sp"
+        android:textStyle="bold"
+        android:textColor="@color/primary_color"
+        app:layout_constraintBottom_toTopOf="@+id/lottieAnimationView"
+        app:layout_constraintEnd_toStartOf="@+id/guideline6"
+        app:layout_constraintStart_toStartOf="@+id/guideline5"
+        app:layout_constraintTop_toBottomOf="@+id/imageView2" />
+
+    <com.airbnb.lottie.LottieAnimationView
+        android:id="@+id/lottieAnimationView"
+        android:layout_width="0dp"
+        android:layout_height="200dp"
+        android:layout_marginBottom="64dp"
+        app:layout_constraintBottom_toTopOf="@+id/guideline3"
+        app:layout_constraintEnd_toStartOf="@+id/guideline6"
+        app:layout_constraintHorizontal_bias="0.494"
+        app:layout_constraintStart_toStartOf="@+id/guideline5"
+        app:lottie_autoPlay="true"
+        app:lottie_loop="true"
+        app:lottie_rawRes="@raw/heart_animation" />
 
 
 
