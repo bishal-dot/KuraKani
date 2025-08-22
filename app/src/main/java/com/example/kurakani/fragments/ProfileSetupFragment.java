@@ -1,6 +1,7 @@
 package com.example.kurakani.fragments;
 
 import android.app.Activity;
+import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.os.Bundle;
@@ -27,10 +28,12 @@ import com.example.kurakani.network.ApiService;
 import com.example.kurakani.network.RetrofitClient;
 import com.example.kurakani.views.HomePageActivity;
 import com.google.android.material.textfield.TextInputEditText;
+import com.google.gson.Gson;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 import retrofit2.Call;
@@ -40,13 +43,11 @@ import retrofit2.Response;
 public class ProfileSetupFragment extends Fragment {
 
     private static final int PICK_PROFILE_PHOTO = 101;
-    private static final int PICK_COVER_PHOTO = 102;
 
     private TextInputEditText etFullname, etAge, etPurpose, etInterests, etBio, etJob, etEducation;
     private RadioGroup rgGender;
     private Button btnSaveProfile;
     private ImageView profilePhoto;
-
     private Bitmap profileBitmap;
 
     public ProfileSetupFragment() {}
@@ -70,11 +71,8 @@ public class ProfileSetupFragment extends Fragment {
         btnSaveProfile = view.findViewById(R.id.btnSaveProfile);
 
         profilePhoto.setOnClickListener(v -> openGallery(PICK_PROFILE_PHOTO));
-
         btnSaveProfile.setOnClickListener(v -> {
-            if (validateInputs()) {
-                sendProfileToServer();
-            }
+            if (validateInputs()) sendProfileToServer();
         });
 
         return view;
@@ -103,7 +101,6 @@ public class ProfileSetupFragment extends Fragment {
         }
     }
 
-    // ---------------- VALIDATION ----------------
     private boolean validateInputs() {
         if (TextUtils.isEmpty(getFullname())) { etFullname.setError("Full name required"); return false; }
         if (getAge() < 18) { etAge.setError("You must be 18+"); return false; }
@@ -116,10 +113,13 @@ public class ProfileSetupFragment extends Fragment {
     }
 
     public String getFullname() { return etFullname.getText().toString().trim(); }
-    public int getAge() { try { return Integer.parseInt(etAge.getText().toString().trim()); } catch(Exception e){ return 0; } }
+    public int getAge() {
+        try { return Integer.parseInt(etAge.getText().toString().trim()); }
+        catch(Exception e){ return 0; }
+    }
     public String getGender() {
         int id = rgGender.getCheckedRadioButtonId();
-        if (id != -1) { return ((RadioButton)requireView().findViewById(id)).getText().toString().toLowerCase(); }
+        if (id != -1) return ((RadioButton) requireView().findViewById(id)).getText().toString().toLowerCase();
         return null;
     }
     public String getPurpose() { return etPurpose.getText().toString().trim(); }
@@ -136,16 +136,7 @@ public class ProfileSetupFragment extends Fragment {
         return Base64.encodeToString(baos.toByteArray(), Base64.NO_WRAP);
     }
 
-    // ---------------- NETWORK ----------------
     private void sendProfileToServer() {
-        String token = getActivity().getSharedPreferences("user_profile", Activity.MODE_PRIVATE)
-                .getString("token", null); // Must save token after signup/login
-
-        if (token == null) {
-            Toast.makeText(getContext(), "User not logged in", Toast.LENGTH_SHORT).show();
-            return;
-        }
-
         List<String> interestsList = new ArrayList<>();
         String raw = getInterests();
         if (!TextUtils.isEmpty(raw)) {
@@ -160,15 +151,34 @@ public class ProfileSetupFragment extends Fragment {
                 getAge(),
                 getGender(),
                 encodeToBase64(getProfilePhoto(), 70),
-                getPurpose().isEmpty() ? null : getPurpose(),
-                getJob().isEmpty() ? null : getJob(),
-                interestsList.isEmpty() ? null : interestsList,
-                getEducation().isEmpty() ? null : getEducation(),
-                getBio().isEmpty() ? null : getBio()
+                getPurpose(),
+                getJob(),
+                interestsList,
+                getEducation(),
+                getBio()
         );
 
-        ApiService apiService = RetrofitClient.getInstance(requireContext()).create(ApiService.class);
-        apiService.completeProfile("Bearer " + token, request)
+        Log.d("PROFILE_REQUEST", new Gson().toJson(request));
+
+        // ✅ Get token safely
+        Context ctx = getContext() != null ? getContext() : getActivity();
+        if (ctx == null) {
+            Toast.makeText(getContext(), "Context not available", Toast.LENGTH_SHORT).show();
+            return;
+        }
+
+        String token = ctx.getSharedPreferences("KurakaniPrefs", Activity.MODE_PRIVATE)
+                .getString("auth_token", null);
+
+        Log.d("TOKEN_DEBUG", "Token: " + token);
+        if (token == null) {
+            Toast.makeText(getContext(), "User not logged in!", Toast.LENGTH_LONG).show();
+            return;
+        }
+
+        ApiService apiService = RetrofitClient.getClient(ctx).create(ApiService.class);
+
+        apiService.completeProfile(request)
                 .enqueue(new Callback<ProfileResponse>() {
                     @Override
                     public void onResponse(Call<ProfileResponse> call, Response<ProfileResponse> response) {
@@ -201,15 +211,20 @@ public class ProfileSetupFragment extends Fragment {
 
     private void saveToPrefs(ProfileResponse.User user) {
         if (getActivity() != null && user != null) {
+            String interestsStr = "";
+            if (user.interests != null && !user.interests.isEmpty()) {
+                interestsStr = String.join(",", user.interests);
+            }
+
             getActivity().getSharedPreferences("user_profile", Activity.MODE_PRIVATE).edit()
                     .putString("fullname", user.fullname)
-                    .putInt("age", user.age)
+                    .putInt("age", user.age != null ? user.age : 0)
                     .putString("gender", user.gender)
-                    .putString("purpose", user.purpose)
-                    .putString("job", user.job)
-                    .putString("interests", user.interests)
-                    .putString("education", user.education)
-                    .putString("about", user.bio)
+                    .putString("purpose", user.purpose != null ? user.purpose : "")
+                    .putString("job", user.job != null ? user.job : "")
+                    .putString("interests", interestsStr)
+                    .putString("education", user.education != null ? user.education : "")
+                    .putString("about", user.bio != null ? user.bio : (user.about != null ? user.about : ""))
                     .putString("profile_photo", user.profile)
                     .apply();
         }

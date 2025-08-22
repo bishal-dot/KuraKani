@@ -41,7 +41,7 @@ public class AuthActivity extends AppCompatActivity {
         });
 
         googleLogin.setOnClickListener(v -> {
-            Intent intent = new Intent(AuthActivity.this, HomePageActivity.class);
+            Intent intent = new Intent(AuthActivity.this, EditProfileActivity.class);
             startActivity(intent);
             overridePendingTransition(android.R.anim.fade_in, android.R.anim.fade_out);
         });

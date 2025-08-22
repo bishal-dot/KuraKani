@@ -3,6 +3,7 @@
     import com.example.kurakani.model.DeletePhotoResponse;
     import com.example.kurakani.model.GetPhotosResponse;
     import com.example.kurakani.model.LoginResponse;
+    import com.example.kurakani.model.Message;
     import com.example.kurakani.model.ProfileRequest;
     import com.example.kurakani.model.ProfileResponse;
     import com.example.kurakani.model.SignupRequest;
@@ -21,6 +22,7 @@
     import retrofit2.http.Field;
     import retrofit2.http.GET;
     import retrofit2.http.Header;
+    import retrofit2.http.Headers;
     import retrofit2.http.Multipart;
     import retrofit2.http.POST;
     import retrofit2.http.Part;
@@ -30,16 +32,28 @@
 
         @FormUrlEncoded
         @POST("user/login")
+        @Headers({
+                "Accept: application/json",
+                "Content-Type: application/json"
+        })
         Call<LoginResponse> loginUser(
                 @Field("email") String email,
                 @Field("password") String password
         );
 
         @POST("user/register")
+        @Headers({
+                "Accept: application/json",
+                "Content-Type: application/json"
+        })
         Call<SignupResponse> registerUser(@Body SignupRequest request);
 
         @Multipart
         @POST("verifygender")
+        @Headers({
+                "Accept: application/json",
+                "Content-Type: application/json"
+        })
         Call<VerificationResponse> verifyGender(
                 String authToken, @Part MultipartBody.Part photo,
                 @Part("user_gender") RequestBody userGender
@@ -47,14 +61,25 @@
 
         // Matches your protected route: Route::post('user/completeProfile' ...)
         @POST("user/complete/profile")
+        @Headers({
+                "Accept: application/json",
+                "Content-Type: application/json"
+        })
         Call<ProfileResponse> completeProfile(
-                @Header("Authorization") String token,
                 @Body ProfileRequest profileRequest);
 
         @GET("user/profile")
+        @Headers({
+                "Accept: application/json",
+                "Content-Type: application/json"
+        })
         Call<ProfileResponse> getProfile();
 
         @POST("profile/update")
+        @Headers({
+                "Accept: application/json",
+                "Content-Type: application/json"
+        })
         Call<ProfileResponse> updateProfile(@Body ProfileRequest request);
 
         // Upload multiple photos
@@ -71,4 +96,17 @@
         // Delete a photo
         @DELETE("profile/photos/{photoId}")
         Call<DeletePhotoResponse> deletePhoto(@Path("photoId") int photoId);
+
+        // Sending and Receiving messages
+        // GET messages/{otherUserId}
+        @GET("messages/{otherUserId}")
+        Call<List<Message>> getMessages(@Path("otherUserId") int otherUserId);
+
+        // POST messages/{otherUserId}
+        @FormUrlEncoded
+        @POST("messages/{otherUserId}")
+        Call<Message> sendMessage(
+                @Path("otherUserId") int otherUserId,
+                @Field("message") String message
+        );
     }
