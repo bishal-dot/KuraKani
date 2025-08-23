@@ -49,6 +49,8 @@ dependencies {
     implementation libs.material.v190
     implementation libs.circleimageview
     implementation libs.cardview
+    implementation libs.recyclerview
+    implementation libs.lottie.v610
     testImplementation libs.junit
     androidTestImplementation libs.ext.junit
     androidTestImplementation libs.espresso.core

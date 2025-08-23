@@ -66,10 +66,10 @@ public class HomePageActivity extends AppCompatActivity {
 
     private void highlightTab(View selectedTab) {
         // Reset all icons to default
-        v_homePage.setColorFilter(getResources().getColor(R.color.gray));
-        v_matchIcon.setColorFilter(getResources().getColor(R.color.gray));
-        v_chat.setColorFilter(getResources().getColor(R.color.gray));
-        v_profileSetting.setColorFilter(getResources().getColor(R.color.gray));
+        v_homePage.setColorFilter(getResources().getColor(R.color.text_dark));
+        v_matchIcon.setColorFilter(getResources().getColor(R.color.text_dark));
+        v_chat.setColorFilter(getResources().getColor(R.color.text_dark));
+        v_profileSetting.setColorFilter(getResources().getColor(R.color.text_dark));
 
         // Highlight selected
         if (selectedTab instanceof ImageView) {

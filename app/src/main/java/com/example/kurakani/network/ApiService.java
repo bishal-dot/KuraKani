@@ -8,9 +8,12 @@
     import com.example.kurakani.model.SignupRequest;
     import com.example.kurakani.model.SignupResponse;
     import com.example.kurakani.model.UploadPhotosResponse;
+    import com.example.kurakani.model.SearchResponse;
     import com.example.kurakani.model.VerificationResponse;
+    import com.google.gson.JsonObject;
 
     import java.util.List;
+    import java.util.Map;
 
     import okhttp3.MultipartBody;
     import okhttp3.RequestBody;
@@ -20,11 +23,11 @@
     import retrofit2.http.FormUrlEncoded;
     import retrofit2.http.Field;
     import retrofit2.http.GET;
-    import retrofit2.http.Header;
     import retrofit2.http.Multipart;
     import retrofit2.http.POST;
     import retrofit2.http.Part;
     import retrofit2.http.Path;
+    import retrofit2.http.Query;
 
     public interface ApiService {
 
@@ -53,8 +56,15 @@
         @GET("user/profile")
         Call<ProfileResponse> getProfile();
 
+        @GET("users/others")
+        Call<List<ProfileResponse.User>> otherUsers();
+
+        // Fetch full user details by ID
+        @GET("users/{id}")
+        Call<ProfileResponse.User> getUserProfile(@Path("id") int userId);
+
         @POST("profile/update")
-        Call<ProfileResponse> updateProfile(@Body ProfileRequest request);
+        Call<JsonObject> updateProfile(@Body Map<String, Object> request);
 
         // Upload multiple photos
         @Multipart
@@ -70,4 +80,10 @@
         // Delete a photo
         @DELETE("profile/photos/{photoId}")
         Call<DeletePhotoResponse> deletePhoto(@Path("photoId") int photoId);
+
+        @GET("search/users")
+        Call<SearchResponse> searchUsers(
+                @Query("search") String search,
+                @Query("interests") String interests
+        );
     }

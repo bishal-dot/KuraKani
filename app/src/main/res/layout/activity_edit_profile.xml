@@ -91,6 +91,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginTop="8dp"
                 android:text="Change Photo"
+                android:textColor="@color/black"
                 android:textSize="14sp" />
         </LinearLayout>
 
@@ -111,11 +112,14 @@
                 android:layout_height="wrap_content"
                 android:hint="Full Name"
                 app:boxBackgroundMode="outline"
+                app:hintTextColor="@color/primary_color"
+                app:helperTextTextColor="@color/primary_color"
                 app:boxStrokeColor="@color/primary_color">
                 <com.google.android.material.textfield.TextInputEditText
                     android:id="@+id/etFullName"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
+                    android:textColor="@color/black"
                     android:textSize="16sp" />
             </com.google.android.material.textfield.TextInputLayout>
 
@@ -126,12 +130,15 @@
                 android:hint="Age"
                 android:layout_marginTop="10dp"
                 app:boxBackgroundMode="outline"
+                app:hintTextColor="@color/primary_color"
+                app:helperTextTextColor="@color/primary_color"
                 app:boxStrokeColor="@color/primary_color">
                 <com.google.android.material.textfield.TextInputEditText
                     android:id="@+id/etAge"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:inputType="text"
+                    android:textColor="@color/black"
                     android:textSize="16sp" />
             </com.google.android.material.textfield.TextInputLayout>
 
@@ -142,6 +149,8 @@
                 android:hint="Purpose"
                 android:layout_marginTop="10dp"
                 app:boxBackgroundMode="outline"
+                app:hintTextColor="@color/primary_color"
+                app:helperTextTextColor="@color/primary_color"
                 app:boxStrokeColor="@color/primary_color">
 
                 <com.google.android.material.textfield.TextInputEditText
@@ -151,6 +160,7 @@
                     android:focusable="false"
                     android:cursorVisible="false"
                     android:clickable="true"
+                    android:textColor="@color/black"
                     android:inputType="none" />
             </com.google.android.material.textfield.TextInputLayout>
 
@@ -161,11 +171,14 @@
                 android:hint="Interests (comma separated)"
                 android:layout_marginTop="10dp"
                 app:boxBackgroundMode="outline"
+                app:hintTextColor="@color/primary_color"
+                app:helperTextTextColor="@color/primary_color"
                 app:boxStrokeColor="@color/primary_color">
                 <com.google.android.material.textfield.TextInputEditText
                     android:id="@+id/etInterests"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
+                    android:textColor="@color/black"
                     android:inputType="textMultiLine" />
             </com.google.android.material.textfield.TextInputLayout>
 
@@ -176,10 +189,13 @@
                 android:hint="Job"
                 android:layout_marginTop="10dp"
                 app:boxBackgroundMode="outline"
+                app:hintTextColor="@color/primary_color"
+                app:helperTextTextColor="@color/primary_color"
                 app:boxStrokeColor="@color/primary_color">
                 <com.google.android.material.textfield.TextInputEditText
                     android:id="@+id/etJob"
                     android:layout_width="match_parent"
+                    android:textColor="@color/black"
                     android:layout_height="wrap_content" />
             </com.google.android.material.textfield.TextInputLayout>
 
@@ -190,9 +206,12 @@
                 android:hint="Education"
                 android:layout_marginTop="10dp"
                 app:boxBackgroundMode="outline"
+                app:hintTextColor="@color/primary_color"
+                app:helperTextTextColor="@color/primary_color"
                 app:boxStrokeColor="@color/primary_color">
                 <com.google.android.material.textfield.TextInputEditText
                     android:id="@+id/etEducation"
+                    android:textColor="@color/black"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content" />
             </com.google.android.material.textfield.TextInputLayout>
@@ -204,12 +223,15 @@
                 android:hint="About Me"
                 android:layout_marginTop="10dp"
                 app:boxBackgroundMode="outline"
+                app:hintTextColor="@color/primary_color"
+                app:helperTextTextColor="@color/primary_color"
                 app:boxStrokeColor="@color/primary_color">
                 <com.google.android.material.textfield.TextInputEditText
                     android:id="@+id/etBio"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:inputType="textMultiLine"
+                    android:textColor="@color/black"
                     android:lines="4" />
             </com.google.android.material.textfield.TextInputLayout>
 
@@ -259,6 +281,7 @@
                 android:text="Save Changes"
                 android:textSize="16sp"
                 app:cornerRadius="8dp"
+                android:textColor="@color/white"
                 app:backgroundTint="@color/primary_color" />
         </LinearLayout>
     </androidx.constraintlayout.widget.ConstraintLayout>

@@ -5,169 +5,100 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/light_blue_bg"
-    tools:context=".PaymentMethods">
+    >
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:layout_height="match_parent"
+        android:padding="24dp">
 
+        <!-- Header -->
         <LinearLayout
-            android:id="@+id/linearLayout5"
+            android:id="@+id/headerLayout"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:padding="15dp"
-            app:layout_constraintEnd_toEndOf="parent"
+            android:orientation="horizontal"
+            android:gravity="center_vertical"
+            app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent">
+            app:layout_constraintEnd_toEndOf="parent">
 
             <ImageButton
                 android:id="@+id/backButton"
-                android:layout_width="40dp"
-                android:layout_height="40dp"
-                android:background="@drawable/circle_shape"
-                android:src="@drawable/arrow_back" />
+                android:layout_width="48dp"
+                android:layout_height="48dp"
+                android:background="?attr/selectableItemBackgroundBorderless"
+                android:src="@drawable/arrow_back"
+                />
 
             <TextView
-                android:layout_width="wrap_content"
+                android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="50dp"
-                android:text="Payment Methods"
+                android:layout_weight="1"
+                android:gravity="center"
+                android:text="Payment"
+                android:textSize="22sp"
                 android:textStyle="bold"
-                android:textSize="25sp" />
-
+                android:textColor="@color/black"/>
         </LinearLayout>
 
+        <!-- eSewa Payment Option -->
         <TextView
-            android:id="@+id/textView19"
-            android:layout_width="300dp"
+            android:id="@+id/digitalWalletTitle"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_marginTop="24dp"
-            android:text="Credit and Debit card"
+            android:layout_marginTop="48dp"
+            android:text="Digital Wallet"
+            android:textSize="18sp"
             android:textStyle="bold"
-            android:textSize="25sp"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="0.234"
+            android:textColor="@color/black"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/linearLayout5" />
-
-        <androidx.cardview.widget.CardView
-            android:id="@+id/cardView3"
-            android:layout_width="350dp"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="16dp"
-            app:cardCornerRadius="10dp"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="0.273"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/textView19">
-
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:padding="5dp"
-                >
-
-                <ImageButton
-                    android:layout_width="40dp"
-                    android:layout_height="40dp"
-                    android:background="@android:color/transparent"
-                    android:src="@drawable/credit_card" />
-
-                <TextView
-                    android:layout_width="100dp"
-                    android:layout_height="wrap_content"
-                    android:layout_gravity="center"
-                    android:layout_weight="1"
-                    android:paddingStart="10dp"
-                    android:text="Add card"
-                    android:textSize="22sp"
-                    android:textStyle="bold" />
-
-                <ImageButton
-                    android:layout_width="40dp"
-                    android:layout_height="40dp"
-                    android:background="@android:color/transparent"
-                    android:src="@drawable/arrow_forward_black" />
-
-            </LinearLayout>
-
-        </androidx.cardview.widget.CardView>
-
-        <TextView
-            android:id="@+id/textView20"
-            android:layout_width="250dp"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="36dp"
-            android:text="More payment options"
-            android:textStyle="bold"
-            android:textSize="25sp"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="0.186"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/cardView3" />
+            app:layout_constraintTop_toBottomOf="@id/headerLayout" />
 
         <com.google.android.material.card.MaterialCardView
-            android:layout_width="350dp"
-            android:layout_height="150dp"
-            android:layout_marginTop="40dp"
-            app:cardCornerRadius="20dp"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="0.491"
+            android:id="@+id/esewaOption"
+            android:layout_width="0dp"
+            android:layout_height="80dp"
+            android:layout_marginTop="16dp"
+            app:cardCornerRadius="16dp"
+            app:cardElevation="4dp"
+            android:backgroundTint="@color/primary_light"
+            app:layout_constraintTop_toBottomOf="@id/digitalWalletTitle"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/textView20">
+            app:layout_constraintEnd_toEndOf="parent">
 
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:orientation="vertical">
+                android:orientation="horizontal"
+                android:gravity="center_vertical"
+                android:padding="20dp">
 
-                <LinearLayout
-                    android:layout_width="match_parent"
+                <ImageView
+                    android:layout_width="48dp"
+                    android:layout_height="48dp"
+                    android:src="@drawable/esewa"
+                    android:tint="@color/white"
+                    android:contentDescription="eSewa Logo" />
+
+                <TextView
+                    android:layout_width="0dp"
                     android:layout_height="wrap_content"
-                    android:orientation="horizontal"
-                    android:gravity="center"
-                    android:padding="10dp">
-                    <ImageButton
-                        android:layout_width="50dp"
-                        android:layout_height="50dp"
-                        android:backgroundTint="@android:color/transparent"
-                        android:src="@drawable/esewa"/>
-                    <TextView
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:layout_weight="1"
-                        android:text="esewa"
-                        android:textSize="24sp"
-                        android:textStyle="bold"
-                        />
-                    <ImageButton
-                        android:layout_width="40dp"
-                        android:layout_height="40dp"
-                        android:background="@android:color/transparent"
-                        android:src="@drawable/arrow_forward_black" />
-                </LinearLayout>
+                    android:layout_weight="1"
+                    android:layout_marginStart="20dp"
+                    android:text="Pay with eSewa"
+                    android:textSize="20sp"
+                    android:textStyle="bold"
+                    android:textColor="@color/white" />
 
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:orientation="horizontal"
-                    android:gravity="center"
-                    android:padding="10dp">
-                    <ImageButton
-                        android:layout_width="wrap_content"
-                        android:layout_height="30dp"
-                        android:layout_weight="1"
-                        android:backgroundTint="@android:color/transparent"
-                        android:src="@drawable/fonepay"/>
-                    <ImageButton
-                        android:layout_width="40dp"
-                        android:layout_height="40dp"
-                        android:background="@android:color/transparent"
-                        android:src="@drawable/arrow_forward_black" />
-                </LinearLayout>
-
+                <ImageView
+                    android:layout_width="24dp"
+                    android:layout_height="24dp"
+                    android:src="@drawable/right_arrow"
+                    android:tint="@color/white"
+                    android:contentDescription="Next" />
             </LinearLayout>
-
         </com.google.android.material.card.MaterialCardView>
 
     </androidx.constraintlayout.widget.ConstraintLayout>

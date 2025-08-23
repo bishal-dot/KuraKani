@@ -21,6 +21,7 @@ import com.example.kurakani.model.ProfileResponse;
 import com.example.kurakani.network.ApiService;
 import com.example.kurakani.network.RetrofitClient;
 import com.example.kurakani.views.AuthActivity;
+import com.example.kurakani.views.EditProfileActivity;
 import com.google.android.material.button.MaterialButton;
 
 import retrofit2.Call;
@@ -29,10 +30,12 @@ import retrofit2.Response;
 
 public class ProfileSetting extends Fragment {
 
-    private TextView tvUserName, tvUserEmail, tvProfileView;
+    private TextView tvUserName, tvUserEmail, tvProfileView, tvPrivacyPolicy, tvHelpCenter;
     private ImageView profilePicture;
     private CardView paymentMethod;
     private MaterialButton btnLogout;
+
+    private static final int EDIT_PROFILE_REQUEST = 1001;
 
     public ProfileSetting() { }
 
@@ -42,18 +45,17 @@ public class ProfileSetting extends Fragment {
 
         View view = inflater.inflate(R.layout.fragment_profile_setting, container, false);
 
-        // Bind views
         tvUserName = view.findViewById(R.id.userName);
         tvUserEmail = view.findViewById(R.id.userEmail);
         profilePicture = view.findViewById(R.id.profilePicture);
         paymentMethod = view.findViewById(R.id.paymentMethod);
         btnLogout = view.findViewById(R.id.btnLogout);
         tvProfileView = view.findViewById(R.id.tvProfileView);
+        tvPrivacyPolicy = view.findViewById(R.id.tvPrivacyPolicy);
+        tvHelpCenter = view.findViewById(R.id.tvHelpCenter);
 
         fetchProfile();
 
-
-        // Open ProfileScreen
         tvProfileView.setOnClickListener(v -> {
             requireActivity()
                     .getSupportFragmentManager()
@@ -63,7 +65,15 @@ public class ProfileSetting extends Fragment {
                     .commit();
         });
 
-        // Open PaymentMethodFragment
+        tvPrivacyPolicy.setOnClickListener(v -> {
+            requireActivity()
+                    .getSupportFragmentManager()
+                    .beginTransaction()
+                    .replace(R.id.fragmentContainer, new PrivacyPolicyFragment())
+                    .addToBackStack(null)
+                    .commit();
+        });
+
         paymentMethod.setOnClickListener(v -> {
             requireActivity()
                     .getSupportFragmentManager()
@@ -73,7 +83,15 @@ public class ProfileSetting extends Fragment {
                     .commit();
         });
 
-        // Logout
+        tvHelpCenter.setOnClickListener(v -> {
+            requireActivity()
+                    .getSupportFragmentManager()
+                    .beginTransaction()
+                    .replace(R.id.fragmentContainer, new HelpCenter())
+                    .addToBackStack(null)
+                    .commit();
+        });
+
         btnLogout.setOnClickListener(v -> logoutUser());
 
         return view;
@@ -97,17 +115,17 @@ public class ProfileSetting extends Fragment {
                     ProfileResponse.User user = response.body().user;
 
                     if (user != null) {
-                        tvUserName.setText(user.fullname != null && !user.fullname.isEmpty() ? user.fullname : user.username);
+                        tvUserName.setText(user.fullname != null ? user.fullname : user.username);
                         tvUserEmail.setText(user.email != null ? user.email : "-");
 
-                        if (user.profile != null && !user.profile.isEmpty()) {
-                            String imageUrl = "http://your-laravel-domain.com/storage/" + user.profile;
-                            Glide.with(requireContext())
-                                    .load(imageUrl)
-                                    .placeholder(R.drawable.john)
-                                    .error(R.drawable.john)
-                                    .into(profilePicture);
-                        }
+                        String imageUrl = user.profile != null ? user.profile.trim() : null;
+
+                        Glide.with(requireContext())
+                                .load(imageUrl != null ? imageUrl + "?t=" + System.currentTimeMillis() : R.drawable.john)
+                                .placeholder(R.drawable.default_avatar)
+                                .error(R.drawable.default_avatar)
+                                .circleCrop()
+                                .into(profilePicture);
                     }
                 } else {
                     Log.e("ProfileSetting", "Response error: " + response.code());
@@ -129,9 +147,8 @@ public class ProfileSetting extends Fragment {
         String savedEmail = prefs.getString("saved_email", null);
         String savedPassword = prefs.getString("saved_password", null);
 
-        editor.clear(); // clear all data
+        editor.clear();
 
-        // Restore remember me data if needed
         if (rememberMe && savedEmail != null && savedPassword != null) {
             editor.putBoolean("remember_me", true);
             editor.putString("saved_email", savedEmail);
@@ -146,5 +163,4 @@ public class ProfileSetting extends Fragment {
         intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
         startActivity(intent);
     }
-
 }
