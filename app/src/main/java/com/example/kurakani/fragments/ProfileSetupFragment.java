@@ -176,7 +176,8 @@ public class ProfileSetupFragment extends Fragment {
             return;
         }
 
-        ApiService apiService = RetrofitClient.getInstance(ctx).create(ApiService.class);
+        ApiService apiService = RetrofitClient.getClient(ctx).create(ApiService.class);
+
         apiService.completeProfile(request)
                 .enqueue(new Callback<ProfileResponse>() {
                     @Override

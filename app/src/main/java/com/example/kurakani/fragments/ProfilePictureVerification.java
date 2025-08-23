@@ -59,7 +59,7 @@ public class ProfilePictureVerification extends Fragment {
 
         userGender = getArguments() != null ? getArguments().getString("user_gender", "male") : "male";
 
-        apiService = RetrofitClient.getInstance(requireContext()).create(ApiService.class);
+        apiService = RetrofitClient.getClient(requireContext()).create(ApiService.class);
 
         authToken = "Bearer " + requireActivity()
                 .getSharedPreferences("KurakaniPrefs", Activity.MODE_PRIVATE)

@@ -117,7 +117,7 @@ public class EditProfileActivity extends AppCompatActivity implements PhotosAdap
     }
 
     private void fetchUserProfile() {
-        ApiService apiService = RetrofitClient.getInstance(this).create(ApiService.class);
+        ApiService apiService = RetrofitClient.getClient(this).create(ApiService.class);
 
         apiService.getProfile().enqueue(new Callback<ProfileResponse>() {
             @Override
@@ -162,7 +162,7 @@ public class EditProfileActivity extends AppCompatActivity implements PhotosAdap
             RequestBody requestFile = RequestBody.create(imageBytes, MediaType.parse("image/jpeg"));
             MultipartBody.Part body = MultipartBody.Part.createFormData("photos[]", "photo.jpg", requestFile);
 
-            ApiService apiService = RetrofitClient.getInstance(this).create(ApiService.class);
+            ApiService apiService = RetrofitClient.getClient(this).create(ApiService.class);
             apiService.uploadPhotos(List.of(body)).enqueue(new Callback<UploadPhotosResponse>() {
                 @Override
                 public void onResponse(Call<UploadPhotosResponse> call, Response<UploadPhotosResponse> response) {
@@ -214,7 +214,7 @@ public class EditProfileActivity extends AppCompatActivity implements PhotosAdap
                 fullname, age, "Male", profileBase64, purpose, job, interestsList, education, about
         );
 
-        ApiService apiService = RetrofitClient.getInstance(this).create(ApiService.class);
+        ApiService apiService = RetrofitClient.getClient(this).create(ApiService.class);
         apiService.updateProfile(request).enqueue(new Callback<ProfileResponse>() {
             @Override
             public void onResponse(Call<ProfileResponse> call, Response<ProfileResponse> response) {
