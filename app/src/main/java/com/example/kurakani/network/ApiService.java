@@ -1,5 +1,7 @@
     package com.example.kurakani.network;
 
+    import com.example.kurakani.model.ApiResponse;
+    import com.example.kurakani.model.ChangePasswordRequest;
     import com.example.kurakani.model.DeletePhotoResponse;
     import com.example.kurakani.model.GetPhotosResponse;
     import com.example.kurakani.model.LoginResponse;
@@ -102,6 +104,9 @@
                 @Query("interests") String interests
         );
 
+        @GET("search/interests")
+        Call<List<String>> getInterests();
+
         // Sending and Receiving messages
         // GET messages/{otherUserId}
         @GET("messages/{otherUserId}")
@@ -114,4 +119,8 @@
                 @Path("otherUserId") int otherUserId,
                 @Field("message") String message
         );
+
+        //change password
+        @POST("user/changepassword")
+        Call<ApiResponse> changePassword(@Body ChangePasswordRequest request);
     }

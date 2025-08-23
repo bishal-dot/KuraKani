@@ -20,4 +20,8 @@
     <color name="error_color">#F44336</color>
     <color name="chip_bg">#F0F0F0</color>
     <color name="blue">#2196F3</color>
+    <color name="password_weak">#FF4B4B</color>
+    <color name="password_medium">#FFA500</color>
+    <color name="password_strong">#4CAF50</color>
+    <color name="bg_password_strength_weak">#E0E0E0</color>
 </resources>

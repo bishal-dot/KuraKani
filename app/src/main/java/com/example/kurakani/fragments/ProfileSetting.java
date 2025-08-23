@@ -21,7 +21,9 @@ import com.example.kurakani.model.ProfileResponse;
 import com.example.kurakani.network.ApiService;
 import com.example.kurakani.network.RetrofitClient;
 import com.example.kurakani.views.AuthActivity;
+import com.example.kurakani.views.ChangePasswordActivity;
 import com.example.kurakani.views.EditProfileActivity;
+import com.example.kurakani.views.SearchActivity;
 import com.google.android.material.button.MaterialButton;
 
 import retrofit2.Call;
@@ -30,7 +32,7 @@ import retrofit2.Response;
 
 public class ProfileSetting extends Fragment {
 
-    private TextView tvUserName, tvUserEmail, tvProfileView, tvPrivacyPolicy, tvHelpCenter;
+    private TextView tvUserName, tvUserEmail, tvProfileView, tvPrivacyPolicy, tvHelpCenter, tvChangePassword;
     private ImageView profilePicture;
     private CardView paymentMethod;
     private MaterialButton btnLogout;
@@ -53,6 +55,7 @@ public class ProfileSetting extends Fragment {
         tvProfileView = view.findViewById(R.id.tvProfileView);
         tvPrivacyPolicy = view.findViewById(R.id.tvPrivacyPolicy);
         tvHelpCenter = view.findViewById(R.id.tvHelpCenter);
+        tvChangePassword = view.findViewById(R.id.tvChangePassword);
 
         fetchProfile();
 
@@ -63,6 +66,11 @@ public class ProfileSetting extends Fragment {
                     .replace(R.id.fragmentContainer, new ProfileScreen())
                     .addToBackStack(null)
                     .commit();
+        });
+
+        tvChangePassword.setOnClickListener(v -> {
+            Intent intent = new Intent(getActivity(), ChangePasswordActivity.class);
+            startActivity(intent);
         });
 
         tvPrivacyPolicy.setOnClickListener(v -> {

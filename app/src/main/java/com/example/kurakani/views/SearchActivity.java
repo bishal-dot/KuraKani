@@ -1,10 +1,13 @@
 package com.example.kurakani.views;
 
+import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.os.Handler;
 import android.text.Editable;
 import android.text.TextUtils;
 import android.text.TextWatcher;
 import android.view.View;
+import android.view.inputmethod.EditorInfo;
 import android.widget.ProgressBar;
 import android.widget.Toast;
 
@@ -18,6 +21,7 @@ import com.example.kurakani.model.SearchResponse;
 import com.example.kurakani.network.ApiService;
 import com.example.kurakani.network.RetrofitClient;
 import com.example.kurakani.viewmodel.ProfileModel;
+import com.google.android.material.appbar.MaterialToolbar;
 import com.google.android.material.chip.Chip;
 import com.google.android.material.chip.ChipGroup;
 import com.google.android.material.textfield.TextInputEditText;
@@ -31,6 +35,7 @@ import retrofit2.Response;
 
 public class SearchActivity extends AppCompatActivity {
 
+    private MaterialToolbar backButton;
     private RecyclerView resultsRecyclerView;
     private ProgressBar progressBar;
     private View emptyState;
@@ -40,19 +45,30 @@ public class SearchActivity extends AppCompatActivity {
     private SearchProfileAdapter adapter;
     private List<ProfileModel> profileList = new ArrayList<>();
     private List<String> selectedInterests = new ArrayList<>();
+    private List<String> allInterests = new ArrayList<>();
+    private int currentUserId;
 
     private ApiService apiService;
+    private Handler searchHandler = new Handler();
+    private Runnable searchRunnable;
+    private static final long SEARCH_DELAY = 500; // debounce
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_search);
 
+        SharedPreferences prefs = getSharedPreferences("KurakaniPrefs", MODE_PRIVATE);
+        currentUserId = prefs.getInt("user_id", -1);
+
         resultsRecyclerView = findViewById(R.id.resultsRecyclerView);
         progressBar = findViewById(R.id.progressBar);
         emptyState = findViewById(R.id.emptyState);
         searchEditText = findViewById(R.id.searchEditText);
         filterChipGroup = findViewById(R.id.filterChipGroup);
+        backButton = findViewById(R.id.toolbar);
+
+        backButton.setNavigationOnClickListener(v -> finish());
 
         apiService = RetrofitClient.getInstance(this).create(ApiService.class);
 
@@ -60,82 +76,108 @@ public class SearchActivity extends AppCompatActivity {
         resultsRecyclerView.setLayoutManager(new LinearLayoutManager(this));
         resultsRecyclerView.setAdapter(adapter);
 
-        // Load available interests from backend
-//        fetchInterests();
+        fetchInterests();
+        setupSearchListeners();
+    }
 
-        // Search text listener
+    private void setupSearchListeners() {
+        // Debounced typing listener
         searchEditText.addTextChangedListener(new TextWatcher() {
-            @Override
-            public void beforeTextChanged(CharSequence s, int start, int count, int after) { }
-            @Override
-            public void onTextChanged(CharSequence s, int start, int before, int count) { }
+            @Override public void beforeTextChanged(CharSequence s, int start, int count, int after) {}
+            @Override public void onTextChanged(CharSequence s, int start, int before, int count) {}
             @Override
             public void afterTextChanged(Editable s) {
-                fetchUsers(s.toString(), selectedInterests);
+                if (searchRunnable != null) searchHandler.removeCallbacks(searchRunnable);
+                searchRunnable = () -> fetchUsers(searchEditText.getText().toString(), selectedInterests);
+                searchHandler.postDelayed(searchRunnable, SEARCH_DELAY);
+            }
+        });
+
+        // Keyboard "search" action
+        searchEditText.setOnEditorActionListener((v, actionId, event) -> {
+            if (actionId == EditorInfo.IME_ACTION_SEARCH) {
+                fetchUsers(searchEditText.getText().toString(), selectedInterests);
+                return true;
+            }
+            return false;
+        });
+    }
+
+    private void fetchInterests() {
+        apiService.getInterests().enqueue(new Callback<List<String>>() {
+            @Override
+            public void onResponse(Call<List<String>> call, Response<List<String>> response) {
+                if (response.isSuccessful() && response.body() != null) {
+                    allInterests = response.body();
+                    setupInterestChips();
+                } else {
+                    Toast.makeText(SearchActivity.this, "No interests found", Toast.LENGTH_SHORT).show();
+                }
+            }
+
+            @Override
+            public void onFailure(Call<List<String>> call, Throwable t) {
+                Toast.makeText(SearchActivity.this, "Failed to load interests", Toast.LENGTH_SHORT).show();
             }
         });
     }
 
-//    private void fetchInterests() {
-//        ApiService apiService = RetrofitClient.getClient(this).create(ApiService.class);
-//
-//        apiService.getInterests().enqueue(new Callback<List<String>>() {
-//            @Override
-//            public void onResponse(Call<List<String>> call, Response<List<String>> response) {
-//                if (response.isSuccessful() && response.body() != null) {
-//                    filterChipGroup.removeAllViews(); // clear previous chips
-//                    for (String interest : response.body()) {
-//                        Chip chip = new Chip(SearchActivity.this);
-//                        chip.setText(interest);
-//                        chip.setCheckable(true);
-//                        chip.setOnCheckedChangeListener((buttonView, isChecked) -> {
-//                            if (isChecked) selectedInterests.add(interest);
-//                            else selectedInterests.remove(interest);
-//
-//                            // Convert selected interests to comma-separated string
-//                            String interestParam = TextUtils.join(",", selectedInterests);
-//                            fetchUsers(searchEditText.getText().toString(), interestParam);
-//                        });
-//                        filterChipGroup.addView(chip);
-//                    }
-//                }
-//            }
-//
-//            @Override
-//            public void onFailure(Call<List<String>> call, Throwable t) {
-//                Toast.makeText(SearchActivity.this, "Failed to load interests", Toast.LENGTH_SHORT).show();
-//            }
-//        });
-//    }
+    private void setupInterestChips() {
+        filterChipGroup.removeAllViews();
+        for (String interest : allInterests) {
+            Chip chip = new Chip(this);
+            chip.setText(interest);
+            chip.setCheckable(true);
+
+            chip.setOnCheckedChangeListener((buttonView, isChecked) -> {
+                String interestLower = interest.toLowerCase().trim();
+                if (isChecked) selectedInterests.add(interestLower);
+                else selectedInterests.remove(interestLower);
+
+                // Fetch users whenever a chip is selected/deselected
+                fetchUsers(searchEditText.getText().toString(), selectedInterests);
+            });
+
+            filterChipGroup.addView(chip);
+        }
+    }
+
     private void fetchUsers(String searchQuery, List<String> interests) {
+        profileList.clear();
+        adapter.notifyDataSetChanged();
+
+        if (TextUtils.isEmpty(searchQuery) && (interests == null || interests.isEmpty())) {
+            emptyState.setVisibility(View.VISIBLE);
+            progressBar.setVisibility(View.GONE);
+            return;
+        }
+
         progressBar.setVisibility(View.VISIBLE);
 
-        String interestParam = String.join(",", interests);
+        String usernameParam = TextUtils.isEmpty(searchQuery) ? null : searchQuery.toLowerCase();
+        String interestParam = (interests == null || interests.isEmpty()) ? null : TextUtils.join(",", interests).toLowerCase();
 
-        apiService.searchUsers(searchQuery, interestParam).enqueue(new Callback<SearchResponse>() {
-            @Override
-            public void onResponse(Call<SearchResponse> call, Response<SearchResponse> response) {
-                progressBar.setVisibility(View.GONE);
-                profileList.clear();
+        apiService.searchUsers(usernameParam, interestParam)
+                .enqueue(new Callback<SearchResponse>() {
+                    @Override
+                    public void onResponse(Call<SearchResponse> call, Response<SearchResponse> response) {
+                        progressBar.setVisibility(View.GONE);
 
-                if (response.isSuccessful() && response.body() != null
-                        && response.body().getUsers() != null
-                        && !response.body().getUsers().isEmpty()) {
+                        if (response.isSuccessful() && response.body() != null) {
+                            profileList.addAll(response.body().getUsers());
+                            emptyState.setVisibility(profileList.isEmpty() ? View.VISIBLE : View.GONE);
+                        } else {
+                            emptyState.setVisibility(View.VISIBLE);
+                        }
 
-                    profileList.addAll(response.body().getUsers());
-                    emptyState.setVisibility(View.GONE);
-                } else {
-                    emptyState.setVisibility(View.VISIBLE);
-                }
+                        adapter.notifyDataSetChanged();
+                    }
 
-                adapter.notifyDataSetChanged();
-            }
-
-            @Override
-            public void onFailure(Call<SearchResponse> call, Throwable t) {
-                progressBar.setVisibility(View.GONE);
-                Toast.makeText(SearchActivity.this, "Failed to fetch users", Toast.LENGTH_SHORT).show();
-            }
-        });
+                    @Override
+                    public void onFailure(Call<SearchResponse> call, Throwable t) {
+                        progressBar.setVisibility(View.GONE);
+                        Toast.makeText(SearchActivity.this, "Failed: " + t.getMessage(), Toast.LENGTH_SHORT).show();
+                    }
+                });
     }
 }
