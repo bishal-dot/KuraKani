@@ -3,6 +3,7 @@
     import com.example.kurakani.model.DeletePhotoResponse;
     import com.example.kurakani.model.GetPhotosResponse;
     import com.example.kurakani.model.LoginResponse;
+    import com.example.kurakani.model.Message;
     import com.example.kurakani.model.ProfileRequest;
     import com.example.kurakani.model.ProfileResponse;
     import com.example.kurakani.model.SignupRequest;
@@ -23,6 +24,8 @@
     import retrofit2.http.FormUrlEncoded;
     import retrofit2.http.Field;
     import retrofit2.http.GET;
+    import retrofit2.http.Header;
+    import retrofit2.http.Headers;
     import retrofit2.http.Multipart;
     import retrofit2.http.POST;
     import retrofit2.http.Part;
@@ -43,6 +46,10 @@
 
         @Multipart
         @POST("verifygender")
+        @Headers({
+                "Accept: application/json",
+                "Content-Type: application/json"
+        })
         Call<VerificationResponse> verifyGender(
                 String authToken, @Part MultipartBody.Part photo,
                 @Part("user_gender") RequestBody userGender
@@ -50,10 +57,18 @@
 
         // Matches your protected route: Route::post('user/completeProfile' ...)
         @POST("user/complete/profile")
+        @Headers({
+                "Accept: application/json",
+                "Content-Type: application/json"
+        })
         Call<ProfileResponse> completeProfile(
                 @Body ProfileRequest profileRequest);
 
         @GET("user/profile")
+        @Headers({
+                "Accept: application/json",
+                "Content-Type: application/json"
+        })
         Call<ProfileResponse> getProfile();
 
         @GET("users/others")
@@ -85,5 +100,18 @@
         Call<SearchResponse> searchUsers(
                 @Query("search") String search,
                 @Query("interests") String interests
+        );
+
+        // Sending and Receiving messages
+        // GET messages/{otherUserId}
+        @GET("messages/{otherUserId}")
+        Call<List<Message>> getMessages(@Path("otherUserId") int otherUserId);
+
+        // POST messages/{otherUserId}
+        @FormUrlEncoded
+        @POST("messages/{otherUserId}")
+        Call<Message> sendMessage(
+                @Path("otherUserId") int otherUserId,
+                @Field("message") String message
         );
     }

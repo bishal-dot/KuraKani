@@ -2,6 +2,7 @@ package com.example.kurakani.views;
 
 import android.os.Bundle;
 import android.text.Editable;
+import android.text.TextUtils;
 import android.text.TextWatcher;
 import android.view.View;
 import android.widget.ProgressBar;
@@ -60,7 +61,7 @@ public class SearchActivity extends AppCompatActivity {
         resultsRecyclerView.setAdapter(adapter);
 
         // Load available interests from backend
-        fetchInterests();
+//        fetchInterests();
 
         // Search text listener
         searchEditText.addTextChangedListener(new TextWatcher() {
@@ -75,37 +76,37 @@ public class SearchActivity extends AppCompatActivity {
         });
     }
 
-    private void fetchInterests() {
-        ApiService apiService = RetrofitClient.getClient(this).create(ApiService.class);
-
-        apiService.getInterests().enqueue(new Callback<List<String>>() {
-            @Override
-            public void onResponse(Call<List<String>> call, Response<List<String>> response) {
-                if (response.isSuccessful() && response.body() != null) {
-                    filterChipGroup.removeAllViews(); // clear previous chips
-                    for (String interest : response.body()) {
-                        Chip chip = new Chip(SearchActivity.this);
-                        chip.setText(interest);
-                        chip.setCheckable(true);
-                        chip.setOnCheckedChangeListener((buttonView, isChecked) -> {
-                            if (isChecked) selectedInterests.add(interest);
-                            else selectedInterests.remove(interest);
-
-                            // Convert selected interests to comma-separated string
-                            String interestParam = TextUtils.join(",", selectedInterests);
-                            fetchUsers(searchEditText.getText().toString(), interestParam);
-                        });
-                        filterChipGroup.addView(chip);
-                    }
-                }
-            }
-
-            @Override
-            public void onFailure(Call<List<String>> call, Throwable t) {
-                Toast.makeText(SearchActivity.this, "Failed to load interests", Toast.LENGTH_SHORT).show();
-            }
-        });
-    }
+//    private void fetchInterests() {
+//        ApiService apiService = RetrofitClient.getClient(this).create(ApiService.class);
+//
+//        apiService.getInterests().enqueue(new Callback<List<String>>() {
+//            @Override
+//            public void onResponse(Call<List<String>> call, Response<List<String>> response) {
+//                if (response.isSuccessful() && response.body() != null) {
+//                    filterChipGroup.removeAllViews(); // clear previous chips
+//                    for (String interest : response.body()) {
+//                        Chip chip = new Chip(SearchActivity.this);
+//                        chip.setText(interest);
+//                        chip.setCheckable(true);
+//                        chip.setOnCheckedChangeListener((buttonView, isChecked) -> {
+//                            if (isChecked) selectedInterests.add(interest);
+//                            else selectedInterests.remove(interest);
+//
+//                            // Convert selected interests to comma-separated string
+//                            String interestParam = TextUtils.join(",", selectedInterests);
+//                            fetchUsers(searchEditText.getText().toString(), interestParam);
+//                        });
+//                        filterChipGroup.addView(chip);
+//                    }
+//                }
+//            }
+//
+//            @Override
+//            public void onFailure(Call<List<String>> call, Throwable t) {
+//                Toast.makeText(SearchActivity.this, "Failed to load interests", Toast.LENGTH_SHORT).show();
+//            }
+//        });
+//    }
     private void fetchUsers(String searchQuery, List<String> interests) {
         progressBar.setVisibility(View.VISIBLE);
 

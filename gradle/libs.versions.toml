@@ -53,6 +53,8 @@ navigation-ui = { group = "androidx.navigation", name = "navigation-ui", version
 okhttp = { module = "com.squareup.okhttp3:okhttp", version.ref = "okhttp" }
 recyclerview = { module = "androidx.recyclerview:recyclerview", version.ref = "recyclerview" }
 retrofit = { module = "com.squareup.retrofit2:retrofit", version.ref = "retrofit" }
+retrofitGson = { module = "com.squareup.retrofit2:converter-gson", version.ref = "retrofit" }
+okhttpLogging = { module = "com.squareup.okhttp3:logging-interceptor", version.ref = "okhttp" }
 
 
 [plugins]

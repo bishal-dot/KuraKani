@@ -36,10 +36,12 @@ public class ChatFragment extends Fragment {
         // Inflate the layout for this fragment
         View view = inflater.inflate(R.layout.fragment_chat, container, false);
 
+        int otherUserId = 2;
+        String otherName = "Alex";
         ivProfileButton = view.findViewById(R.id.ivProfileButton);
         ivProfileButton.setOnClickListener(v -> {
             FragmentTransaction transaction = getParentFragmentManager().beginTransaction();
-            transaction.replace(R.id.fragmentContainer, new IndividualChat());
+            transaction.replace(R.id.fragmentContainer, IndividualChat.newInstance(otherUserId, otherName));
             transaction.addToBackStack(null);
             transaction.commit();
         });

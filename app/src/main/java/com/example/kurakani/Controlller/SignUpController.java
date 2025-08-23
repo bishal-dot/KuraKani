@@ -44,7 +44,7 @@ public class SignUpController {
     }
 
     public void createAccount(User model) {
-        ApiService apiService = RetrofitClient.getInstance(view).create(ApiService.class);
+        ApiService apiService = RetrofitClient.getClient(view).create(ApiService.class);
 
         SignupRequest request = new SignupRequest(model.getName(), model.getEmail(), model.getPassword());
 
