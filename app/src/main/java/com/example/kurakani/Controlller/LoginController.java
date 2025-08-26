@@ -58,62 +58,71 @@ public class LoginController {
             public void onResponse(Call<LoginResponse> call, Response<LoginResponse> response) {
                 Log.d("LoginResponse", "Code: " + response.code());
 
-                if (response.isSuccessful()) {
+                if (response.isSuccessful() && response.body() != null) {
                     LoginResponse loginResponse = response.body();
-
-                    if (loginResponse == null) {
-                        view.showError("Empty response from server");
-                        return;
-                    }
 
                     if (!loginResponse.isError()) {
                         String token = loginResponse.getToken();
+                        int userId = loginResponse.getUserId();
 
-                        SharedPreferences prefs = view.getSharedPreferences("KurakaniPrefs", android.content.Context.MODE_PRIVATE);
-                        SharedPreferences.Editor editor = prefs.edit();
-
-                        editor.putString("auth_token", token);
-
-                        if (rememberMe) {
-                            editor.putString("saved_email", model.getEmail());
-                            editor.putString("saved_password", model.getPassword());
-                            editor.putBoolean("remember_me", true);
-                        } else {
-                            editor.remove("saved_email");
-                            editor.remove("saved_password");
-                            editor.putBoolean("remember_me", false);
-                        }
-
-                        editor.apply();
+                        saveLoginPreferences(token, userId, model);
 
                         RetrofitClient.resetClient();
 
-                        view.showHomePage(rememberMe, token);
+                        // Navigate to HomePageActivity
+                        view.showHomePage(rememberMe, token, userId, model.getEmail(), model.getPassword());
                     } else {
                         String errorMsg = loginResponse.getReason() != null ? loginResponse.getReason() : loginResponse.getMessage();
                         view.showError(errorMsg != null ? errorMsg : "Login failed");
                     }
                 } else {
-                    try {
-                        String errorBody = response.errorBody() != null ? response.errorBody().string() : "No error body";
-                        Log.e("LoginErrorBody", errorBody);
-                        view.showError("Server error (" + response.code() + "): " + errorBody);
-                    } catch (Exception e) {
-                        view.showError("Login failed: Invalid response");
-                        Log.e("LoginErrorParse", "Failed to parse error body", e);
-                    }
+                    handleErrorResponse(response);
                 }
             }
 
             @Override
             public void onFailure(Call<LoginResponse> call, Throwable t) {
-                if (t instanceof java.io.IOException) {
-                    view.showError("Network error: Please check your connection");
-                } else {
-                    view.showError("Unexpected error: " + t.getMessage());
-                }
-                Log.e("LoginFailure", "Login request failed", t);
+                handleFailure(t);
             }
         });
+    }
+
+    private void saveLoginPreferences(String token, int userId, LoginModel model) {
+        SharedPreferences prefs = view.getSharedPreferences("KurakaniPrefs", android.content.Context.MODE_PRIVATE);
+        SharedPreferences.Editor editor = prefs.edit();
+
+        editor.putString("auth_token", token);
+        editor.putInt("user_id", userId);
+
+        if (rememberMe) {
+            editor.putBoolean("remember_me", true);
+            editor.putString("saved_email", model.getEmail());
+            editor.putString("saved_password", model.getPassword());
+        } else {
+            editor.putBoolean("remember_me", false);
+            editor.remove("saved_email");
+            editor.remove("saved_password");
+        }
+        editor.apply();
+    }
+
+    private void handleErrorResponse(Response<LoginResponse> response) {
+        try {
+            String errorBody = response.errorBody() != null ? response.errorBody().string() : "No error body";
+            Log.e("LoginErrorBody", errorBody);
+            view.showError("Server error (" + response.code() + "): " + errorBody);
+        } catch (Exception e) {
+            view.showError("Login failed: Invalid response");
+            Log.e("LoginErrorParse", "Failed to parse error body", e);
+        }
+    }
+
+    private void handleFailure(Throwable t) {
+        if (t instanceof java.io.IOException) {
+            view.showError("Network error: Please check your connection");
+        } else {
+            view.showError("Unexpected error: " + t.getMessage());
+        }
+        Log.e("LoginFailure", "Login request failed", t);
     }
 }

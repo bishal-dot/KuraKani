@@ -22,9 +22,6 @@ import com.example.kurakani.network.ApiService;
 import com.example.kurakani.network.RetrofitClient;
 import com.example.kurakani.views.AuthActivity;
 import com.example.kurakani.views.ChangePasswordActivity;
-import com.example.kurakani.views.EditProfileActivity;
-import com.example.kurakani.views.SearchActivity;
-import com.google.android.material.button.MaterialButton;
 
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -35,7 +32,7 @@ public class ProfileSetting extends Fragment {
     private TextView tvUserName, tvUserEmail, tvProfileView, tvPrivacyPolicy, tvHelpCenter, tvChangePassword;
     private ImageView profilePicture;
     private CardView paymentMethod;
-    private MaterialButton btnLogout;
+    private TextView btnLogout;
 
     private static final int EDIT_PROFILE_REQUEST = 1001;
 
@@ -60,44 +57,53 @@ public class ProfileSetting extends Fragment {
         fetchProfile();
 
         tvProfileView.setOnClickListener(v -> {
-            requireActivity()
-                    .getSupportFragmentManager()
-                    .beginTransaction()
-                    .replace(R.id.fragmentContainer, new ProfileScreen())
-                    .addToBackStack(null)
-                    .commit();
+            if (isAdded()) {
+                requireActivity()
+                        .getSupportFragmentManager()
+                        .beginTransaction()
+                        .replace(R.id.fragmentContainer, new ProfileScreen())
+                        .addToBackStack(null)
+                        .commit();
+            }
         });
 
         tvChangePassword.setOnClickListener(v -> {
-            Intent intent = new Intent(getActivity(), ChangePasswordActivity.class);
-            startActivity(intent);
+            if (isAdded()) {
+                startActivity(new Intent(getActivity(), ChangePasswordActivity.class));
+            }
         });
 
         tvPrivacyPolicy.setOnClickListener(v -> {
-            requireActivity()
-                    .getSupportFragmentManager()
-                    .beginTransaction()
-                    .replace(R.id.fragmentContainer, new PrivacyPolicyFragment())
-                    .addToBackStack(null)
-                    .commit();
+            if (isAdded()) {
+                requireActivity()
+                        .getSupportFragmentManager()
+                        .beginTransaction()
+                        .replace(R.id.fragmentContainer, new PrivacyPolicyFragment())
+                        .addToBackStack(null)
+                        .commit();
+            }
         });
 
         paymentMethod.setOnClickListener(v -> {
-            requireActivity()
-                    .getSupportFragmentManager()
-                    .beginTransaction()
-                    .replace(R.id.fragmentContainer, new PaymentMethodFragment())
-                    .addToBackStack(null)
-                    .commit();
+            if (isAdded()) {
+                requireActivity()
+                        .getSupportFragmentManager()
+                        .beginTransaction()
+                        .replace(R.id.fragmentContainer, new PaymentMethodFragment())
+                        .addToBackStack(null)
+                        .commit();
+            }
         });
 
         tvHelpCenter.setOnClickListener(v -> {
-            requireActivity()
-                    .getSupportFragmentManager()
-                    .beginTransaction()
-                    .replace(R.id.fragmentContainer, new HelpCenter())
-                    .addToBackStack(null)
-                    .commit();
+            if (isAdded()) {
+                requireActivity()
+                        .getSupportFragmentManager()
+                        .beginTransaction()
+                        .replace(R.id.fragmentContainer, new HelpCenter())
+                        .addToBackStack(null)
+                        .commit();
+            }
         });
 
         btnLogout.setOnClickListener(v -> logoutUser());
@@ -106,19 +112,25 @@ public class ProfileSetting extends Fragment {
     }
 
     private void fetchProfile() {
-        SharedPreferences prefs = requireActivity().getSharedPreferences("KurakaniPrefs", Context.MODE_PRIVATE);
+        if (!isAdded()) return; // Safety check
+
+        SharedPreferences prefs = getActivity().getSharedPreferences("KurakaniPrefs", Context.MODE_PRIVATE);
         String token = prefs.getString("auth_token", "");
 
         if (token.isEmpty()) {
-            Toast.makeText(requireContext(), "Token not found, please login again", Toast.LENGTH_SHORT).show();
+            if (isAdded() && getContext() != null) {
+                Toast.makeText(getContext(), "Token not found, please login again", Toast.LENGTH_SHORT).show();
+            }
             return;
         }
 
-        ApiService apiService = RetrofitClient.getClient(requireContext()).create(ApiService.class);
+        ApiService apiService = RetrofitClient.getClient(getContext()).create(ApiService.class);
 
         apiService.getProfile().enqueue(new Callback<ProfileResponse>() {
             @Override
             public void onResponse(Call<ProfileResponse> call, Response<ProfileResponse> response) {
+                if (!isAdded()) return; // Fragment detached, do nothing
+
                 if (response.isSuccessful() && response.body() != null && !response.body().error) {
                     ProfileResponse.User user = response.body().user;
 
@@ -128,12 +140,14 @@ public class ProfileSetting extends Fragment {
 
                         String imageUrl = user.profile != null ? user.profile.trim() : null;
 
-                        Glide.with(requireContext())
-                                .load(imageUrl != null ? imageUrl + "?t=" + System.currentTimeMillis() : R.drawable.john)
-                                .placeholder(R.drawable.default_avatar)
-                                .error(R.drawable.default_avatar)
-                                .circleCrop()
-                                .into(profilePicture);
+                        if (getContext() != null) {
+                            Glide.with(getContext())
+                                    .load(imageUrl != null ? imageUrl + "?t=" + System.currentTimeMillis() : R.drawable.john)
+                                    .placeholder(R.drawable.default_avatar)
+                                    .error(R.drawable.default_avatar)
+                                    .circleCrop()
+                                    .into(profilePicture);
+                        }
                     }
                 } else {
                     Log.e("ProfileSetting", "Response error: " + response.code());
@@ -142,13 +156,16 @@ public class ProfileSetting extends Fragment {
 
             @Override
             public void onFailure(Call<ProfileResponse> call, Throwable t) {
+                if (!isAdded()) return;
                 Log.e("ProfileSetting", "onFailure: ", t);
             }
         });
     }
 
     private void logoutUser() {
-        SharedPreferences prefs = requireActivity().getSharedPreferences("KurakaniPrefs", Context.MODE_PRIVATE);
+        if (!isAdded()) return;
+
+        SharedPreferences prefs = getActivity().getSharedPreferences("KurakaniPrefs", Context.MODE_PRIVATE);
         SharedPreferences.Editor editor = prefs.edit();
 
         boolean rememberMe = prefs.getBoolean("remember_me", false);
@@ -167,7 +184,7 @@ public class ProfileSetting extends Fragment {
 
         RetrofitClient.resetClient();
 
-        Intent intent = new Intent(requireActivity(), AuthActivity.class);
+        Intent intent = new Intent(getActivity(), AuthActivity.class);
         intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
         startActivity(intent);
     }

@@ -13,13 +13,14 @@
     import com.example.kurakani.model.UploadPhotosResponse;
     import com.example.kurakani.model.SearchResponse;
     import com.example.kurakani.model.VerificationResponse;
+    import com.example.kurakani.viewmodel.MatchesModel;
     import com.google.gson.JsonObject;
-
+    import java.util.HashMap;
     import java.util.List;
     import java.util.Map;
-
     import okhttp3.MultipartBody;
     import okhttp3.RequestBody;
+    import okhttp3.ResponseBody;
     import retrofit2.Call;
     import retrofit2.http.Body;
     import retrofit2.http.DELETE;
@@ -123,4 +124,33 @@
         //change password
         @POST("user/changepassword")
         Call<ApiResponse> changePassword(@Body ChangePasswordRequest request);
+
+        // Match Notifications
+        @POST("send-match")
+        @FormUrlEncoded
+        Call<Void> sendNotification(
+                @Field("user_id") int userId,
+                @Field("title") String title,
+                @Field("body") String body
+        );
+
+        // update FCM Token
+        @POST("update-fcm-token")
+        Call<Void> updateFcmToken(@Body HashMap<String, String> body);
+
+        // Saving matched users in DB
+        @FormUrlEncoded
+        @POST("match")
+        Call<Void> sendMatch(
+                @Header("Authorization") String authToken,
+                @Field("user_id") int userId,
+                @Field("matched_user_id") int matchedUserId
+        );
+
+        // Fetch matches filtered by status
+        @GET("matches")
+        Call<List<MatchesModel>> getMatches(
+                @Query("user_id") int userId,
+                @Query("status") String status // pass null for "All"
+        );
     }

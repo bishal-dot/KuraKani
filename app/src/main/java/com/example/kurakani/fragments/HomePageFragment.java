@@ -1,6 +1,8 @@
 package com.example.kurakani.fragments;
 
+import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.graphics.Canvas;
 import android.os.Bundle;
 import android.view.LayoutInflater;
@@ -20,6 +22,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.kurakani.Adapter.ProfileAdapter;
 import com.example.kurakani.R;
+import com.example.kurakani.model.LoginResponse;
 import com.example.kurakani.model.ProfileResponse;
 import com.example.kurakani.network.ApiService;
 import com.example.kurakani.network.RetrofitClient;
@@ -68,7 +71,6 @@ public class HomePageFragment extends Fragment {
         tvSearch = view.findViewById(R.id.tvSearch);
 
         tvSearch.setOnClickListener(v -> {
-            // Open SearchActivity
             Intent intent = new Intent(getActivity(), SearchActivity.class);
             startActivity(intent);
         });
@@ -96,7 +98,7 @@ public class HomePageFragment extends Fragment {
         recyclerView.setLayoutManager(new LinearLayoutManager(getContext()) {
             @Override
             public boolean canScrollVertically() {
-                return false; // prevent scroll
+                return false;
             }
         });
         recyclerView.setAdapter(adapter);
@@ -125,7 +127,7 @@ public class HomePageFragment extends Fragment {
             public void onSwiped(@NonNull RecyclerView.ViewHolder viewHolder, int direction) {
                 if (viewHolder.getAdapterPosition() != 0) {
                     adapter.notifyItemChanged(viewHolder.getAdapterPosition());
-                    return; // only top card swipeable
+                    return;
                 }
 
                 ProfileModel profile = profileList.get(0);
@@ -153,13 +155,15 @@ public class HomePageFragment extends Fragment {
         new ItemTouchHelper(simpleCallback).attachToRecyclerView(recyclerView);
     }
 
-
     private void setupButtons() {
         btnMatch.setOnClickListener(v -> {
             if (!profileList.isEmpty()) {
                 ProfileModel profile = profileList.get(0);
                 adapter.swipeListener.onMatch(profile);
                 removeTopProfile();
+
+                // ✅ Save match in backend
+                saveMatch(profile.getId(), profile.getFullname());
             }
         });
 
@@ -250,7 +254,7 @@ public class HomePageFragment extends Fragment {
         });
     }
 
-    private ProfileModel convertApiUserToProfile(ProfileResponse.User apiUser) {
+    public ProfileModel convertApiUserToProfile(ProfileResponse.User apiUser) {
         int age = apiUser.age != null ? apiUser.age : 0;
         String fullname = apiUser.fullname != null ? apiUser.fullname : "";
         String username = apiUser.username != null ? apiUser.username : "";
@@ -317,4 +321,44 @@ public class HomePageFragment extends Fragment {
         premiumOverlay.setVisibility(View.GONE);
         recyclerView.setVisibility(View.VISIBLE);
     }
+
+    //  Save match in Laravel + send notification
+    private void saveMatch(int matchedUserId, String fullname) {
+        ApiService api = RetrofitClient.getInstance(getContext()).create(ApiService.class);
+
+        SharedPreferences prefs = getContext().getSharedPreferences("KurakaniPrefs", Context.MODE_PRIVATE);
+        String token = prefs.getString("auth_token", null);
+        int currentUserId = prefs.getInt("user_id", -1);
+
+        if (token == null || currentUserId == -1) {
+            Toast.makeText(getContext(), "User not logged in", Toast.LENGTH_SHORT).show();
+            return;
+        }
+
+        api.sendMatch("Bearer " + token, currentUserId, matchedUserId)
+                .enqueue(new Callback<Void>() {
+                    @Override
+                    public void onResponse(Call<Void> call, Response<Void> response) {
+                        if (response.isSuccessful()) {
+                            Toast.makeText(getContext(),
+                                    "You matched with " + fullname + " 🎉",
+                                    Toast.LENGTH_LONG).show();
+                        } else {
+                            Toast.makeText(getContext(),
+                                    "Failed to save match: " + response.code(),
+                                    Toast.LENGTH_SHORT).show();
+                        }
+                    }
+
+                    @Override
+                    public void onFailure(Call<Void> call, Throwable t) {
+                        Toast.makeText(getContext(),
+                                "Error: " + t.getMessage(),
+                                Toast.LENGTH_SHORT).show();
+                    }
+                });
+    }
+
+
+
 }

@@ -27,6 +27,7 @@ import com.example.kurakani.model.ProfileResponse;
 import com.example.kurakani.network.ApiService;
 import com.example.kurakani.network.RetrofitClient;
 import com.example.kurakani.views.HomePageActivity;
+import com.example.kurakani.views.LoginActivity;
 import com.google.android.material.textfield.TextInputEditText;
 import com.google.gson.Gson;
 
@@ -186,7 +187,7 @@ public class ProfileSetupFragment extends Fragment {
                             ProfileResponse body = response.body();
                             if (!body.error) {
                                 saveToPrefs(body.user);
-                                Intent intent = new Intent(getActivity(), HomePageActivity.class);
+                                Intent intent = new Intent(getActivity(), LoginActivity.class);
                                 intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
                                 startActivity(intent);
                             } else {

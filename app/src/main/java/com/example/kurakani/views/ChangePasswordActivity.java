@@ -49,7 +49,7 @@ public class ChangePasswordActivity extends AppCompatActivity {
         updateButton = findViewById(R.id.update_button);
         backButton = findViewById(R.id.back_button);
 
-        api = RetrofitClient.getInstance(this).getApi();
+//        api = RetrofitClient.getInstance(this).getApi();
 
         // Password strength listener
         newPasswordInput.addTextChangedListener(new TextWatcher() {

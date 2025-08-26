@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.cardview.widget.CardView
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:card_view="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_margin="8dp"
+    card_view:cardCornerRadius="12dp"
+    card_view:cardElevation="4dp"
+    android:foreground="?attr/selectableItemBackground">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:background="@color/white"
+        android:padding="12dp"
+        android:gravity="center_vertical">
+
+        <!-- Match Profile Image -->
+        <ImageView
+            android:id="@+id/ivMatchProfile"
+            android:layout_width="48dp"
+            android:layout_height="48dp"
+            android:src="@drawable/john"
+            android:scaleType="centerCrop"
+            android:layout_marginEnd="12dp"
+            android:contentDescription="Profile Picture"
+            android:background="@drawable/circle_shape"
+            android:clipToOutline="true" />
+
+        <!-- Texts Layout -->
+        <LinearLayout
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:layout_weight="1">
+
+            <!-- Match Name -->
+            <TextView
+                android:id="@+id/tvMatchTitle"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Match Name"
+                android:textSize="18sp"
+                android:textStyle="bold"
+                android:textColor="@color/primary_color" />
+
+            <!-- Match Status -->
+            <TextView
+                android:id="@+id/tvMatchStatus"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Matched / Pending"
+                android:textSize="14sp"
+                android:textColor="@color/primary_color"
+                android:layout_marginTop="4dp" />
+        </LinearLayout>
+
+    </LinearLayout>
+
+</androidx.cardview.widget.CardView>
