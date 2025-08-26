@@ -13,44 +13,48 @@
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:fitsSystemWindows="true">
+        android:fitsSystemWindows="true"
+        android:paddingVertical="16dp">
 
         <androidx.constraintlayout.widget.Guideline
             android:id="@+id/guideline5"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:orientation="vertical"
-            app:layout_constraintGuide_begin="20dp" />
+            app:layout_constraintGuide_begin="24dp" />
+
         <androidx.constraintlayout.widget.Guideline
             android:id="@+id/guideline"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:orientation="horizontal"
-            app:layout_constraintGuide_begin="20dp" />
+            app:layout_constraintGuide_begin="24dp" />
+
         <androidx.constraintlayout.widget.Guideline
             android:id="@+id/guideline3"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:orientation="horizontal"
-            app:layout_constraintGuide_end="20dp" />
+            app:layout_constraintGuide_end="24dp" />
+
         <androidx.constraintlayout.widget.Guideline
             android:id="@+id/guideline6"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:orientation="vertical"
-            app:layout_constraintGuide_end="20dp" />
-
+            app:layout_constraintGuide_end="24dp" />
 
         <TextView
             android:id="@+id/goback"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:clickable="true"
+            android:drawablePadding="8dp"
             android:drawableLeft="@drawable/arrow_back"
             android:focusable="true"
             android:text="Back"
-            android:textAlignment="center"
-            android:textSize="18sp"
+            android:textColor="@android:color/black"
+            android:textSize="16sp"
             android:textStyle="bold"
             app:layout_constraintStart_toStartOf="@+id/guideline5"
             app:layout_constraintTop_toTopOf="@+id/guideline" />
@@ -59,10 +63,10 @@
             android:id="@+id/cardTop"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:backgroundTint="@color/background"
-            app:cardCornerRadius="7dp"
-            app:cardElevation="5dp"
-            android:layout_marginTop="10dp"
+            android:layout_marginTop="16dp"
+            app:cardCornerRadius="12dp"
+            app:cardElevation="4dp"
+            android:backgroundTint="@color/white"
             app:layout_constraintEnd_toStartOf="@+id/guideline6"
             app:layout_constraintStart_toStartOf="@+id/guideline5"
             app:layout_constraintTop_toBottomOf="@+id/goback">
@@ -71,16 +75,26 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:orientation="vertical"
-                android:padding="5dp">
+                android:padding="16dp">
 
                 <ImageView
                     android:id="@+id/imageView"
-                    android:layout_width="100dp"
-                    android:layout_height="100dp"
+                    android:layout_width="120dp"
+                    android:layout_height="120dp"
                     android:layout_gravity="center"
                     android:background="@drawable/kurakani_logo"
                     android:clipToOutline="true"
                     android:src="@drawable/kurakanilogo" />
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="8dp"
+                    android:gravity="center"
+                    android:text="Create Your Account"
+                    android:textColor="@android:color/black"
+                    android:textSize="20sp"
+                    android:textStyle="bold" />
             </LinearLayout>
         </androidx.cardview.widget.CardView>
 
@@ -88,10 +102,10 @@
             android:id="@+id/cardMiddle"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_marginTop="20dp"
-            android:padding="20dp"
-            app:cardCornerRadius="10dp"
-            android:backgroundTint="#D6EAF8"
+            android:layout_marginTop="24dp"
+            app:cardCornerRadius="12dp"
+            app:cardElevation="2dp"
+            android:backgroundTint="@color/white"
             app:layout_constraintEnd_toStartOf="@+id/guideline6"
             app:layout_constraintStart_toStartOf="@+id/guideline5"
             app:layout_constraintTop_toBottomOf="@+id/cardTop">
@@ -99,73 +113,127 @@
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:padding="10dp"
-                android:orientation="vertical">
+                android:orientation="vertical"
+                android:padding="20dp">
+
                 <TextView
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:text="Sign Up"
-                    android:textColor="#E94560"
-                    android:textSize="20sp"
+                    android:textColor="#6200EE"
+                    android:textSize="22sp"
                     android:textStyle="bold"/>
+
                 <TextView
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="5dp"
+                    android:layout_marginTop="4dp"
+                    android:layout_marginBottom="16dp"
                     android:text="Please fill in all the details below."
-                    android:textSize="15sp" />
+                    android:textColor="@android:color/black"
+                    android:textSize="14sp" />
+
                 <com.google.android.material.textfield.TextInputLayout
+                    android:id="@+id/tilName"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
+                    android:layout_marginTop="8dp"
+                    app:boxBackgroundMode="outline"
+                    app:boxCornerRadiusTopStart="8dp"
+                    app:boxCornerRadiusTopEnd="8dp"
+                    app:boxCornerRadiusBottomStart="8dp"
+                    app:boxCornerRadiusBottomEnd="8dp"
+                    app:boxStrokeColor="#6200EE"
+                    app:boxStrokeWidth="1dp"
                     android:hint="Username"
-                    android:layout_marginTop="10dp"
-                    android:id="@+id/tilName"
-                    >
+                    app:boxStrokeWidthFocused="2dp"
+                    app:hintTextColor="#6200EE">
+
                     <com.google.android.material.textfield.TextInputEditText
                         android:id="@+id/etName"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
+                        android:textColor="@android:color/black"
+                        android:textColorHint="#999999"
                         android:inputType="textPersonName" />
                 </com.google.android.material.textfield.TextInputLayout>
+
                 <com.google.android.material.textfield.TextInputLayout
                     android:id="@+id/tilEmail"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="10dp"
-                    app:helperText="Make sure your email is not used."
+                    android:layout_marginTop="16dp"
+                    app:boxBackgroundMode="outline"
+                    app:boxCornerRadiusTopStart="8dp"
+                    app:boxCornerRadiusTopEnd="8dp"
+                    app:boxCornerRadiusBottomStart="8dp"
+                    app:boxCornerRadiusBottomEnd="8dp"
+                    app:boxStrokeColor="#6200EE"
+                    app:boxStrokeWidth="1dp"
+                    app:boxStrokeWidthFocused="2dp"
+                    app:helperTextTextColor="#666666"
+                    app:hintTextColor="#6200EE"
                     android:hint="Email Address">
+
                     <com.google.android.material.textfield.TextInputEditText
                         android:id="@+id/etEmail"
                         android:layout_width="match_parent"
-                        android:layout_height="wrap_content"/>
+                        android:layout_height="wrap_content"
+                        android:textColor="@android:color/black"
+                        android:textColorHint="#999999"/>
                 </com.google.android.material.textfield.TextInputLayout>
-<!--                password-->
+
                 <com.google.android.material.textfield.TextInputLayout
+                    android:id="@+id/tilPassword"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:id="@+id/tilPassword"
-                    android:layout_marginTop="10dp"
-                    app:helperText="Password must be at least 6 characters long."
+                    android:layout_marginTop="16dp"
+                    app:boxBackgroundMode="outline"
+                    app:boxCornerRadiusTopStart="8dp"
+                    app:boxCornerRadiusTopEnd="8dp"
+                    app:boxCornerRadiusBottomStart="8dp"
+                    app:boxCornerRadiusBottomEnd="8dp"
+                    app:boxStrokeColor="#6200EE"
+                    app:boxStrokeWidth="1dp"
+                    app:boxStrokeWidthFocused="2dp"
                     app:endIconMode="password_toggle"
+                    app:helperTextTextColor="#666666"
+                    app:hintTextColor="#6200EE"
                     android:hint="Password">
+
                     <com.google.android.material.textfield.TextInputEditText
                         android:id="@+id/etPassword"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
+                        android:textColor="@android:color/black"
+                        android:textColorHint="#999999"
                         android:inputType="textPassword"/>
                 </com.google.android.material.textfield.TextInputLayout>
+
                 <com.google.android.material.textfield.TextInputLayout
+                    android:id="@+id/tilConfirmPassword"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:id="@+id/tilConfirmPassword"
-                    app:helperText="Both password must be same"
-                    android:layout_marginTop="10dp"
+                    android:layout_marginTop="16dp"
+                    app:boxBackgroundMode="outline"
+                    app:boxCornerRadiusTopStart="8dp"
+                    app:boxCornerRadiusTopEnd="8dp"
+                    app:boxCornerRadiusBottomStart="8dp"
+                    app:boxCornerRadiusBottomEnd="8dp"
+                    app:boxStrokeColor="#6200EE"
+                    app:boxStrokeWidth="1dp"
+                    app:boxStrokeWidthFocused="2dp"
                     app:endIconMode="password_toggle"
-                    android:hint="Confirm password">
+                    app:helperTextTextColor="#666666"
+                    app:hintTextColor="#6200EE"
+                    android:hint="Confirm Password">
+
                     <com.google.android.material.textfield.TextInputEditText
                         android:id="@+id/etConfirmPassword"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
+                        android:textColor="@android:color/black"
+                        android:textColorHint="#999999"
                         android:inputType="textPassword"/>
                 </com.google.android.material.textfield.TextInputLayout>
             </LinearLayout>
@@ -176,33 +244,67 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginTop="20dp"
-            app:cardCornerRadius="7dp"
-            android:backgroundTint="#D6EAF8"
-            app:layout_constraintTop_toBottomOf="@id/cardMiddle"
+            app:cardCornerRadius="12dp"
+            app:cardElevation="2dp"
+            android:backgroundTint="@color/white"
             app:layout_constraintEnd_toStartOf="@+id/guideline6"
-            app:layout_constraintStart_toStartOf="@+id/guideline5">
-            <CheckBox
-                android:id="@+id/chkTerms"
+            app:layout_constraintStart_toStartOf="@+id/guideline5"
+            app:layout_constraintTop_toBottomOf="@id/cardMiddle">
+
+            <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="I have read and agree all the Terms and Conditions."
-                android:textSize="16sp"/>
+                android:orientation="horizontal"
+                android:padding="16dp">
+
+                <CheckBox
+                    android:id="@+id/chkTerms"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:buttonTint="#6200EE"/>
+
+                <TextView
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="8dp"
+                    android:layout_weight="1"
+                    android:text="I have read and agree all the Terms and Conditions."
+                    android:textColor="@android:color/black"
+                    android:textSize="14sp"/>
+            </LinearLayout>
         </androidx.cardview.widget.CardView>
 
         <com.google.android.material.button.MaterialButton
             android:id="@+id/btnSignup"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_marginTop="20dp"
-            android:text="Create Account"
-            android:backgroundTint="#4B0082"
-            android:textSize="18sp"
-            app:cornerRadius="10dp"
-            android:padding="16dp"
+            android:layout_marginTop="24dp"
             android:layout_marginBottom="30dp"
-            app:layout_constraintTop_toBottomOf="@id/cardBottom"
+            android:text="Create Account"
+            android:textAllCaps="false"
+            android:textSize="16sp"
+            android:textStyle="bold"
+            app:cornerRadius="12dp"
+            app:iconPadding="8dp"
+            android:backgroundTint="@color/primary_color"
             app:layout_constraintEnd_toStartOf="@+id/guideline6"
-            app:layout_constraintStart_toStartOf="@+id/guideline5"/>
+            app:layout_constraintStart_toStartOf="@+id/guideline5"
+            app:layout_constraintTop_toBottomOf="@id/cardBottom"
+            style="@style/Widget.MaterialComponents.Button" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="16dp"
+            android:layout_marginBottom="24dp"
+            android:text="Already have an account? Sign In"
+            android:textColor="#6200EE"
+            android:textSize="14sp"
+            android:textStyle="bold"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/btnSignup" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 </androidx.core.widget.NestedScrollView>

@@ -2,67 +2,136 @@
 <androidx.constraintlayout.widget.ConstraintLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:clipChildren="false"
-    android:background="@color/light_blue_bg"
-    >
+    android:background="@color/background">
 
-    <!-- Rounded SearchView -->
-
-    <LinearLayout
-        android:id="@+id/layout"
-        android:layout_width="match_parent"
+    <!-- Welcome -->
+    <TextView
+        android:id="@+id/tvWelcome"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="20dp"
+        android:text="Welcome, User"
+        android:textSize="22sp"
+        android:textColor="@color/primary_color"
+        android:textStyle="bold"
+        android:layout_marginTop="24dp"
+        android:layout_marginStart="16dp"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintStart_toStartOf="parent"/>
+
+    <!-- Search -->
+    <LinearLayout
+        xmlns:app="http://schemas.android.com/apk/res-auto"
+        android:id="@+id/layoutSearch"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginHorizontal="16dp"
+        android:layout_marginTop="12dp"
         android:padding="8dp"
         android:orientation="horizontal"
         android:background="@drawable/rounded_background"
-        app:layout_constraintTop_toTopOf="parent">
+        app:layout_constraintTop_toBottomOf="@id/tvWelcome"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent">
 
-        <EditText
-            android:id="@+id/search_view"
+        <TextView
+            android:id="@+id/tvSearch"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:hint="Search by name or hobby"
-            android:background="@null"
-            android:inputType="text"
-            android:imeOptions="actionSearch"
             android:textColor="@android:color/black"
+            android:textColorHint="#60EB5B78"
             android:textSize="16sp"
             android:drawableStart="@drawable/search"
+            android:drawableTint="@color/primary_color"
             android:drawablePadding="8dp"
-            android:padding="8dp" />
+            android:padding="8dp"/>
     </LinearLayout>
 
-
-
-    <!-- Horizontal RecyclerView for Stories -->
-    <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/recyclerViewStory"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:overScrollMode="never"
-        android:clipToPadding="false"
-        android:paddingTop="12dp"
-        android:paddingBottom="12dp"
-       android:layout_marginTop="10dp"
-        app:layout_constraintTop_toBottomOf="@id/layout"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent" />
-
-    <!-- 2-Column Grid RecyclerView for Profiles -->
+    <!-- RecyclerView for profiles -->
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/recyclerViewProfiles"
         android:layout_width="0dp"
-        android:layout_height="480dp"
+        android:layout_height="0dp"
         android:clipToPadding="false"
-        android:overScrollMode="never"
-        android:padding="12dp"
-        app:layout_constraintTop_toBottomOf="@id/recyclerViewStory"
-        app:layout_constraintBottom_toBottomOf="parent"
+        android:clipChildren="false"
+        android:paddingBottom="100dp"
+        android:layout_marginTop="30dp"
+        app:layout_constraintTop_toBottomOf="@id/layoutSearch"
+        app:layout_constraintBottom_toTopOf="@+id/buttonLayout"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"/>
+
+    <!-- Premium overlay / No profiles -->
+    <FrameLayout
+        android:id="@+id/premiumOverlay"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:background="@android:color/white"
+        android:visibility="gone"
+        app:layout_constraintTop_toBottomOf="@id/layoutSearch"
+        app:layout_constraintBottom_toTopOf="@+id/buttonLayout"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        android:gravity="center">
+
+        <LinearLayout
+            android:orientation="vertical"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:gravity="center">
+
+            <TextView
+                android:id="@+id/tvNoProfiles"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="You’ve reached your daily swipe limit!"
+                android:textSize="20sp"
+                android:textColor="@android:color/black"
+                android:textStyle="bold"
+                android:gravity="center"/>
+
+            <Button
+                android:id="@+id/btnRefreshProfiles"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Load More / Upgrade"
+                android:layout_marginTop="16dp"/>
+        </LinearLayout>
+    </FrameLayout>
+
+    <!-- Fixed Match / Reject Buttons -->
+    <LinearLayout
+        android:id="@+id/buttonLayout"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:gravity="center"
+        android:layout_marginBottom="32dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent">
+
+        <ImageView
+            android:id="@+id/btnReject"
+            android:layout_width="64dp"
+            android:layout_height="64dp"
+            android:src="@drawable/ic_reject"
+            android:background="@drawable/circle_drawable_reject"
+            android:padding="12dp"/>
+
+        <View
+            android:layout_width="32dp"
+            android:layout_height="0dp"/>
+
+        <ImageView
+            android:id="@+id/btnMatch"
+            android:layout_width="64dp"
+            android:layout_height="64dp"
+            android:src="@drawable/ic_heart"
+            android:background="@drawable/circle_background_match"
+            android:padding="12dp"/>
+    </LinearLayout>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

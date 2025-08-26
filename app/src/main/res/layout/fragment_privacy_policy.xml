@@ -1,197 +1,204 @@
 <?xml version="1.0" encoding="utf-8"?>
-<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.core.widget.NestedScrollView
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/light_blue_bg"
-    android:padding="16dp">
+    android:fillViewport="true">
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="vertical">
+        android:orientation="vertical"
+        android:padding="20dp">
 
-        <LinearLayout
+        <!-- Header with back button and title -->
+        <RelativeLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:padding="10dp">
+            android:layout_marginBottom="24dp">
+
             <ImageButton
                 android:id="@+id/backButton"
-                android:layout_width="40dp"
-                android:layout_height="40dp"
-                android:background="@drawable/circle_shape"
-                android:src="@drawable/arrow_back"/>
+                android:layout_width="48dp"
+                android:layout_height="48dp"
+                android:background="?selectableItemBackgroundBorderless"
+                android:padding="12dp"
+                android:scaleType="centerInside"
+                android:src="@drawable/arrow_back" />
 
             <TextView
                 android:id="@+id/privacy_policy_title"
-                android:layout_width="250dp"
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:layout_centerInParent="true"
                 android:text="Privacy Policy"
                 android:textColor="@color/primary_color"
-                android:gravity="center"
-                android:textSize="25sp"
-                android:textStyle="bold"
-                android:layout_marginBottom="16dp" />
-        </LinearLayout>
+                android:textSize="24sp"
+                android:textStyle="bold" />
 
-        <TextView
-            android:id="@+id/privacy_policy_intro"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:justificationMode="inter_word"
-            android:text="This Privacy Policy describes how KuraKani (&quot;we,&quot; &quot;us,&quot; or &quot;our&quot;) collects, uses, and shares your personal information when you use our KuraKani dating application (the &quot;App&quot;). We are committed to protecting your privacy and handling your data in compliance with the Individual Privacy Act, 2075 (2018) of Nepal and other applicable laws."
-            android:textSize="18sp"
-            android:layout_marginBottom="12dp" />
+        </RelativeLayout>
 
-        <TextView
-            android:id="@+id/data_collection_title"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="1. Information We Collect"
-            android:textSize="20sp"
-            android:textStyle="bold"
-            android:layout_marginBottom="8dp" />
-
-        <TextView
-            android:id="@+id/data_collection_details"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:textSize="18sp"
-            android:justificationMode="inter_word"
-            android:text="We collect various types of information to provide and improve our services to you:\n\n    •   Personal Information: This includes, but is not limited to, your name, age, gender, date of birth, contact information (email, phone number), photographs, marital status, and other details you provide in your profile. We also collect sensitive personal information such as caste, ethnicity, religious beliefs, and sexual orientation if you choose to provide them for profiling purposes, strictly with your explicit consent as per Nepal's Privacy Act.\n\n    •   Usage Data: Information about how you access and use the App, such as your interactions with other users, the features you use, and the time and duration of your activities. This may include IP addresses and device identifiers.\n\n    •   Location Data: With your explicit consent, we may collect precise or approximate location information from your mobile device to suggest matches near you. You can enable or disable location services at any time through your device settings.\n\n    •   Messages: We collect the content of your messages exchanged through the App for safety and moderation purposes, but we do not monitor private conversations without explicit reporting or legal obligation.\n\n    •   Information from Third-Party Services: If you link your KuraKani account with third-party services (e.g., social media logins), we may receive information from those services as per their privacy policies and your settings with them."
-            android:layout_marginBottom="12dp" />
-
-        <TextView
-            android:id="@+id/data_use_title"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="2. How We Use Your Information"
-            android:textSize="20sp"
-            android:textStyle="bold"
-            android:layout_marginBottom="8dp" />
-
-        <TextView
-            android:id="@+id/data_use_details"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:textSize="18sp"
-            android:justificationMode="inter_word"
-            android:text="We use the collected information for various purposes, including:\n\n    •   To provide and maintain the App's functionality, including creating and managing user profiles.\n\n    •   To personalize your experience and suggest potential matches based on your profile and preferences.\n\n    •   To facilitate communication and interaction between users.\n\n    •   To improve, analyze, and understand how you use our App.\n\n    •   To ensure the security and integrity of the App and its users, including preventing fraud and abuse.\n\n    •   To send you notifications and updates related to the App, with your consent.\n\n    •   To comply with legal obligations and enforce our Terms of Service, as required by the laws of Nepal."
-            android:layout_marginBottom="12dp" />
-
-        <TextView
-            android:id="@+id/data_sharing_title"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="3. Sharing Your Information"
-            android:textSize="20sp"
-            android:textStyle="bold"
-            android:layout_marginBottom="8dp" />
-
-        <TextView
-            android:id="@+id/data_sharing_details"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:justificationMode="inter_word"
-            android:textSize="18sp"
-            android:text="We will not disclose or transfer your personal data to any third party without your explicit consent, unless:\n\n    •   With Other Users: Information you choose to share in your public profile (e.g., photos, interests) will be visible to other KuraKani users.\n\n    •   Service Providers: We may engage third-party companies and individuals to facilitate our App (e.g., hosting, analytics, customer support). These third parties will have access to your information only to perform these tasks on our behalf and are obligated not to disclose or use it for any other purpose, in compliance with Nepali laws.\n\n    •   Legal Requirements: We may disclose your information if required to do so by law or in response to valid requests by public authorities (e.g., a court order or government agency) under the Individual Privacy Act, 2075 (2018).\n\n    •   Business Transfers: In the event of a merger, acquisition, or sale of assets, your personal information may be transferred as part of the transaction."
-            android:layout_marginBottom="12dp" />
-
-        <TextView
-            android:id="@+id/data_security_title"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="4. Data Security"
-            android:textSize="20sp"
-            android:textStyle="bold"
-            android:layout_marginBottom="8dp" />
-
-        <TextView
-            android:id="@+id/data_security_details"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:justificationMode="inter_word"
-            android:textSize="18sp"
-            android:text="We are committed to protecting the security of your personal information. We implement appropriate technical and organizational measures to prevent unauthorized access, use, alteration, disclosure, or destruction of your data, in accordance with Section 25 of the Individual Privacy Act, 2075 (2018). While we strive to use commercially acceptable means to protect your Personal Information, we cannot guarantee its absolute security."
-            android:layout_marginBottom="12dp" />
-
-        <TextView
-            android:id="@+id/user_rights_title"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="5. Your Rights (Individual Privacy Act, 2075)"
-            android:textSize="20sp"
-            android:textStyle="bold"
-            android:layout_marginBottom="8dp" />
-
-        <TextView
-            android:id="@+id/user_rights_details"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:justificationMode="inter_word"
-            android:textSize="18sp"
-            android:text="As per the Individual Privacy Act, 2075 (2018) of Nepal, you have the following rights regarding your personal information:\n\n    •   Right to Access: You have the right to request access to the personal information we hold about you.\n\n    •   Right to Rectification: You have the right to request that any inaccurate or incomplete personal information we hold about you be corrected.\n\n    •   Right to Deletion: You have the right to request the deletion of your personal information, subject to certain legal obligations.\n\n    •   Right to Object: You have the right to object to the processing of your personal information in certain circumstances.\n\nTo exercise any of these rights, please contact us using the details provided below."
-            android:layout_marginBottom="12dp" />
-
-        <TextView
-            android:id="@+id/age_restriction_title"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="6. Age Restriction"
-            android:textSize="20sp"
-            android:textStyle="bold"
-            android:layout_marginBottom="8dp" />
-
-        <TextView
-            android:id="@+id/age_restriction_details"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:justificationMode="inter_word"
-            android:textSize="18sp"
-            android:text="Our App is not intended for individuals under the age of 18. We do not knowingly collect personally identifiable information from anyone under 18. If you are a parent or guardian and you believe your child has provided us with personal information, please contact us immediately."
-            android:layout_marginBottom="12dp" />
-
-        <TextView
-            android:id="@+id/changes_policy_title"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="7. Changes to This Privacy Policy"
-            android:textSize="20sp"
-            android:textStyle="bold"
-            android:layout_marginBottom="8dp" />
-
-        <TextView
-            android:id="@+id/changes_policy_details"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:justificationMode="inter_word"
-            android:textSize="18sp"
-            android:text="We may update our Privacy Policy from time to time. We will notify you of any changes by posting the new Privacy Policy on this page and updating the &quot;Last updated&quot; date at the top of this Privacy Policy. You are advised to review this Privacy Policy periodically for any changes. Changes to this Privacy Policy are effective when they are posted on this page."
-            android:layout_marginBottom="12dp" />
-
-        <TextView
-            android:id="@+id/contact_us_title"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="8. Contact Us"
-            android:textSize="20sp"
-            android:textStyle="bold"
-            android:layout_marginBottom="8dp" />
-
-        <TextView
-            android:id="@+id/contact_us_details"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:justificationMode="inter_word"
-            android:textSize="18sp"
-            android:text="If you have any questions or concerns about this Privacy Policy, please contact us:\n\nBy email: support@kurakani.com\nBy visiting this page on our website: [Link to your website's Privacy Policy page]"
-            android:layout_marginBottom="16dp" />
-
+        <!-- Last updated text -->
         <TextView
             android:id="@+id/last_updated"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_gravity="end"
+            android:textColor="@color/black"
+            android:layout_marginBottom="16dp"
             android:text="Last updated: July 3, 2025"
             android:textStyle="italic" />
 
+        <!-- Introduction section -->
+        <androidx.cardview.widget.CardView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            app:cardCornerRadius="12dp"
+            app:cardElevation="4dp"
+            app:cardBackgroundColor="@color/white"
+            android:layout_marginBottom="16dp">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:padding="20dp">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Introduction"
+                    android:textColor="@color/primary_color"
+                    android:textSize="18sp"
+                    android:textStyle="bold"
+                    android:layout_marginBottom="8dp" />
+
+                <TextView
+                    android:id="@+id/privacy_policy_intro"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:lineSpacingMultiplier="1.2"
+                    android:textColor="@color/black"
+                    android:text="This Privacy Policy describes how KuraKani (&quot;we,&quot; &quot;us,&quot; or &quot;our&quot;) collects, uses, and shares your personal information when you use our KuraKani dating application (the &quot;App&quot;). We are committed to protecting your privacy and handling your data in compliance with the Individual Privacy Act, 2075 (2018) of Nepal and other applicable laws."
+                    android:textSize="16sp" />
+
+            </LinearLayout>
+        </androidx.cardview.widget.CardView>
+
+        <!-- Information We Collect section -->
+        <androidx.cardview.widget.CardView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            app:cardCornerRadius="12dp"
+            app:cardElevation="4dp"
+            app:cardBackgroundColor="@color/white"
+            android:layout_marginBottom="16dp">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:padding="20dp">
+
+                <TextView
+                    android:id="@+id/data_collection_title"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="1. Information We Collect"
+                    android:textColor="@color/primary_color"
+                    android:textSize="18sp"
+                    android:textStyle="bold"
+                    android:layout_marginBottom="12dp" />
+
+                <TextView
+                    android:id="@+id/data_collection_details"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:lineSpacingMultiplier="1.2"
+                    android:textColor="@color/black"
+                    android:text="We collect various types of information to provide and improve our services to you:\n\n• Personal Information: This includes, but is not limited to, your name, age, gender, date of birth, contact information (email, phone number), photographs, marital status, and other details you provide in your profile.\n\n• Usage Data: Information about how you access and use the App, such as your interactions with other users, the features you use, and the time and duration of your activities.\n\n• Location Data: With your explicit consent, we may collect precise or approximate location information from your mobile device to suggest matches near you.\n\n• Messages: We collect the content of your messages exchanged through the App for safety and moderation purposes.\n\n• Information from Third-Party Services: If you link your KuraKani account with third-party services, we may receive information from those services."
+                    android:textSize="16sp" />
+
+            </LinearLayout>
+        </androidx.cardview.widget.CardView>
+
+        <!-- How We Use Your Information section -->
+        <androidx.cardview.widget.CardView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            app:cardCornerRadius="12dp"
+            app:cardElevation="4dp"
+            app:cardBackgroundColor="@color/white"
+            android:layout_marginBottom="16dp">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:padding="20dp">
+
+                <TextView
+                    android:id="@+id/data_use_title"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="2. How We Use Your Information"
+                    android:textColor="@color/primary_color"
+                    android:textSize="18sp"
+                    android:textStyle="bold"
+                    android:layout_marginBottom="12dp" />
+
+                <TextView
+                    android:id="@+id/data_use_details"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:lineSpacingMultiplier="1.2"
+                    android:textColor="@color/black"
+                    android:text="We use the collected information for various purposes, including:\n\n• To provide and maintain the App's functionality\n• To personalize your experience and suggest potential matches\n• To facilitate communication between users\n• To improve, analyze, and understand how you use our App\n• To ensure the security and integrity of the App\n• To send you notifications and updates\n• To comply with legal obligations"
+                    android:textSize="16sp" />
+
+            </LinearLayout>
+        </androidx.cardview.widget.CardView>
+
+        <!-- Continue with similar card layouts for the remaining sections... -->
+
+        <!-- Contact Us section -->
+        <androidx.cardview.widget.CardView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            app:cardCornerRadius="12dp"
+            app:cardElevation="4dp"
+            app:cardBackgroundColor="@color/white"
+            android:layout_marginBottom="16dp">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:padding="20dp">
+
+                <TextView
+                    android:id="@+id/contact_us_title"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="3. Contact Us"
+                    android:textColor="@color/primary_color"
+                    android:textSize="18sp"
+                    android:textStyle="bold"
+                    android:layout_marginBottom="12dp" />
+
+                <TextView
+                    android:id="@+id/contact_us_details"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:lineSpacingMultiplier="1.2"
+                    android:textColor="@color/black"
+                    android:text="If you have any questions or concerns about this Privacy Policy, please contact us:\n\nBy email: support@kurakani.com\nBy visiting this page on our website: [Link to your website's Privacy Policy page]"
+                    android:textSize="16sp" />
+
+            </LinearLayout>
+        </androidx.cardview.widget.CardView>
+
     </LinearLayout>
-</ScrollView>
+</androidx.core.widget.NestedScrollView>

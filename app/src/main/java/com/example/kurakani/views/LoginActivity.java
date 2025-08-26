@@ -5,15 +5,20 @@ import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.widget.CheckBox;
 import android.widget.TextView;
-
 import androidx.appcompat.app.AppCompatActivity;
-
+import java.util.HashMap;
 import com.example.kurakani.R;
 import com.example.kurakani.Controlller.LoginController;
+import com.example.kurakani.network.ApiService;
+import com.example.kurakani.network.RetrofitClient;
 import com.google.android.material.button.MaterialButton;
 import com.google.android.material.snackbar.Snackbar;
 import com.google.android.material.textfield.TextInputEditText;
 import com.google.android.material.textfield.TextInputLayout;
+import com.google.firebase.messaging.FirebaseMessaging;
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
 
 public class LoginActivity extends AppCompatActivity {
 
@@ -94,10 +99,68 @@ public class LoginActivity extends AppCompatActivity {
         Snackbar.make(loginButton, message, Snackbar.LENGTH_LONG).show();
     }
 
-    public void showHomePage(boolean remember, String token) {
-        // token and remember are handled in controller already for storage
+    /**
+     * Navigate to HomePageActivity after successful login.
+     * Save logged-in user info, token, and "remember me" data in SharedPreferences.
+     *
+     * @param remember  true if user checked "remember me"
+     * @param token     API token from backend
+     * @param userId    Logged-in user's ID
+     * @param email     User email (for remember me)
+     * @param password  User password (for remember me)
+     */
+    public void showHomePage(boolean remember, String token, int userId, String email, String password) {
+        // Save user ID & token consistently
+        SharedPreferences prefs = getSharedPreferences("KurakaniPrefs", MODE_PRIVATE);
+        SharedPreferences.Editor editor = prefs.edit();
+        editor.putInt("user_id", userId);
+        editor.putString("auth_token", token); // ✅ Consistent key
+
+        if (remember) {
+            editor.putBoolean("remember_me", true);
+            editor.putString("saved_email", email);
+            editor.putString("saved_password", password);
+        } else {
+            editor.putBoolean("remember_me", false);
+            editor.remove("saved_email");
+            editor.remove("saved_password");
+        }
+        editor.apply();
+
+        // ✅ Always fetch auth_token with same key
+        String fullToken = "Bearer " + prefs.getString("auth_token", "");
+
+        // Update FCM token in backend
+        FirebaseMessaging.getInstance().getToken()
+                .addOnCompleteListener(task -> {
+                    if (!task.isSuccessful()) {
+                        task.getException().printStackTrace();
+                        return;
+                    }
+                    String fcmToken = task.getResult();
+
+                    HashMap<String, String> body = new HashMap<>();
+                    body.put("fcm_token", fcmToken);
+
+                    ApiService api = RetrofitClient.getInstance(this).create(ApiService.class);
+                    api.updateFcmToken(body).enqueue(new Callback<Void>() {
+                        @Override
+                        public void onResponse(Call<Void> call, Response<Void> response) {
+                            if (!response.isSuccessful()) {
+                                System.out.println("⚠️ FCM token update failed: " + response.code());
+                            }
+                        }
+                        @Override
+                        public void onFailure(Call<Void> call, Throwable t) {
+                            t.printStackTrace();
+                        }
+                    });
+                });
+
+        // Navigate to HomePageActivity
         Intent intent = new Intent(LoginActivity.this, HomePageActivity.class);
         startActivity(intent);
         finish();
     }
+
 }

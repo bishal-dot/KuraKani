@@ -44,8 +44,8 @@ public class PhotosAdapter extends RecyclerView.Adapter<PhotosAdapter.PhotoViewH
 
         Glide.with(context)
                 .load(photo.url)
-                .placeholder(R.drawable.john)
-                .error(R.drawable.john)
+                .placeholder(R.drawable.profile_icon)
+                .error(R.drawable.profile_icon)
                 .into(holder.ivPhoto);
 
         holder.btnDelete.setOnClickListener(v -> listener.onPhotoDeleteClick(position, photo));

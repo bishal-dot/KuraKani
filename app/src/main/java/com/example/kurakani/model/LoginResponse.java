@@ -18,8 +18,15 @@ public class LoginResponse {
      @SerializedName("message")
      private String message;
 
+    @SerializedName("user_id")
+    private int userId;
+
     public boolean isError() {
         return error;
+    }
+
+    public int getUserId() {
+        return userId;
     }
 
     public String getToken() {

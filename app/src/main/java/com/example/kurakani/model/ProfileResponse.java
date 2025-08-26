@@ -1,5 +1,6 @@
 package com.example.kurakani.model;
 
+import androidx.annotation.Nullable;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -10,29 +11,29 @@ public class ProfileResponse {
 
     public static class User {
         public int id;
-        public String fullname;
-        public String username;
-        public String email;
+        @Nullable public String fullname;
+        @Nullable public String username;
+        @Nullable public String email;
 
-        public Integer age;             // nullable integer
-        public String gender;
-        public String purpose;
-        public List<String> interests;  // JSON array from backend
-        public String about;            // 'about' from backend
-        public String bio;              // optional mapping
-        public String job;
-        public String education;
-        public String profile;          // full URL or null
+        @Nullable public Integer age;
+        @Nullable public String gender;
+        @Nullable public String purpose;
+        @Nullable public List<String> interests;
+        @Nullable public String about;
+        @Nullable public String bio;
+        @Nullable public String job;
+        @Nullable public String education;
+        @Nullable public String profile;      // full URL
         public boolean is_verified;
         public int matches_count;
-        public List<Photo> photos;
+        @Nullable public List<Photo> photos;
 
         public static class Photo {
             public int id;
             public String url;
         }
 
-        // Convert backend photos to a simpler list for RecyclerView
+        // Convert backend photos to RecyclerView-friendly list
         public List<UserPhoto> getUserPhotos() {
             List<UserPhoto> list = new ArrayList<>();
             if (photos != null) {

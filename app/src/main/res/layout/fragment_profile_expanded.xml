@@ -1,166 +1,166 @@
+<?xml version="1.0" encoding="utf-8"?>
 <androidx.constraintlayout.widget.ConstraintLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:id="@+id/profileExpandedRoot"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    android:background="@color/white">
 
-    <LinearLayout
-        android:id="@+id/topBar"
+    <!-- Top App Bar -->
+    <com.google.android.material.appbar.MaterialToolbar
+        android:id="@+id/topAppBar"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:orientation="horizontal"
-        android:gravity="center_vertical"
-        android:padding="16dp"
+        android:background="@android:color/transparent"
+        android:elevation="0dp"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent">
+        app:layout_constraintEnd_toEndOf="parent"
+        app:navigationIcon="@drawable/arrow_back"
+        app:title=""/>
 
-        <!-- Back Button -->
-        <TextView
-            android:id="@+id/backButton"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:drawableLeft="@drawable/left_arrow"
-            android:text="Back"
-            android:textAlignment="center"
-            android:layout_weight="0"
-            android:textSize="20sp"
-            android:textStyle="bold"
-            android:textColor="@color/black"
-            android:gravity="start"
-            android:clickable="true"
-            android:focusable="true"/>
+    <!-- Main Profile Image with Gradient -->
+    <FrameLayout
+        android:id="@+id/frameProfile"
+        android:layout_width="0dp"
+        android:layout_height="300dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/topAppBar">
 
-        <!-- Profile Name -->
-        <TextView
-            android:id="@+id/tvProfileName"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:text="John Wick"
-            android:textColor="@color/primary_color"
-            android:textSize="25sp"
-            android:textStyle="bold"
-            android:gravity="center"/>
-    </LinearLayout>
+        <ImageView
+            android:id="@+id/imgMainProfile"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:scaleType="centerCrop"
+            android:src="@drawable/john"
+            android:transitionName="profileImage" />
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="150dp"
+            android:layout_gravity="bottom"
+            android:background="@drawable/bottom_gradient" />
+    </FrameLayout>
+
     <!-- Scrollable Content -->
     <androidx.core.widget.NestedScrollView
         android:id="@+id/scrollDetails"
         android:layout_width="0dp"
         android:layout_height="0dp"
         android:fillViewport="true"
-        app:layout_constraintTop_toBottomOf="@id/topBar"
-        app:layout_constraintBottom_toTopOf="@id/bottomActions"
+        app:layout_constraintTop_toBottomOf="@id/frameProfile"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent">
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintBottom_toTopOf="@id/bottomActions">
 
         <LinearLayout
-            android:orientation="vertical"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:orientation="vertical"
             android:padding="16dp">
 
-            <ImageView
-                android:id="@+id/imgProfile"
-                android:layout_width="match_parent"
-                android:layout_height="240dp"
-                android:scaleType="centerCrop"
-                android:transitionName="profileImage"
-                android:src="@drawable/john" />
-
+            <!-- Name + Age -->
             <TextView
                 android:id="@+id/tvNameAge"
-                android:text="John, 25"
-                android:textSize="22sp"
-                android:textStyle="bold"
-                android:textColor="@color/black"
-                android:layout_marginTop="12dp"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content" />
-
-            <TextView
-                android:id="@+id/tvLocation"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Kathmandu"
-                android:textSize="16sp"
+                android:text="John, 25"
                 android:textColor="@color/black"
-                 />
+                android:textSize="24sp"
+                android:textStyle="bold"/>
+
+            <!-- Purpose -->
+            <TextView
+                android:id="@+id/tvPurpose"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Looking for friendship"
+                android:textColor="@color/black"
+                android:textSize="14sp"
+                android:layout_marginTop="4dp"/>
+
+            <!-- Bio / About -->
             <TextView
                 android:id="@+id/tvBio"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:text="✨ I love books, deep conversations, and stargazing."
-                android:textSize="16sp"
                 android:textColor="@color/black"
-                android:layout_marginTop="16dp" />
+                android:textSize="14sp"
+                android:layout_marginTop="8dp"
+                android:lineSpacingExtra="2dp"/>
 
+            <!-- Interests -->
             <TextView
-                android:id="@+id/tvHobbiesLabel"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Hobbies"
-                android:textStyle="bold"
+                android:text="Interests"
                 android:textColor="@color/black"
+                android:textStyle="bold"
                 android:textSize="16sp"
-                />
+                android:layout_marginTop="16dp"
+                android:layout_marginBottom="8dp"/>
 
-            <TextView
-                android:id="@+id/tvHobbies"
+            <com.google.android.material.chip.ChipGroup
+                android:id="@+id/chipGroupInterests"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="🎨 Art, 📷 Photography, 🎵 Acoustic Music"
-                android:textSize="15sp"
+                app:singleLine="false"/>
+
+            <!-- Other Photos RecyclerView -->
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Photos"
                 android:textColor="@color/black"
-                android:layout_marginTop="4dp" />
+                android:textStyle="bold"
+                android:textSize="16sp"
+                android:layout_marginTop="16dp"
+                android:layout_marginBottom="8dp"/>
 
-            <!-- Add more fields like bio, interests, location here -->
-
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/recyclerOtherPhotos"
+                android:layout_width="match_parent"
+                android:layout_height="100dp"
+                android:clipToPadding="false"
+                android:paddingStart="8dp"
+                android:paddingEnd="8dp"
+                android:scrollbars="horizontal"/>
         </LinearLayout>
     </androidx.core.widget.NestedScrollView>
 
-    <!-- Fixed Button Row -->
-    <LinearLayout
+    <!-- Floating Circular Match / Reject Buttons -->
+    <FrameLayout
         android:id="@+id/bottomActions"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:orientation="horizontal"
-        android:padding="12dp"
-        android:gravity="center"
-        android:background="@color/white"
-        android:elevation="6dp"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent">
+        android:layout_width="match_parent"
+        android:layout_height="80dp"
+        app:layout_constraintBottom_toBottomOf="parent">
 
-        <com.google.android.material.button.MaterialButton
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:text="Reject"
-            android:textColor="@color/white"
-            android:drawableLeft="@drawable/rejectgif"
-            android:textStyle="bold"
-            android:textSize="18sp"
-            android:drawableTint="@color/white"
-            android:backgroundTint="@color/reject"
-            />
-        <Space
-            android:layout_width="50dp"
-            android:layout_height="match_parent"/>
-        <com.google.android.material.button.MaterialButton
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:text="Match"
-            android:textStyle="bold"
-            android:textSize="18sp"
-            app:cornerRadius="22dp"
-            android:textColor="@color/black"
-            android:backgroundTint="@color/light_blue_bg"
-            android:drawableLeft="@drawable/matched"
-            />
-    </LinearLayout>
+        <!-- Reject Button -->
+        <com.google.android.material.floatingactionbutton.FloatingActionButton
+            android:id="@+id/btnReject"
+            android:layout_width="64dp"
+            android:layout_height="64dp"
+            android:layout_gravity="start|center_vertical"
+            android:layout_marginStart="40dp"
+            android:src="@drawable/ic_reject"
+            app:tint="@color/white"
+            app:backgroundTint="@color/error_color"
+            android:elevation="8dp"/>
+
+        <!-- Match Button -->
+        <com.google.android.material.floatingactionbutton.FloatingActionButton
+            android:id="@+id/btnMatch"
+            android:layout_width="64dp"
+            android:layout_height="64dp"
+            android:layout_gravity="end|center_vertical"
+            android:layout_marginEnd="40dp"
+            android:src="@drawable/matched"
+            app:tint="@color/white"
+            app:backgroundTint="@color/primary_color"
+            android:elevation="8dp"/>
+    </FrameLayout>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

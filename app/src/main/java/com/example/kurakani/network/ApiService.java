@@ -1,5 +1,7 @@
     package com.example.kurakani.network;
 
+    import com.example.kurakani.model.ApiResponse;
+    import com.example.kurakani.model.ChangePasswordRequest;
     import com.example.kurakani.model.DeletePhotoResponse;
     import com.example.kurakani.model.GetPhotosResponse;
     import com.example.kurakani.model.LoginResponse;
@@ -9,12 +11,16 @@
     import com.example.kurakani.model.SignupRequest;
     import com.example.kurakani.model.SignupResponse;
     import com.example.kurakani.model.UploadPhotosResponse;
+    import com.example.kurakani.model.SearchResponse;
     import com.example.kurakani.model.VerificationResponse;
-
+    import com.example.kurakani.viewmodel.MatchesModel;
+    import com.google.gson.JsonObject;
+    import java.util.HashMap;
     import java.util.List;
-
+    import java.util.Map;
     import okhttp3.MultipartBody;
     import okhttp3.RequestBody;
+    import okhttp3.ResponseBody;
     import retrofit2.Call;
     import retrofit2.http.Body;
     import retrofit2.http.DELETE;
@@ -27,25 +33,18 @@
     import retrofit2.http.POST;
     import retrofit2.http.Part;
     import retrofit2.http.Path;
+    import retrofit2.http.Query;
 
     public interface ApiService {
 
         @FormUrlEncoded
         @POST("user/login")
-        @Headers({
-                "Accept: application/json",
-                "Content-Type: application/json"
-        })
         Call<LoginResponse> loginUser(
                 @Field("email") String email,
                 @Field("password") String password
         );
 
         @POST("user/register")
-        @Headers({
-                "Accept: application/json",
-                "Content-Type: application/json"
-        })
         Call<SignupResponse> registerUser(@Body SignupRequest request);
 
         @Multipart
@@ -75,12 +74,15 @@
         })
         Call<ProfileResponse> getProfile();
 
+        @GET("users/others")
+        Call<List<ProfileResponse.User>> otherUsers();
+
+        // Fetch full user details by ID
+        @GET("users/{id}")
+        Call<ProfileResponse.User> getUserProfile(@Path("id") int userId);
+
         @POST("profile/update")
-        @Headers({
-                "Accept: application/json",
-                "Content-Type: application/json"
-        })
-        Call<ProfileResponse> updateProfile(@Body ProfileRequest request);
+        Call<JsonObject> updateProfile(@Body Map<String, Object> request);
 
         // Upload multiple photos
         @Multipart
@@ -97,6 +99,15 @@
         @DELETE("profile/photos/{photoId}")
         Call<DeletePhotoResponse> deletePhoto(@Path("photoId") int photoId);
 
+        @GET("search/users")
+        Call<SearchResponse> searchUsers(
+                @Query("search") String search,
+                @Query("interests") String interests
+        );
+
+        @GET("search/interests")
+        Call<List<String>> getInterests();
+
         // Sending and Receiving messages
         // GET messages/{otherUserId}
         @GET("messages/{otherUserId}")
@@ -108,5 +119,38 @@
         Call<Message> sendMessage(
                 @Path("otherUserId") int otherUserId,
                 @Field("message") String message
+        );
+
+        //change password
+        @POST("user/changepassword")
+        Call<ApiResponse> changePassword(@Body ChangePasswordRequest request);
+
+        // Match Notifications
+        @POST("send-match")
+        @FormUrlEncoded
+        Call<Void> sendNotification(
+                @Field("user_id") int userId,
+                @Field("title") String title,
+                @Field("body") String body
+        );
+
+        // update FCM Token
+        @POST("update-fcm-token")
+        Call<Void> updateFcmToken(@Body HashMap<String, String> body);
+
+        // Saving matched users in DB
+        @FormUrlEncoded
+        @POST("match")
+        Call<Void> sendMatch(
+                @Header("Authorization") String authToken,
+                @Field("user_id") int userId,
+                @Field("matched_user_id") int matchedUserId
+        );
+
+        // Fetch matches filtered by status
+        @GET("matches")
+        Call<List<MatchesModel>> getMatches(
+                @Query("user_id") int userId,
+                @Query("status") String status // pass null for "All"
         );
     }

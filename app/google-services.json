@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "108501232194",
+    "project_id": "kurakani-e0780",
+    "storage_bucket": "kurakani-e0780.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:108501232194:android:a6544142cf49e884769bdb",
+        "android_client_info": {
+          "package_name": "com.example.kurakani"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCDrjrugNAaB-e9DJGucHBs3JJUbAnX7sw"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

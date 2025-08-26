@@ -1,247 +1,364 @@
 package com.example.kurakani.fragments;
 
 import android.content.Context;
+import android.content.Intent;
+import android.content.SharedPreferences;
 import android.graphics.Canvas;
 import android.os.Bundle;
-import android.os.Handler;
-import android.widget.Toast;
-import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.inputmethod.EditorInfo;
-import android.view.inputmethod.InputMethodManager;
-import android.widget.EditText;
+import android.widget.Button;
+import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
-import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.ItemTouchHelper;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.kurakani.Adapter.ProfileAdapter;
-import com.example.kurakani.Adapter.StoryAdapter;
 import com.example.kurakani.R;
-import com.example.kurakani.viewmodel.MatchModel;
-import com.example.kurakani.viewmodel.MatchViewModel;
+import com.example.kurakani.model.LoginResponse;
+import com.example.kurakani.model.ProfileResponse;
+import com.example.kurakani.network.ApiService;
+import com.example.kurakani.network.RetrofitClient;
 import com.example.kurakani.viewmodel.ProfileModel;
-import com.example.kurakani.viewmodel.StoryModel;
+import com.example.kurakani.views.SearchActivity;
+import com.google.gson.Gson;
+import com.google.gson.reflect.TypeToken;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
+
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
 
 public class HomePageFragment extends Fragment {
 
-    private RecyclerView recyclerViewStory, recyclerViewProfiles;
+    private RecyclerView recyclerView;
     private ProfileAdapter adapter;
-    private List<ProfileModel> fullProfileList = new ArrayList<>();
-    private List<ProfileModel> filteredProfileList = new ArrayList<>();
+    private List<ProfileModel> profileList = new ArrayList<>();
+    private TextView tvWelcome, tvNoProfiles, tvSearch;
+    private View premiumOverlay;
+    private Button btnRefreshProfiles;
+    private ImageView btnMatch, btnReject;
 
-    public HomePageFragment() {
-        // Required empty public constructor
-    }
+    private static final int DAILY_SWIPE_LIMIT = 5;
+    private int dailySwipeCount = 0;
 
-    private static class NoScrollLinearLayoutManager extends LinearLayoutManager {
-        public NoScrollLinearLayoutManager(@NonNull Context context) {
-            super(context);
-        }
-
-        @Override
-        public boolean canScrollVertically() {
-            return false;
-        }
-    }
-
+    @Nullable
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
-                             Bundle savedInstanceState) {
+    public View onCreateView(@NonNull LayoutInflater inflater,
+                             ViewGroup container, Bundle savedInstanceState) {
         return inflater.inflate(R.layout.fragment_home_page, container, false);
     }
 
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
-        super.onViewCreated(view, savedInstanceState);
+        recyclerView = view.findViewById(R.id.recyclerViewProfiles);
+        tvWelcome = view.findViewById(R.id.tvWelcome);
+        tvNoProfiles = view.findViewById(R.id.tvNoProfiles);
+        premiumOverlay = view.findViewById(R.id.premiumOverlay);
+        btnRefreshProfiles = view.findViewById(R.id.btnRefreshProfiles);
+        btnMatch = view.findViewById(R.id.btnMatch);
+        btnReject = view.findViewById(R.id.btnReject);
+        tvSearch = view.findViewById(R.id.tvSearch);
 
-        MatchViewModel matchViewModel = new ViewModelProvider(requireActivity()).get(MatchViewModel.class);
-
-        recyclerViewStory = view.findViewById(R.id.recyclerViewStory);
-        recyclerViewProfiles = view.findViewById(R.id.recyclerViewProfiles);
-
-        // Setup Story List
-        List<StoryModel> storyList = new ArrayList<>();
-        storyList.add(new StoryModel(R.drawable.john, "Bishal"));
-        storyList.add(new StoryModel(R.drawable.kori, "Bishwash"));
-        storyList.add(new StoryModel(R.drawable.john, "Kushal"));
-
-        recyclerViewStory.setLayoutManager(new LinearLayoutManager(getContext(), LinearLayoutManager.HORIZONTAL, false));
-        recyclerViewStory.setAdapter(new StoryAdapter(getContext(), storyList, story -> {}));
-
-        // Setup Profile List
-        fullProfileList.add(new ProfileModel(R.drawable.john, "Bishal", 23, "Exploring code, cosmos", "Anime, Music"));
-        fullProfileList.add(new ProfileModel(R.drawable.kori, "Bishwash", 23, "Exploring code, cosmos", "Acoustic Music"));
-        fullProfileList.add(new ProfileModel(R.drawable.john, "Kushal", 23, "Exploring code, cosmos", "Acoustic Music"));
-        filteredProfileList.addAll(fullProfileList);
-
-        adapter = new ProfileAdapter(getContext(), filteredProfileList, matchedUser -> {
-            matchViewModel.addMatch(new MatchModel(
-                    matchedUser.getName(),
-                    matchedUser.getBio(),
-                    matchedUser.getImageResId(),
-                    matchedUser.getAge()
-            ));
+        tvSearch.setOnClickListener(v -> {
+            Intent intent = new Intent(getActivity(), SearchActivity.class);
+            startActivity(intent);
         });
 
-        recyclerViewProfiles.setLayoutManager(new NoScrollLinearLayoutManager(getContext()));
-        recyclerViewProfiles.setAdapter(adapter);
-        recyclerViewProfiles.setClipToPadding(true);
-        recyclerViewProfiles.setPadding(0, 0, 0, 0);
+        fetchLoggedInUser();
 
-        // Search EditText logic
-        EditText editTextSearch = view.findViewById(R.id.search_view);
-
-        editTextSearch.setOnEditorActionListener((v, actionId, event) -> {
-            if (actionId == EditorInfo.IME_ACTION_SEARCH) {
-                filterProfiles(editTextSearch.getText().toString());
-                editTextSearch.clearFocus();
-
-                InputMethodManager imm = (InputMethodManager) requireContext().getSystemService(Context.INPUT_METHOD_SERVICE);
-                if (imm != null) {
-                    imm.hideSoftInputFromWindow(editTextSearch.getWindowToken(), 0);
-                }
-                return true;
-            }
-            return false;
-        });
-
-        editTextSearch.addTextChangedListener(new android.text.TextWatcher() {
+        adapter = new ProfileAdapter(profileList, new ProfileAdapter.OnSwipeListener() {
             @Override
-            public void beforeTextChanged(CharSequence s, int start, int count, int after) {}
-
-            @Override
-            public void onTextChanged(CharSequence s, int start, int before, int count) {
-                filterProfiles(s.toString());
+            public void onMatch(ProfileModel profile) {
+                dailySwipeCount++;
+                Toast.makeText(getContext(), "Matched with " + profile.getFullname(), Toast.LENGTH_SHORT).show();
+                checkDailyLimit();
             }
 
             @Override
-            public void afterTextChanged(android.text.Editable s) {}
+            public void onReject(ProfileModel profile) {
+                dailySwipeCount++;
+                Toast.makeText(getContext(), "Rejected " + profile.getFullname(), Toast.LENGTH_SHORT).show();
+                checkDailyLimit();
+            }
         });
 
-        // Swipe gestures
-        ItemTouchHelper.SimpleCallback swipeCallback = new ItemTouchHelper.SimpleCallback(0,
+        adapter.setOnItemClickListener(profile -> fetchFullProfileAndOpen(profile.getId()));
+
+        recyclerView.setLayoutManager(new LinearLayoutManager(getContext()) {
+            @Override
+            public boolean canScrollVertically() {
+                return false;
+            }
+        });
+        recyclerView.setAdapter(adapter);
+
+        setupSwipeGestures();
+        setupButtons();
+
+        btnRefreshProfiles.setOnClickListener(v -> {
+            tvNoProfiles.setVisibility(View.GONE);
+            hidePremiumOverlay();
+            fetchProfiles();
+        });
+
+        fetchProfiles();
+    }
+
+    private void setupSwipeGestures() {
+        ItemTouchHelper.SimpleCallback simpleCallback = new ItemTouchHelper.SimpleCallback(0,
                 ItemTouchHelper.LEFT | ItemTouchHelper.RIGHT) {
             @Override
             public boolean onMove(@NonNull RecyclerView recyclerView,
                                   @NonNull RecyclerView.ViewHolder viewHolder,
-                                  @NonNull RecyclerView.ViewHolder target) {
-                return false;
-            }
+                                  @NonNull RecyclerView.ViewHolder target) { return false; }
 
             @Override
             public void onSwiped(@NonNull RecyclerView.ViewHolder viewHolder, int direction) {
-                int position = viewHolder.getAdapterPosition();
-                if (position == RecyclerView.NO_POSITION) return;
-
-                ProfileModel swipedUser = filteredProfileList.get(position);
-                ProfileAdapter.ProfileViewHolder holder = (ProfileAdapter.ProfileViewHolder) viewHolder;
-
-                if (direction == ItemTouchHelper.RIGHT) {
-                    holder.lottieMatch.setVisibility(View.VISIBLE);
-                    holder.lottieMatch.playAnimation();
-
-                    new Handler().postDelayed(() -> {
-                        holder.lottieMatch.cancelAnimation();
-                        holder.lottieMatch.setVisibility(View.GONE);
-
-                        // 🔔 Toast message for matched
-                        Toast.makeText(requireContext(),
-                                "Matched with " + swipedUser.getName(), Toast.LENGTH_SHORT).show();
-
-                        //  Add to MatchViewModel
-                        matchViewModel.addMatch(new MatchModel(
-                                swipedUser.getName(),
-                                swipedUser.getBio(),
-                                swipedUser.getImageResId(),
-                                swipedUser.getAge()
-                        ));
-
-                        //  Optional Notification
-                        adapter.sendMatchNotification(swipedUser);
-
-                        //  Remove swiped profile
-                        removeProfileAtPosition(position, swipedUser);
-                    }, 100);
+                if (viewHolder.getAdapterPosition() != 0) {
+                    adapter.notifyItemChanged(viewHolder.getAdapterPosition());
+                    return;
                 }
-                else {
-                    holder.lottieReject.setVisibility(View.VISIBLE);
-                    holder.lottieReject.playAnimation();
 
-                    new Handler().postDelayed(() -> {
-                        holder.lottieReject.cancelAnimation();
-                        holder.lottieReject.setVisibility(View.GONE);
-                        removeProfileAtPosition(position, swipedUser);
-                    }, 100);
-                }
+                ProfileModel profile = profileList.get(0);
+                if (direction == ItemTouchHelper.RIGHT) adapter.swipeListener.onMatch(profile);
+                else adapter.swipeListener.onReject(profile);
+
+                adapter.removeTopItem();
             }
 
             @Override
             public void onChildDraw(@NonNull Canvas c,
                                     @NonNull RecyclerView recyclerView,
                                     @NonNull RecyclerView.ViewHolder viewHolder,
-                                    float dX, float dY,
-                                    int actionState,
-                                    boolean isCurrentlyActive) {
+                                    float dX, float dY, int actionState, boolean isCurrentlyActive) {
+                if (viewHolder.getAdapterPosition() == 0) {
+                    float width = viewHolder.itemView.getWidth();
+                    float alpha = 1 - Math.min(Math.abs(dX) / width, 1f);
+                    viewHolder.itemView.setAlpha(alpha);
+                    viewHolder.itemView.setTranslationX(dX);
+                    viewHolder.itemView.setTranslationY(dY);
+                }
                 super.onChildDraw(c, recyclerView, viewHolder, dX, dY, actionState, isCurrentlyActive);
             }
-
-            @Override
-            public void clearView(@NonNull RecyclerView recyclerView,
-                                  @NonNull RecyclerView.ViewHolder viewHolder) {
-                super.clearView(recyclerView, viewHolder);
-                ProfileAdapter.ProfileViewHolder holder = (ProfileAdapter.ProfileViewHolder) viewHolder;
-                holder.lottieMatch.setVisibility(View.GONE);
-                holder.lottieReject.setVisibility(View.GONE);
-                holder.lottieMatch.cancelAnimation();
-                holder.lottieReject.cancelAnimation();
-            }
         };
-
-        new ItemTouchHelper(swipeCallback).attachToRecyclerView(recyclerViewProfiles);
+        new ItemTouchHelper(simpleCallback).attachToRecyclerView(recyclerView);
     }
 
-    private void filterProfiles(String query) {
-        try {
-            query = query.toLowerCase().trim();
-            filteredProfileList.clear();
+    private void setupButtons() {
+        btnMatch.setOnClickListener(v -> {
+            if (!profileList.isEmpty()) {
+                ProfileModel profile = profileList.get(0);
+                adapter.swipeListener.onMatch(profile);
+                removeTopProfile();
 
-            if (query.isEmpty()) {
-                filteredProfileList.addAll(fullProfileList);
-            } else {
-                for (ProfileModel profile : fullProfileList) {
-                    String name = profile.getName() != null ? profile.getName().toLowerCase() : "";
-                    String bio = profile.getBio() != null ? profile.getBio().toLowerCase() : "";
-
-                    if (name.contains(query) || bio.contains(query)) {
-                        filteredProfileList.add(profile);
-                    }
-                }
+                // ✅ Save match in backend
+                saveMatch(profile.getId(), profile.getFullname());
             }
+        });
 
-            adapter.updateList(filteredProfileList);
+        btnReject.setOnClickListener(v -> {
+            if (!profileList.isEmpty()) {
+                ProfileModel profile = profileList.get(0);
+                adapter.swipeListener.onReject(profile);
+                removeTopProfile();
+            }
+        });
+    }
 
-        } catch (Exception e) {
-            e.printStackTrace();
-            filteredProfileList.clear();
-            filteredProfileList.addAll(fullProfileList);
-            adapter.updateList(filteredProfileList);
+    private void removeTopProfile() {
+        if (!profileList.isEmpty()) {
+            profileList.remove(0);
+            adapter.notifyDataSetChanged();
+
+            recyclerView.post(() -> {
+                for (int i = 0; i < recyclerView.getChildCount(); i++) {
+                    View child = recyclerView.getChildAt(i);
+                    float scale = 1 - 0.05f * i;
+                    float translationY = 20f * i;
+                    child.animate().scaleX(scale).scaleY(scale).translationY(translationY).alpha(1f).setDuration(200).start();
+                }
+            });
+
+            if (profileList.isEmpty() && dailySwipeCount < DAILY_SWIPE_LIMIT) showNoProfilesMessage();
         }
     }
 
-    private void removeProfileAtPosition(int position, ProfileModel user) {
-        filteredProfileList.remove(position);
-        fullProfileList.remove(user);
-        adapter.updateList(filteredProfileList);
+    private void fetchProfiles() {
+        ApiService api = RetrofitClient.getInstance(getContext()).create(ApiService.class);
+        api.otherUsers().enqueue(new Callback<List<ProfileResponse.User>>() {
+            @Override
+            public void onResponse(Call<List<ProfileResponse.User>> call, Response<List<ProfileResponse.User>> response) {
+                if (response.isSuccessful() && response.body() != null) {
+                    profileList.clear();
+                    for (ProfileResponse.User user : response.body()) {
+                        List<String> interestsList = new ArrayList<>();
+                        if (user.interests != null) {
+                            try {
+                                interestsList = new Gson().fromJson(user.interests.toString(),
+                                        new TypeToken<List<String>>(){}.getType());
+                            } catch (Exception e) {
+                                interestsList = Arrays.asList(user.interests.toString().split(","));
+                            }
+                        }
+
+                        profileList.add(new ProfileModel(
+                                user.id,
+                                user.fullname != null ? user.fullname : user.username,
+                                user.username,
+                                user.age != null ? user.age : 0,
+                                user.profile,
+                                interestsList
+                        ));
+                    }
+                    adapter.notifyDataSetChanged();
+                }
+            }
+
+            @Override
+            public void onFailure(Call<List<ProfileResponse.User>> call, Throwable t) {
+                Toast.makeText(getContext(), "Failed to load profiles", Toast.LENGTH_SHORT).show();
+            }
+        });
     }
+
+    private void fetchFullProfileAndOpen(int userId) {
+        ApiService api = RetrofitClient.getInstance(getContext()).create(ApiService.class);
+        api.getUserProfile(userId).enqueue(new Callback<ProfileResponse.User>() {
+            @Override
+            public void onResponse(Call<ProfileResponse.User> call, Response<ProfileResponse.User> response) {
+                if (response.isSuccessful() && response.body() != null) {
+                    ProfileModel fullProfile = convertApiUserToProfile(response.body());
+                    ProfileExpanded fragment = ProfileExpanded.newInstance(fullProfile);
+                    getParentFragmentManager().beginTransaction()
+                            .replace(R.id.fragmentContainer, fragment)
+                            .addToBackStack(null)
+                            .commit();
+                }
+            }
+
+            @Override
+            public void onFailure(Call<ProfileResponse.User> call, Throwable t) {
+                Toast.makeText(getContext(), "Failed to load profile", Toast.LENGTH_SHORT).show();
+            }
+        });
+    }
+
+    public ProfileModel convertApiUserToProfile(ProfileResponse.User apiUser) {
+        int age = apiUser.age != null ? apiUser.age : 0;
+        String fullname = apiUser.fullname != null ? apiUser.fullname : "";
+        String username = apiUser.username != null ? apiUser.username : "";
+        String gender = apiUser.gender != null ? apiUser.gender : "";
+        String purpose = apiUser.purpose != null ? apiUser.purpose : "";
+        String about = apiUser.about != null ? apiUser.about : "";
+
+        String profile = "";
+        if (apiUser.profile != null && !apiUser.profile.isEmpty()) {
+            profile = apiUser.profile.startsWith("http") ? apiUser.profile : RetrofitClient.BASE_URL + "storage/" + apiUser.profile;
+        }
+
+        List<String> interests = apiUser.interests != null ? apiUser.interests : new ArrayList<>();
+        List<String> photos = new ArrayList<>();
+        if (apiUser.photos != null) {
+            for (ProfileResponse.User.Photo photo : apiUser.photos) {
+                if (photo != null && photo.url != null && !photo.url.isEmpty()) {
+                    String fullUrl = photo.url.startsWith("http") ? photo.url : RetrofitClient.BASE_URL + "storage/" + photo.url;
+                    photos.add(fullUrl);
+                }
+            }
+        }
+
+        return new ProfileModel(apiUser.id, fullname, username, age, gender, purpose, about, profile, interests, photos);
+    }
+
+    private void fetchLoggedInUser() {
+        ApiService api = RetrofitClient.getInstance(getContext()).create(ApiService.class);
+        api.getProfile().enqueue(new Callback<ProfileResponse>() {
+            @Override
+            public void onResponse(Call<ProfileResponse> call, Response<ProfileResponse> response) {
+                if (response.isSuccessful() && response.body() != null && response.body().user != null) {
+                    String fullname = response.body().user.fullname;
+                    tvWelcome.setText("Welcome, " + (fullname != null ? fullname : response.body().user.username));
+                } else {
+                    tvWelcome.setText("Welcome, User");
+                }
+            }
+
+            @Override
+            public void onFailure(Call<ProfileResponse> call, Throwable t) {
+                tvWelcome.setText("Welcome, User");
+            }
+        });
+    }
+
+    private void checkDailyLimit() {
+        if (dailySwipeCount >= DAILY_SWIPE_LIMIT) showPremiumOverlay();
+    }
+
+    private void showNoProfilesMessage() {
+        tvNoProfiles.setVisibility(View.VISIBLE);
+        recyclerView.setVisibility(View.GONE);
+        hidePremiumOverlay();
+    }
+
+    private void showPremiumOverlay() {
+        premiumOverlay.setVisibility(View.VISIBLE);
+        recyclerView.setVisibility(View.GONE);
+        tvNoProfiles.setVisibility(View.GONE);
+    }
+
+    private void hidePremiumOverlay() {
+        premiumOverlay.setVisibility(View.GONE);
+        recyclerView.setVisibility(View.VISIBLE);
+    }
+
+    //  Save match in Laravel + send notification
+    private void saveMatch(int matchedUserId, String fullname) {
+        ApiService api = RetrofitClient.getInstance(getContext()).create(ApiService.class);
+
+        SharedPreferences prefs = getContext().getSharedPreferences("KurakaniPrefs", Context.MODE_PRIVATE);
+        String token = prefs.getString("auth_token", null);
+        int currentUserId = prefs.getInt("user_id", -1);
+
+        if (token == null || currentUserId == -1) {
+            Toast.makeText(getContext(), "User not logged in", Toast.LENGTH_SHORT).show();
+            return;
+        }
+
+        api.sendMatch("Bearer " + token, currentUserId, matchedUserId)
+                .enqueue(new Callback<Void>() {
+                    @Override
+                    public void onResponse(Call<Void> call, Response<Void> response) {
+                        if (response.isSuccessful()) {
+                            Toast.makeText(getContext(),
+                                    "You matched with " + fullname + " 🎉",
+                                    Toast.LENGTH_LONG).show();
+                        } else {
+                            Toast.makeText(getContext(),
+                                    "Failed to save match: " + response.code(),
+                                    Toast.LENGTH_SHORT).show();
+                        }
+                    }
+
+                    @Override
+                    public void onFailure(Call<Void> call, Throwable t) {
+                        Toast.makeText(getContext(),
+                                "Error: " + t.getMessage(),
+                                Toast.LENGTH_SHORT).show();
+                    }
+                });
+    }
+
+
+
 }

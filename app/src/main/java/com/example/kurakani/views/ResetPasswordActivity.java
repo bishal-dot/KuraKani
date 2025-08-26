@@ -16,19 +16,6 @@ public class ResetPasswordActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_reset_password);
 
-        MaterialButton resetPassword = findViewById(R.id.resetPassword);
-        resetPassword.setOnClickListener(v -> {
-            Intent intent = new Intent(ResetPasswordActivity.this, LoginActivity.class);
-            startActivity(intent);
-            overridePendingTransition(android.R.anim.slide_in_left, android.R.anim.slide_out_right);
-        });
-
-        TextView goBack = findViewById(R.id.goback);
-        goBack.setOnClickListener(v -> {
-            Intent intent = new Intent(ResetPasswordActivity.this, ForgotPasswordActivity.class);
-            overridePendingTransition(android.R.anim.slide_in_left, android.R.anim.slide_out_right);
-            finish();
-        });
 
     }
 }

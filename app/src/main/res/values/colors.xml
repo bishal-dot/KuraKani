@@ -5,6 +5,7 @@
     <color name="background">#D6EAF8</color>
     <color name="light_blue_bg">#E3F2FD</color>
     <color name="primary">#FF4D6D</color>
+    <color name="primary_dark">#C2185B</color>
     <color name="pink">#E21AE2</color>
     <color name="gray">#d3d3d3</color>
     <color name="dark_gray">#6E6A6A</color>
@@ -12,9 +13,16 @@
     <color name="primary_color_light">#D2667C</color>
     <color name="reject">#d32f2f</color>
     <color name="gray_light">#D3D3D3</color>
-    <color name="primary_dark">#1F1F1F</color>
     <color name="primary_light">#4CAF50</color>
     <color name="secondary_light">#FF4081</color>
-    <color name="text_dark">#333333</color>
+    <color name="text_dark">#555555</color>
     <color name="divider_color">#CCCCCC</color>
+    <color name="error_color">#F44336</color>
+    <color name="chip_bg">#F0F0F0</color>
+    <color name="blue">#2196F3</color>
+    <color name="password_weak">#FF4B4B</color>
+    <color name="password_medium">#FFA500</color>
+    <color name="password_strong">#4CAF50</color>
+    <color name="bg_password_strength_weak">#E0E0E0</color>
+    <color name="ripple_color">#33000000</color>
 </resources>

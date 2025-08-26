@@ -12,8 +12,10 @@ import retrofit2.converter.gson.GsonConverterFactory;
 
 public class RetrofitClient {
 
-    private static final String BASE_URL = "http://192.168.10.6:8000/api/";
+    public static final String BASE_URL = "http://192.168.10.6:8000/api/";
     public static int CURRENT_USER_ID = 1;
+
+    private static Retrofit retrofit = null;
 
     private static Retrofit retrofitNoUserId = null;
     private static Retrofit retrofitWithUserId = null;
@@ -55,6 +57,44 @@ public class RetrofitClient {
                 .setLenient()
                 .create();
     }
+
+    public static Retrofit getInstance(Context context) {
+        if (retrofit == null) {
+            HttpLoggingInterceptor logging = new HttpLoggingInterceptor();
+            logging.setLevel(HttpLoggingInterceptor.Level.BODY);
+
+            OkHttpClient.Builder httpClient = new OkHttpClient.Builder();
+            httpClient.addInterceptor(logging);
+
+            httpClient.addInterceptor(chain -> {
+                Request original = chain.request();
+
+                SharedPreferences prefs = context.getSharedPreferences("KurakaniPrefs", Context.MODE_PRIVATE);
+                String token = prefs.getString("auth_token", null);
+
+                Request.Builder requestBuilder = original.newBuilder()
+                        .method(original.method(), original.body());
+
+                if (token != null && !token.isEmpty()) {
+                    requestBuilder.header("Authorization", "Bearer " + token);
+                }
+
+                return chain.proceed(requestBuilder.build());
+            });
+            // Create a lenient Gson instance
+            Gson gson = new GsonBuilder()
+                    .setLenient()
+                    .create();
+
+            retrofit = new Retrofit.Builder()
+                    .baseUrl(BASE_URL)
+                    .client(httpClient.build())
+                    .addConverterFactory(GsonConverterFactory.create(gson))
+                    .build();
+        }
+        return retrofit;
+    }
+
 
     public static Retrofit getClient(Context context) {
         if (retrofitNoUserId == null) {

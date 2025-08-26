@@ -1,0 +1,21 @@
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="48dp"
+    android:height="48dp"
+    android:viewportWidth="24"
+    android:viewportHeight="24">
+
+    <!-- Hourglass outline -->
+    <path
+        android:fillColor="#FFA500"
+        android:pathData="M6 2h12v2l-4 5 4 5v2H6v-2l4-5-4-5V2z" />
+
+    <!-- Sand top -->
+    <path
+        android:fillColor="#FFFFFF"
+        android:pathData="M8 4h8v1H8V4z" />
+
+    <!-- Sand bottom -->
+    <path
+        android:fillColor="#FFFFFF"
+        android:pathData="M8 18h8v1H8v-1z" />
+</vector>
