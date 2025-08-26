@@ -1,10 +1,10 @@
 package com.example.kurakani.Controlller;
 
+import android.content.Context;
 import android.util.Log;
 
 import com.example.kurakani.model.SignupRequest;
 import com.example.kurakani.model.SignupResponse;
-import com.example.kurakani.model.User;
 import com.example.kurakani.network.ApiService;
 import com.example.kurakani.network.RetrofitClient;
 import com.example.kurakani.views.SignupActivity;
@@ -17,7 +17,7 @@ public class SignUpController {
 
     private final SignupActivity view;
 
-    public SignUpController(SignupActivity view){
+    public SignUpController(SignupActivity view) {
         this.view = view;
     }
 
@@ -27,59 +27,38 @@ public class SignUpController {
         String password = view.getPassword();
         String confirmPassword = view.getConfirmPassword();
 
-        view.setNameError(null);
-        view.setEmailError(null);
-        view.setPasswordError(null);
-        view.setConfirmPasswordError(null);
+        view.clearErrors();
 
         if (username.isEmpty()) { view.setNameError("Username can't be blank."); return; }
-        if (email.isEmpty()) { view.setEmailError("Enter a valid email."); return; }
+        if (email.isEmpty()) { view.setEmailError("Email can't be blank."); return; }
         if (password.isEmpty()) { view.setPasswordError("Password cannot be empty!"); return; }
-        if (password.length() < 6) { view.setPasswordError("Password must be 6+ chars"); return; }
-        if (!confirmPassword.equals(password)) { view.setConfirmPasswordError("Passwords don't match"); return; }
+        if (password.length() < 6) { view.setPasswordError("Password must be at least 6 characters"); return; }
+        if (!password.equals(confirmPassword)) { view.setConfirmPasswordError("Passwords don't match"); return; }
         if (!view.isTermsChecked()) { view.showError("Accept terms & conditions."); return; }
 
-        User user = new User(username, email, password);
-        createAccount(user);
+        SignupRequest request = new SignupRequest(username, email, password);
+        createAccount(request);
     }
 
-    public void createAccount(User model) {
-        ApiService apiService = RetrofitClient.getClient(view).create(ApiService.class);
-
-        SignupRequest request = new SignupRequest(model.getName(), model.getEmail(), model.getPassword());
-
+    private void createAccount(SignupRequest request) {
+        ApiService apiService = RetrofitClient.getInstance(view).create(ApiService.class);
         apiService.registerUser(request).enqueue(new Callback<SignupResponse>() {
             @Override
             public void onResponse(Call<SignupResponse> call, Response<SignupResponse> response) {
-                if (response.isSuccessful() && response.body() != null) {
-                    if (!response.body().isError()) {
-                        String token = response.body().getToken();
-                        view.getSharedPreferences("KurakaniPrefs", view.MODE_PRIVATE)
-                                .edit()
-                                .putString("auth_token", token)
-                                .apply();
-
-                        // Move to profile setup
-                        view.showProfileSetup();
-                    } else {
-                        view.showError("API error: " + response.body().getReason());
-                        Log.e("SignUpController", "API error reason: " + response.body().getReason());
-                    }
+                if (response.isSuccessful() && response.body() != null && !response.body().isError()) {
+                    view.showMessage(response.body().getMessage());
+                    view.goToLogin();
                 } else {
-                    String errorBody = "";
-                    try {
-                        if(response.errorBody() != null)
-                            errorBody = response.errorBody().string();
-                    } catch (Exception e) { errorBody = "Failed to parse errorBody"; }
-                    Log.e("SignUpController", "Signup failed. Code: " + response.code() + " Error: " + errorBody);
-                    view.showError("Signup failed: " + response.code());
+                    String msg = response.body() != null ? response.body().getMessage() : "Signup failed: " + response.code();
+                    view.showError(msg);
+                    Log.e("SignUpController", msg);
                 }
             }
 
             @Override
             public void onFailure(Call<SignupResponse> call, Throwable t) {
                 view.showError("Network error: " + t.getMessage());
-                Log.e("SignUpController", "createAccount error", t);
+                Log.e("SignUpController", "Failure", t);
             }
         });
     }

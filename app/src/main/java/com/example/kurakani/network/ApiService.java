@@ -20,6 +20,7 @@
 
     import okhttp3.MultipartBody;
     import okhttp3.RequestBody;
+    import okhttp3.ResponseBody;
     import retrofit2.Call;
     import retrofit2.http.Body;
     import retrofit2.http.DELETE;
@@ -47,31 +48,27 @@
         Call<SignupResponse> registerUser(@Body SignupRequest request);
 
         @Multipart
-        @POST("verifygender")
-        @Headers({
-                "Accept: application/json",
-                "Content-Type: application/json"
-        })
-        Call<VerificationResponse> verifyGender(
-                String authToken, @Part MultipartBody.Part photo,
-                @Part("user_gender") RequestBody userGender
+        @POST("verifygender/temp")
+        Call<VerificationResponse> verifyGenderTemp(
+                @Part MultipartBody.Part photo,
+                @Part("user_gender") RequestBody userGender,
+                @Part("temp_token") RequestBody tempToken
         );
 
         // Matches your protected route: Route::post('user/completeProfile' ...)
-        @POST("user/complete/profile")
-        @Headers({
-                "Accept: application/json",
-                "Content-Type: application/json"
-        })
-        Call<ProfileResponse> completeProfile(
-                @Body ProfileRequest profileRequest);
+        @POST("profile/temp")
+        Call<ResponseBody> completeProfileTemp(
+                @Header("Authorization") String token,
+                @Body ProfileRequest request
+        );
+
+        @POST("profile/finalize")
+        Call<ProfileResponse> finalizeProfile(
+                @Header("Authorization") String tempToken
+        );
 
         @GET("user/profile")
-        @Headers({
-                "Accept: application/json",
-                "Content-Type: application/json"
-        })
-        Call<ProfileResponse> getProfile();
+        Call<ResponseBody> getProfile();
 
         @GET("users/others")
         Call<List<ProfileResponse.User>> otherUsers();
@@ -123,4 +120,22 @@
         //change password
         @POST("user/changepassword")
         Call<ApiResponse> changePassword(@Body ChangePasswordRequest request);
+
+        // reset passowrd
+        @FormUrlEncoded
+        @POST("password/send-otp")
+        Call<ApiResponse> sendOtp(@Field("email") String email);
+
+        @FormUrlEncoded
+        @POST("password/verify-otp")
+        Call<ApiResponse> verifyOtp(@Field("email") String email, @Field("otp") String otp);
+
+        @FormUrlEncoded
+        @POST("password/reset")
+        Call<ApiResponse> resetPassword(
+                @Field("email") String email,
+                @Field("otp") String otp,
+                @Field("new_password") String newPassword,
+                @Field("new_password_confirmation") String confirmPassword
+        );
     }

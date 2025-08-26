@@ -1,41 +1,24 @@
 package com.example.kurakani.model;
+
 public class User {
-    String name, email, password, confirmPassword;
+    private int id;
+    private String username;
+    private String email;
+    private Boolean profile_complete;
+    private Boolean is_verified;
 
-    public User(String name, String email, String password) {
-        this.name = name;
-        this.email = email;
-        this.password = password;
-    }
-    public User(String name, String email, String password, String confirmPassword){
-        this.name = name;
-        this.email = email;
-        this.password = password;
-        this.confirmPassword = confirmPassword;
-    }
-    public String getName() {
-        return name;
-    }
-    public void setName(String name) {
-        this.name = name;
-    }
-    public String getEmail() {
-        return email;
-    }
-    public void setEmail(String email) {
-        this.email = email;
-    }
-    public String getPassword() {
-        return password;
-    }
+    public int getId() { return id; }
+    public void setId(int id) { this.id = id; }
 
-    public void setPassword(String password) {
-        this.password = password;
-    }
-    public String getConfirmPassword(){
-        return  confirmPassword;
-    }
-    public void setConfirmPassword(String confirmPassword) {
-        this.confirmPassword = confirmPassword;
-    }
+    public String getUsername() { return username; }
+    public void setUsername(String username) { this.username = username; }
+
+    public String getEmail() { return email; }
+    public void setEmail(String email) { this.email = email; }
+
+    public Boolean isProfileComplete() { return profile_complete != null && profile_complete; }
+    public void setProfileComplete(Boolean profile_complete) { this.profile_complete = profile_complete; }
+
+    public Boolean getIsVerified() { return is_verified; }
+    public void setIsVerified(Boolean is_verified) { this.is_verified = is_verified; }
 }

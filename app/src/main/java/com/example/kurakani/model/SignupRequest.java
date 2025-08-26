@@ -1,7 +1,6 @@
 package com.example.kurakani.model;
 
 public class SignupRequest {
-
     private String username;
     private String email;
     private String password;
@@ -11,5 +10,4 @@ public class SignupRequest {
         this.email = email;
         this.password = password;
     }
-
 }

@@ -3,96 +3,64 @@ package com.example.kurakani.views;
 import android.content.Intent;
 import android.os.Bundle;
 import android.widget.CheckBox;
-import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 
-import com.example.kurakani.R;
 import com.example.kurakani.Controlller.SignUpController;
+import com.example.kurakani.R;
 import com.google.android.material.button.MaterialButton;
-import com.google.android.material.snackbar.Snackbar;
 import com.google.android.material.textfield.TextInputEditText;
-import com.google.android.material.textfield.TextInputLayout;
 
 public class SignupActivity extends AppCompatActivity {
 
-    TextView btnGoBack;
-    TextInputEditText etName, etEmail, etPassword, etConfirmPassword;
-    MaterialButton btnSignUp;
-    TextInputLayout tilName, tilEmail, tilPassword, tilConfirmPassword;
-    CheckBox chkTerms;
-    SignUpController controller;
+    private TextInputEditText etName, etEmail, etPassword, etConfirmPassword;
+    private CheckBox chkTerms;
+    private MaterialButton btnSignup;
+    private SignUpController controller;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_signup);
 
-        controller = new SignUpController(this);
-
-        findViewById();
-        registerEvents();
-    }
-
-    private void findViewById(){
-        tilName = findViewById(R.id.tilName);
-        tilEmail = findViewById(R.id.tilEmail);
-        tilPassword = findViewById(R.id.tilPassword);
-        tilConfirmPassword = findViewById(R.id.tilConfirmPassword);
-        btnGoBack = findViewById(R.id.goback);
-        btnSignUp = findViewById(R.id.btnSignup);
-        chkTerms = findViewById(R.id.chkTerms);
         etName = findViewById(R.id.etName);
         etEmail = findViewById(R.id.etEmail);
         etPassword = findViewById(R.id.etPassword);
         etConfirmPassword = findViewById(R.id.etConfirmPassword);
+        chkTerms = findViewById(R.id.chkTerms);
+        btnSignup = findViewById(R.id.btnSignup);
+
+        controller = new SignUpController(this);
+
+        btnSignup.setOnClickListener(v -> controller.validateFields());
+
+        findViewById(R.id.goback).setOnClickListener(v -> finish());
     }
 
-    private void registerEvents(){
-        btnGoBack.setOnClickListener(v -> finish());
+    public String getName() { return etName.getText().toString().trim(); }
+    public String getEmail() { return etEmail.getText().toString().trim(); }
+    public String getPassword() { return etPassword.getText().toString(); }
+    public String getConfirmPassword() { return etConfirmPassword.getText().toString(); }
+    public boolean isTermsChecked() { return chkTerms.isChecked(); }
 
-        btnSignUp.setOnClickListener(v -> {
-            controller.validateFields();
-        });
-    }
+    public void showMessage(String msg) { Toast.makeText(this, msg, Toast.LENGTH_SHORT).show(); }
+    public void showError(String msg) { Toast.makeText(this, msg, Toast.LENGTH_SHORT).show(); }
 
-    // Getters for controller
-    public String getName(){
-        return etName.getText().toString().trim();
-    }
-    public String getEmail() {
-        return etEmail.getText().toString().trim();
-    }
-    public String getPassword(){
-        return etPassword.getText().toString();
-    }
-    public String getConfirmPassword(){
-        return etConfirmPassword.getText().toString();
-    }
-    public boolean isTermsChecked(){
-        return chkTerms.isChecked();
+    public void setNameError(String msg) { etName.setError(msg); }
+    public void setEmailError(String msg) { etEmail.setError(msg); }
+    public void setPasswordError(String msg) { etPassword.setError(msg); }
+    public void setConfirmPasswordError(String msg) { etConfirmPassword.setError(msg); }
+
+    public void clearErrors() {
+        etName.setError(null);
+        etEmail.setError(null);
+        etPassword.setError(null);
+        etConfirmPassword.setError(null);
     }
 
-    // Error setters for fields
-    public void setNameError(String message) {
-        tilName.setError(message);
-    }
-    public void setEmailError(String message) {
-        tilEmail.setError(message);
-    }
-    public void setPasswordError(String message) {
-        tilPassword.setError(message);
-    }
-    public void setConfirmPasswordError(String message){
-        tilConfirmPassword.setError(message);
-    }
-
-    public void showError(String message){
-        Snackbar.make(btnSignUp.getRootView(), message, Snackbar.LENGTH_LONG).show();
-    }
-
-    public void showProfileSetup(){
-        startActivity(new Intent(SignupActivity.this, com.example.kurakani.views.ProfileSetupActivity.class));
+    public void goToLogin() {
+        startActivity(new Intent(this, LoginActivity.class));
         finish();
     }
 }

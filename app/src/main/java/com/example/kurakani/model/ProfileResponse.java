@@ -1,6 +1,7 @@
 package com.example.kurakani.model;
 
 import androidx.annotation.Nullable;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -18,22 +19,22 @@ public class ProfileResponse {
         @Nullable public Integer age;
         @Nullable public String gender;
         @Nullable public String purpose;
-        @Nullable public List<String> interests;
         @Nullable public String about;
         @Nullable public String bio;
         @Nullable public String job;
         @Nullable public String education;
-        @Nullable public String profile;      // full URL
+        @Nullable public String profile; // full URL
         public boolean is_verified;
         public int matches_count;
         @Nullable public List<Photo> photos;
+
+        @Nullable public List<String> interests; // No Gson, handled manually
 
         public static class Photo {
             public int id;
             public String url;
         }
 
-        // Convert backend photos to RecyclerView-friendly list
         public List<UserPhoto> getUserPhotos() {
             List<UserPhoto> list = new ArrayList<>();
             if (photos != null) {

@@ -3,8 +3,10 @@ package com.example.kurakani.fragments;
 import android.app.Activity;
 import android.content.Intent;
 import android.graphics.Bitmap;
-import android.net.Uri;
 import android.os.Bundle;
+import android.view.LayoutInflater;
+import android.view.View;
+import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.Toast;
@@ -16,9 +18,11 @@ import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 
 import com.example.kurakani.R;
+import com.example.kurakani.model.ProfileResponse;
 import com.example.kurakani.model.VerificationResponse;
 import com.example.kurakani.network.ApiService;
 import com.example.kurakani.network.RetrofitClient;
+import com.example.kurakani.views.HomePageActivity;
 import com.example.kurakani.views.LoginActivity;
 
 import java.io.ByteArrayOutputStream;
@@ -38,105 +42,98 @@ public class ProfilePictureVerification extends Fragment {
     private ImageView profileImageView;
     private Button btnCapture, btnVerify;
     private Bitmap capturedBitmap;
-    private String userGender; // "male" or "female"
-    private String authToken;
+    private String userGender, tempToken, profilePhotoBase64;
     private ApiService apiService;
 
-    private ActivityResultLauncher<Intent> cameraLauncher;
-
-    private static final int CAMERA_REQUEST_CODE = 1001;
+    private static final int MAX_ATTEMPTS = 5;
 
     @Nullable
     @Override
-    public android.view.View onCreateView(@NonNull android.view.LayoutInflater inflater,
-                                          @Nullable android.view.ViewGroup container,
-                                          @Nullable Bundle savedInstanceState) {
-        android.view.View view = inflater.inflate(R.layout.fragment_profile_verification, container, false);
+    public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container,
+                             @Nullable Bundle savedInstanceState) {
+        View view = inflater.inflate(R.layout.fragment_profile_picture_verification, container, false);
 
         profileImageView = view.findViewById(R.id.profileImage);
         btnCapture = view.findViewById(R.id.captureButton);
         btnVerify = view.findViewById(R.id.verifyButton);
 
-        userGender = getArguments() != null ? getArguments().getString("user_gender", "male") : "male";
-
         apiService = RetrofitClient.getClient(requireContext()).create(ApiService.class);
 
-        authToken = "Bearer " + requireActivity()
-                .getSharedPreferences("KurakaniPrefs", Activity.MODE_PRIVATE)
-                .getString("auth_token", "");
+        if (getArguments() != null) {
+            userGender = getArguments().getString("user_gender");
+            tempToken = getArguments().getString("temp_token");
+            profilePhotoBase64 = getArguments().getString("profile_photo_base64");
+        }
 
-        // --- Camera Activity Result ---
-        cameraLauncher = registerForActivityResult(
+        ActivityResultLauncher<Intent> cameraLauncher = registerForActivityResult(
                 new ActivityResultContracts.StartActivityForResult(),
                 result -> {
                     if (result.getResultCode() == Activity.RESULT_OK && result.getData() != null) {
-                        Bundle extras = result.getData().getExtras();
-                        if (extras != null) {
-                            capturedBitmap = (Bitmap) extras.get("data");
-                            if (capturedBitmap != null) {
-                                profileImageView.setImageBitmap(capturedBitmap);
-                                Toast.makeText(getContext(), "Photo captured! Now click Verify.", Toast.LENGTH_SHORT).show();
-                            }
-                        }
+                        capturedBitmap = (Bitmap) result.getData().getExtras().get("data");
+                        profileImageView.setImageBitmap(capturedBitmap);
                     }
-                }
-        );
+                });
 
-        btnCapture.setOnClickListener(v -> openCamera());
+        btnCapture.setOnClickListener(v -> openCamera(cameraLauncher));
         btnVerify.setOnClickListener(v -> {
-            if (capturedBitmap == null) {
-                Toast.makeText(getContext(), "Please capture a photo first", Toast.LENGTH_SHORT).show();
-            } else {
-                uploadPhotoAndVerify(capturedBitmap, userGender);
-            }
+            if (capturedBitmap != null) verifyPhoto();
         });
 
         return view;
     }
 
-    private void openCamera() {
+    private void openCamera(ActivityResultLauncher<Intent> launcher) {
         Intent intent = new Intent(android.provider.MediaStore.ACTION_IMAGE_CAPTURE);
-        if (intent.resolveActivity(requireActivity().getPackageManager()) != null) {
-            cameraLauncher.launch(intent);
-        } else {
-            Toast.makeText(getContext(), "Camera not available", Toast.LENGTH_SHORT).show();
-        }
+        launcher.launch(intent);
     }
 
-    private void uploadPhotoAndVerify(Bitmap bitmap, String gender) {
-        File file = bitmapToFile(bitmap, "live_photo.jpg");
-        if (file == null) {
-            Toast.makeText(getContext(), "Failed to process image", Toast.LENGTH_SHORT).show();
-            return;
-        }
+    private void verifyPhoto() {
+        File file = bitmapToFile(capturedBitmap, "live_photo.jpg");
+        if (file == null) return;
 
-        RequestBody requestFile = RequestBody.create(file, MediaType.parse("image/jpeg"));
-        MultipartBody.Part body = MultipartBody.Part.createFormData("photo", file.getName(), requestFile);
-        RequestBody userGenderBody = RequestBody.create(gender, MediaType.parse("text/plain"));
+        MultipartBody.Part photoPart = MultipartBody.Part.createFormData(
+                "photo", file.getName(), RequestBody.create(file, MediaType.parse("image/jpeg"))
+        );
 
-        Call<VerificationResponse> call = apiService.verifyGender(authToken, body, userGenderBody);
-        call.enqueue(new Callback<VerificationResponse>() {
-            @Override
-            public void onResponse(@NonNull Call<VerificationResponse> call, @NonNull Response<VerificationResponse> response) {
-                if (response.isSuccessful() && response.body() != null) {
-                    VerificationResponse res = response.body();
-                    if (!res.isError()) {
-                        Toast.makeText(getContext(), "Verification successful!", Toast.LENGTH_SHORT).show();
-                        navigateNextFragment();
-                    } else {
-                        Toast.makeText(getContext(), "Verification failed: " + res.getMessage(), Toast.LENGTH_LONG).show();
-                        goBackToLogin();
+        RequestBody genderBody = RequestBody.create(userGender, MediaType.parse("text/plain"));
+        RequestBody tempTokenBody = RequestBody.create(tempToken, MediaType.parse("text/plain"));
+
+        apiService.verifyGenderTemp(photoPart, genderBody, tempTokenBody)
+                .enqueue(new Callback<VerificationResponse>() {
+                    @Override
+                    public void onResponse(@NonNull Call<VerificationResponse> call, @NonNull Response<VerificationResponse> response) {
+                        if (response.isSuccessful() && response.body() != null) {
+                            VerificationResponse res = response.body();
+                            if (!res.isError()) finalizeProfile();
+                            else handleFailedVerification(res.getAttempts(), res.getMessage());
+                        }
                     }
-                } else {
-                    Toast.makeText(getContext(), "Server error: " + response.code(), Toast.LENGTH_LONG).show();
+
+                    @Override
+                    public void onFailure(@NonNull Call<VerificationResponse> call, @NonNull Throwable t) {}
+                });
+    }
+
+    private void finalizeProfile() {
+        apiService.finalizeProfile(tempToken).enqueue(new Callback<ProfileResponse>() {
+            @Override
+            public void onResponse(@NonNull Call<ProfileResponse> call, @NonNull Response<ProfileResponse> response) {
+                if (response.isSuccessful() && response.body() != null && !response.body().error) {
+                    navigateToHome();
                 }
             }
-
             @Override
-            public void onFailure(@NonNull Call<VerificationResponse> call, @NonNull Throwable t) {
-                Toast.makeText(getContext(), "Network failure: " + t.getMessage(), Toast.LENGTH_LONG).show();
-            }
+            public void onFailure(@NonNull Call<ProfileResponse> call, @NonNull Throwable t) {}
         });
+    }
+
+    private void handleFailedVerification(int attempts, String message) {
+        if (attempts >= MAX_ATTEMPTS) {
+            Toast.makeText(getContext(), "Maximum attempts reached. Account deleted.", Toast.LENGTH_LONG).show();
+            goBackToLogin();
+        } else {
+            Toast.makeText(getContext(), message + " Attempt " + attempts + " of " + MAX_ATTEMPTS, Toast.LENGTH_LONG).show();
+        }
     }
 
     private File bitmapToFile(Bitmap bitmap, String fileName) {
@@ -145,23 +142,18 @@ public class ProfilePictureVerification extends Fragment {
             file.createNewFile();
             ByteArrayOutputStream bos = new ByteArrayOutputStream();
             bitmap.compress(Bitmap.CompressFormat.JPEG, 100, bos);
-            byte[] bitmapData = bos.toByteArray();
             FileOutputStream fos = new FileOutputStream(file);
-            fos.write(bitmapData);
+            fos.write(bos.toByteArray());
             fos.flush();
             fos.close();
             return file;
-        } catch (IOException e) {
-            e.printStackTrace();
-            return null;
-        }
+        } catch (IOException e) { e.printStackTrace(); return null; }
     }
 
-    private void navigateNextFragment() {
-        requireActivity().getSupportFragmentManager()
-                .beginTransaction()
-                .replace(R.id.profileContainer, new com.example.kurakani.fragments.HomePageFragment())
-                .commit();
+    private void navigateToHome() {
+        Intent intent = new Intent(getActivity(), HomePageActivity.class);
+        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+        startActivity(intent);
     }
 
     private void goBackToLogin() {

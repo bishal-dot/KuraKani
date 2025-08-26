@@ -8,7 +8,6 @@ import android.os.Bundle;
 import android.provider.MediaStore;
 import android.text.TextUtils;
 import android.util.Base64;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -26,16 +25,19 @@ import com.example.kurakani.model.ProfileRequest;
 import com.example.kurakani.model.ProfileResponse;
 import com.example.kurakani.network.ApiService;
 import com.example.kurakani.network.RetrofitClient;
-import com.example.kurakani.views.HomePageActivity;
+import com.example.kurakani.views.LoginActivity;
+
+import org.json.JSONArray;
+import org.json.JSONObject;
+
 import com.google.android.material.textfield.TextInputEditText;
-import com.google.gson.Gson;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
+import okhttp3.ResponseBody;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
@@ -72,7 +74,7 @@ public class ProfileSetupFragment extends Fragment {
 
         profilePhoto.setOnClickListener(v -> openGallery(PICK_PROFILE_PHOTO));
         btnSaveProfile.setOnClickListener(v -> {
-            if (validateInputs()) sendProfileToServer();
+            if (validateInputs()) encodeAndSendProfile();
         });
 
         return view;
@@ -90,6 +92,7 @@ public class ProfileSetupFragment extends Fragment {
         if (resultCode == Activity.RESULT_OK && data != null) {
             try {
                 Bitmap bitmap = MediaStore.Images.Media.getBitmap(requireActivity().getContentResolver(), data.getData());
+                bitmap = resizeBitmap(bitmap, 800, 800);
                 if (requestCode == PICK_PROFILE_PHOTO) {
                     profilePhoto.setImageBitmap(bitmap);
                     profileBitmap = bitmap;
@@ -99,6 +102,16 @@ public class ProfileSetupFragment extends Fragment {
                 Toast.makeText(getContext(), "Failed to select image", Toast.LENGTH_SHORT).show();
             }
         }
+    }
+
+    private Bitmap resizeBitmap(Bitmap bitmap, int maxWidth, int maxHeight) {
+        if (bitmap == null) return null;
+        float width = bitmap.getWidth();
+        float height = bitmap.getHeight();
+        float ratio = Math.min((float) maxWidth / width, (float) maxHeight / height);
+        int newWidth = Math.round(width * ratio);
+        int newHeight = Math.round(height * ratio);
+        return Bitmap.createScaledBitmap(bitmap, newWidth, newHeight, true);
     }
 
     private boolean validateInputs() {
@@ -129,14 +142,17 @@ public class ProfileSetupFragment extends Fragment {
     public String getEducation() { return etEducation.getText().toString().trim(); }
     public Bitmap getProfilePhoto() { return profileBitmap; }
 
-    private String encodeToBase64(Bitmap bitmap, int quality) {
-        if (bitmap == null) return null;
-        ByteArrayOutputStream baos = new ByteArrayOutputStream();
-        bitmap.compress(Bitmap.CompressFormat.JPEG, quality, baos);
-        return Base64.encodeToString(baos.toByteArray(), Base64.NO_WRAP);
+    private void encodeAndSendProfile() {
+        new Thread(() -> {
+            ByteArrayOutputStream baos = new ByteArrayOutputStream();
+            profileBitmap.compress(Bitmap.CompressFormat.JPEG, 70, baos);
+            String encodedPhoto = Base64.encodeToString(baos.toByteArray(), Base64.NO_WRAP);
+
+            requireActivity().runOnUiThread(() -> sendProfileToServer(encodedPhoto));
+        }).start();
     }
 
-    private void sendProfileToServer() {
+    private void sendProfileToServer(String photoBase64) {
         List<String> interestsList = new ArrayList<>();
         String raw = getInterests();
         if (!TextUtils.isEmpty(raw)) {
@@ -150,7 +166,7 @@ public class ProfileSetupFragment extends Fragment {
                 getFullname(),
                 getAge(),
                 getGender(),
-                encodeToBase64(getProfilePhoto(), 70),
+                photoBase64,
                 getPurpose(),
                 getJob(),
                 interestsList,
@@ -158,75 +174,66 @@ public class ProfileSetupFragment extends Fragment {
                 getBio()
         );
 
-        Log.d("PROFILE_REQUEST", new Gson().toJson(request));
-
-        // ✅ Get token safely
         Context ctx = getContext() != null ? getContext() : getActivity();
-        if (ctx == null) {
-            Toast.makeText(getContext(), "Context not available", Toast.LENGTH_SHORT).show();
-            return;
-        }
+        if (ctx == null) { Toast.makeText(getContext(), "Context not available", Toast.LENGTH_SHORT).show(); return; }
 
-        String token = ctx.getSharedPreferences("KurakaniPrefs", Activity.MODE_PRIVATE)
+        Activity activity = getActivity();
+        if (activity == null) return;
+        String token = activity.getSharedPreferences("KurakaniPrefs", Activity.MODE_PRIVATE)
                 .getString("auth_token", null);
-
-        Log.d("TOKEN_DEBUG", "Token: " + token);
         if (token == null) {
-            Toast.makeText(getContext(), "User not logged in!", Toast.LENGTH_LONG).show();
+            startActivity(new Intent(activity, LoginActivity.class));
+            activity.finish();
             return;
         }
 
         ApiService apiService = RetrofitClient.getClient(ctx).create(ApiService.class);
 
-        apiService.completeProfile(request)
-                .enqueue(new Callback<ProfileResponse>() {
+        apiService.completeProfileTemp("Bearer " + token, request)
+                .enqueue(new Callback<ResponseBody>() {
                     @Override
-                    public void onResponse(Call<ProfileResponse> call, Response<ProfileResponse> response) {
+                    public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
                         if (response.isSuccessful() && response.body() != null) {
-                            ProfileResponse body = response.body();
-                            if (!body.error) {
-                                saveToPrefs(body.user);
-                                Intent intent = new Intent(getActivity(), HomePageActivity.class);
-                                intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
-                                startActivity(intent);
-                            } else {
-                                Toast.makeText(getContext(), "Error: " + body.message, Toast.LENGTH_LONG).show();
+                            try {
+                                String json = response.body().string();
+                                JSONObject obj = new JSONObject(json);
+
+                                boolean error = obj.optBoolean("error");
+                                String message = obj.optString("message");
+
+                                if (!error) {
+                                    Toast.makeText(getContext(), "Profile completed!", Toast.LENGTH_SHORT).show();
+                                    navigateToVerificationFragment(photoBase64);
+                                } else {
+                                    Toast.makeText(getContext(), "Error: " + message, Toast.LENGTH_LONG).show();
+                                }
+                            } catch (Exception e) {
+                                e.printStackTrace();
+                                Toast.makeText(getContext(), "Parsing error", Toast.LENGTH_LONG).show();
                             }
                         } else {
-                            try {
-                                String errorBody = response.errorBody() != null ? response.errorBody().string() : "";
-                                Log.e("API_ERROR", "Server error: " + response.code() + ", " + errorBody);
-                                Toast.makeText(getContext(), "Server error: " + response.code(), Toast.LENGTH_LONG).show();
-                            } catch (Exception e) { e.printStackTrace(); }
+                            Toast.makeText(getContext(), "Server error: " + response.code(), Toast.LENGTH_LONG).show();
                         }
                     }
 
                     @Override
-                    public void onFailure(Call<ProfileResponse> call, Throwable t) {
-                        Log.e("API_FAILURE", t.getMessage(), t);
+                    public void onFailure(Call<ResponseBody> call, Throwable t) {
                         Toast.makeText(getContext(), "Network error: " + t.getMessage(), Toast.LENGTH_LONG).show();
                     }
                 });
     }
 
-    private void saveToPrefs(ProfileResponse.User user) {
-        if (getActivity() != null && user != null) {
-            String interestsStr = "";
-            if (user.interests != null && !user.interests.isEmpty()) {
-                interestsStr = String.join(",", user.interests);
-            }
+    private void navigateToVerificationFragment(String photoBase64) {
+        ProfilePictureVerification verificationFragment = new ProfilePictureVerification();
+        Bundle bundle = new Bundle();
+        bundle.putString("user_gender", getGender());
+        bundle.putString("profile_photo_base64", photoBase64);
+        verificationFragment.setArguments(bundle);
 
-            getActivity().getSharedPreferences("user_profile", Activity.MODE_PRIVATE).edit()
-                    .putString("fullname", user.fullname)
-                    .putInt("age", user.age != null ? user.age : 0)
-                    .putString("gender", user.gender)
-                    .putString("purpose", user.purpose != null ? user.purpose : "")
-                    .putString("job", user.job != null ? user.job : "")
-                    .putString("interests", interestsStr)
-                    .putString("education", user.education != null ? user.education : "")
-                    .putString("about", user.bio != null ? user.bio : (user.about != null ? user.about : ""))
-                    .putString("profile_photo", user.profile)
-                    .apply();
-        }
+        requireActivity().getSupportFragmentManager()
+                .beginTransaction()
+                .replace(R.id.profileContainer, verificationFragment)
+                .addToBackStack(null)
+                .commit();
     }
 }

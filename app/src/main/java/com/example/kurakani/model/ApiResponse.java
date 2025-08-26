@@ -1,10 +1,15 @@
 package com.example.kurakani.model;
 
-public class ApiResponse {
-    public boolean error;
-    public String message;
+import com.google.gson.annotations.SerializedName;
 
-    // Optional: constructor, getters, setters
+public class ApiResponse {
+
+    @SerializedName("error")
+    private boolean error;
+
+    @SerializedName("message")
+    private String message;
+
     public boolean isError() {
         return error;
     }

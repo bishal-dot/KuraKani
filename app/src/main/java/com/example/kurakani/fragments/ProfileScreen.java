@@ -126,7 +126,7 @@ public class ProfileScreen extends Fragment implements PhotosAdapter.PhotoClickL
                         tvJob.setText(user.job != null ? user.job : "-");
                         tvEducation.setText(user.education != null ? user.education : "-");
                         tvBio.setText(user.about != null ? user.about : "-");
-                        tvInterests.setText(user.interests != null ? String.join(", ", user.interests) : "-");
+                        tvInterests.setText(user.getInterests() != null ? String.join(", ", user.getInterests()) : "-");
                         tvMatches.setText(String.valueOf(user.matches_count));
 
                         String profileUrl = user.profile != null ? user.profile.trim() : null;

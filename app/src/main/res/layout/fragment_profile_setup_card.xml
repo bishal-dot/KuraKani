@@ -1,10 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.core.widget.NestedScrollView
     xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/background"
+    android:background="@color/light_blue_bg"
     android:fillViewport="true"
     tools:context=".fragments.ProfileSetupFragment">
 
@@ -12,210 +13,353 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="vertical"
-        android:padding="16dp">
+        android:padding="20dp">
 
         <!-- Title Section -->
-        <LinearLayout
+        <com.google.android.material.card.MaterialCardView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="vertical"
-            android:padding="8dp"
-            android:background="@color/white"
-            android:elevation="4dp"
-            android:layout_marginBottom="16dp"
-            android:paddingHorizontal="16dp"
-            android:paddingVertical="12dp">
+            app:cardCornerRadius="16dp"
+            app:cardElevation="8dp"
+            app:strokeColor="#20FFFFFF"
+            app:strokeWidth="1dp"
+            android:backgroundTint="@android:color/white"
+            android:layout_marginBottom="20dp">
 
-            <TextView
-                android:layout_width="wrap_content"
+            <LinearLayout
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="Ok, let's set up your profile!"
-                android:textSize="24sp"
-                android:textStyle="bold"
-                android:textColor="@color/black" />
+                android:orientation="vertical"
+                android:padding="24dp">
 
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="This is how you'll appear in Kurakani"
-                android:textSize="14sp"
-                android:layout_marginTop="4dp"
-                android:textColor="@color/black" />
-        </LinearLayout>
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Ok, let's set up your profile!"
+                    android:textSize="24sp"
+                    android:textStyle="bold"
+                    android:textColor="@android:color/black"
+                    />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="This is how you'll appear in Kurakani"
+                    android:textSize="16sp"
+                    android:layout_marginTop="8dp"
+                    android:textColor="#666666"
+                    />
+            </LinearLayout>
+        </com.google.android.material.card.MaterialCardView>
 
         <!-- Profile Photo -->
-        <LinearLayout
+        <com.google.android.material.card.MaterialCardView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="vertical"
-            android:gravity="center"
-            android:background="@color/white"
-            android:elevation="4dp"
-            android:padding="16dp"
-            android:layout_marginBottom="16dp">
+            app:cardCornerRadius="16dp"
+            app:cardElevation="8dp"
+            app:strokeColor="#20FFFFFF"
+            app:strokeWidth="1dp"
+            android:backgroundTint="@android:color/white"
+            android:layout_marginBottom="20dp">
 
-            <TextView
-                android:layout_width="wrap_content"
+            <LinearLayout
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="Profile Photo"
-                android:textSize="18sp"
-                android:textStyle="bold"
-                android:textColor="@color/black" />
+                android:orientation="vertical"
+                android:gravity="center"
+                android:padding="24dp">
 
-            <ImageView
-                android:id="@+id/profilePhoto"
-                android:layout_width="120dp"
-                android:layout_height="120dp"
-                android:layout_marginTop="12dp"
-                android:src="@drawable/profile_icon"
-                android:scaleType="centerCrop"
-                android:background="@drawable/rounded_background"
-                android:clickable="true"
-                android:focusable="true" />
-        </LinearLayout>
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Profile Photo"
+                    android:textSize="18sp"
+                    android:textStyle="bold"
+                    android:textColor="@android:color/black"
+                    />
+
+                <RelativeLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="16dp">
+
+                    <ImageView
+                        android:id="@+id/profilePhoto"
+                        android:layout_width="140dp"
+                        android:layout_height="140dp"
+                        android:tint="@color/primary"
+                        android:src="@drawable/ic_person"
+                        android:scaleType="centerCrop"
+                        android:background="@drawable/circle_shape"
+                        android:contentDescription="Profile photo" />
+
+                </RelativeLayout>
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Tap to add photo"
+                    android:textSize="14sp"
+                    android:layout_marginTop="12dp"
+                    android:textColor="#666666"
+            />
+            </LinearLayout>
+        </com.google.android.material.card.MaterialCardView>
 
         <!-- Input Fields Section -->
-        <LinearLayout
+        <com.google.android.material.card.MaterialCardView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="vertical"
-            android:background="@color/white"
-            android:elevation="4dp"
-            android:padding="16dp"
-            android:layout_marginBottom="16dp">
+            app:cardCornerRadius="16dp"
+            app:cardElevation="8dp"
+            app:strokeColor="#20FFFFFF"
+            app:strokeWidth="1dp"
+            android:backgroundTint="@android:color/white"
+            android:layout_marginBottom="20dp">
 
-            <!-- Full Name -->
-            <com.google.android.material.textfield.TextInputLayout
+            <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:hint="Full Name">
-                <com.google.android.material.textfield.TextInputEditText
-                    android:id="@+id/etFullname"
+                android:orientation="vertical"
+                android:padding="24dp">
+
+                <!-- Full Name -->
+                <com.google.android.material.textfield.TextInputLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:inputType="textPersonName" />
-            </com.google.android.material.textfield.TextInputLayout>
+                    android:hint="Full Name"
+                    app:boxBackgroundMode="outline"
+                    app:boxCornerRadiusTopStart="12dp"
+                    app:boxCornerRadiusTopEnd="12dp"
+                    app:boxCornerRadiusBottomStart="12dp"
+                    app:boxCornerRadiusBottomEnd="12dp"
+                    app:boxStrokeColor="@color/primary"
+                    app:boxStrokeWidth="1dp"
+                    app:boxStrokeWidthFocused="2dp"
+                    app:hintTextColor="@color/primary"
+                    app:startIconDrawable="@drawable/ic_person"
+                    app:startIconTint="@color/primary">
+                    <com.google.android.material.textfield.TextInputEditText
+                        android:id="@+id/etFullname"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:inputType="textPersonName"
+                        />
+                </com.google.android.material.textfield.TextInputLayout>
 
-            <!-- Age -->
-            <com.google.android.material.textfield.TextInputLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:hint="Age"
-                android:layout_marginTop="12dp">
-                <com.google.android.material.textfield.TextInputEditText
-                    android:id="@+id/etAge"
+                <!-- Age -->
+                <com.google.android.material.textfield.TextInputLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:inputType="number" />
-            </com.google.android.material.textfield.TextInputLayout>
+                    android:hint="Age"
+                    android:layout_marginTop="16dp"
+                    app:boxBackgroundMode="outline"
+                    app:boxCornerRadiusTopStart="12dp"
+                    app:boxCornerRadiusTopEnd="12dp"
+                    app:boxCornerRadiusBottomStart="12dp"
+                    app:boxCornerRadiusBottomEnd="12dp"
+                    app:boxStrokeColor="@color/primary"
+                    app:boxStrokeWidth="1dp"
+                    app:boxStrokeWidthFocused="2dp"
+                    app:hintTextColor="@color/primary"
+                    app:startIconDrawable="@drawable/ic_cake"
+                    app:startIconTint="@color/primary">
+                    <com.google.android.material.textfield.TextInputEditText
+                        android:id="@+id/etAge"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:inputType="number"
+                         />
+                </com.google.android.material.textfield.TextInputLayout>
 
-            <!-- Gender -->
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Gender"
-                android:textStyle="bold"
-                android:layout_marginTop="12dp"
-                android:textColor="@color/black" />
-            <RadioGroup
-                android:id="@+id/genderOption"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="horizontal"
-                android:layout_marginTop="4dp">
-                <RadioButton
-                    android:id="@+id/maleOption"
+                <!-- Gender -->
+                <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="Male"
-                    android:textColor="@color/black" />
-                <RadioButton
-                    android:id="@+id/femaleOption"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="Female"
-                    android:textColor="@color/black"
-                    android:layout_marginStart="16dp" />
-            </RadioGroup>
+                    android:text="Gender"
+                    android:textStyle="bold"
+                    android:layout_marginTop="16dp"
+                    android:textColor="@android:color/black"
+                    android:textSize="16sp" />
 
-            <!-- Purpose -->
-            <com.google.android.material.textfield.TextInputLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:hint="Purpose (e.g., Friendship, Dating)"
-                android:layout_marginTop="12dp">
-                <com.google.android.material.textfield.TextInputEditText
-                    android:id="@+id/etPurpose"
+                <RadioGroup
+                    android:id="@+id/genderOption"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:inputType="text" />
-            </com.google.android.material.textfield.TextInputLayout>
+                    android:orientation="horizontal"
+                    android:layout_marginTop="8dp">
+                    <com.google.android.material.radiobutton.MaterialRadioButton
+                        android:id="@+id/maleOption"
+                        style="@style/Widget.MaterialComponents.Button.OutlinedButton"
+                        android:layout_width="0dp"
+                        android:layout_height="48dp"
+                        android:layout_weight="1"
+                        android:text="Male"
+                        android:textColor="@color/primary"
+                        app:strokeColor="@color/primary"
+                        app:strokeWidth="1dp"
+                        app:cornerRadius="12dp"
+                     />
+                    <com.google.android.material.radiobutton.MaterialRadioButton
+                        android:id="@+id/femaleOption"
+                        style="@style/Widget.MaterialComponents.Button.OutlinedButton"
+                        android:layout_width="0dp"
+                        android:layout_height="48dp"
+                        android:layout_weight="1"
+                        android:text="Female"
+                        android:layout_marginStart="12dp"
+                        android:textColor="@color/primary"
+                        app:strokeColor="@color/primary"
+                        app:strokeWidth="1dp"
+                        app:cornerRadius="12dp"
+                        />
+                </RadioGroup>
 
-            <!-- Interests -->
-            <com.google.android.material.textfield.TextInputLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:hint="Interests / Hobbies (comma separated)"
-                android:layout_marginTop="12dp">
-                <com.google.android.material.textfield.TextInputEditText
-                    android:id="@+id/etInterests"
+                <!-- Purpose -->
+                <com.google.android.material.textfield.TextInputLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:inputType="text" />
-            </com.google.android.material.textfield.TextInputLayout>
+                    android:hint="Purpose (e.g., Friendship, Dating)"
+                    android:layout_marginTop="16dp"
+                    app:boxBackgroundMode="outline"
+                    app:boxCornerRadiusTopStart="12dp"
+                    app:boxCornerRadiusTopEnd="12dp"
+                    app:boxCornerRadiusBottomStart="12dp"
+                    app:boxCornerRadiusBottomEnd="12dp"
+                    app:boxStrokeColor="@color/primary"
+                    app:boxStrokeWidth="1dp"
+                    app:boxStrokeWidthFocused="2dp"
+                    app:hintTextColor="@color/primary"
+                    app:startIconDrawable="@drawable/ic_heart"
+                    app:startIconTint="@color/primary">
+                    <com.google.android.material.textfield.TextInputEditText
+                        android:id="@+id/etPurpose"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:inputType="text" />
+                </com.google.android.material.textfield.TextInputLayout>
 
-            <!-- Bio -->
-            <com.google.android.material.textfield.TextInputLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:hint="Short Bio"
-                android:layout_marginTop="12dp">
-                <com.google.android.material.textfield.TextInputEditText
-                    android:id="@+id/etBio"
+                <!-- Interests -->
+                <com.google.android.material.textfield.TextInputLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:inputType="textMultiLine"
-                    android:minLines="3"
-                    android:maxLines="5" />
-            </com.google.android.material.textfield.TextInputLayout>
+                    android:hint="Interests / Hobbies (comma separated)"
+                    android:layout_marginTop="16dp"
+                    app:boxBackgroundMode="outline"
+                    app:boxCornerRadiusTopStart="12dp"
+                    app:boxCornerRadiusTopEnd="12dp"
+                    app:boxCornerRadiusBottomStart="12dp"
+                    app:boxCornerRadiusBottomEnd="12dp"
+                    app:boxStrokeColor="@color/primary"
+                    app:boxStrokeWidth="1dp"
+                    app:boxStrokeWidthFocused="2dp"
+                    app:hintTextColor="@color/primary"
+                    app:startIconDrawable="@drawable/ic_interests"
+                    app:startIconTint="@color/primary">
+                    <com.google.android.material.textfield.TextInputEditText
+                        android:id="@+id/etInterests"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:inputType="text"
+                         />
+                </com.google.android.material.textfield.TextInputLayout>
 
-            <!-- Job -->
-            <com.google.android.material.textfield.TextInputLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:hint="Job / Occupation"
-                android:layout_marginTop="12dp">
-                <com.google.android.material.textfield.TextInputEditText
-                    android:id="@+id/etJob"
+                <!-- Bio -->
+                <com.google.android.material.textfield.TextInputLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:inputType="text" />
-            </com.google.android.material.textfield.TextInputLayout>
+                    android:hint="Short Bio"
+                    android:layout_marginTop="16dp"
+                    app:boxBackgroundMode="outline"
+                    app:boxCornerRadiusTopStart="12dp"
+                    app:boxCornerRadiusTopEnd="12dp"
+                    app:boxCornerRadiusBottomStart="12dp"
+                    app:boxCornerRadiusBottomEnd="12dp"
+                    app:boxStrokeColor="@color/primary"
+                    app:boxStrokeWidth="1dp"
+                    app:boxStrokeWidthFocused="2dp"
+                    app:hintTextColor="@color/primary"
+                    app:startIconDrawable="@drawable/edit"
+                    app:startIconTint="@color/primary">
+                    <com.google.android.material.textfield.TextInputEditText
+                        android:id="@+id/etBio"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:inputType="textMultiLine"
+                        android:minLines="3"
+                        android:maxLines="5"
+                         />
+                </com.google.android.material.textfield.TextInputLayout>
 
-            <!-- Education -->
-            <com.google.android.material.textfield.TextInputLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:hint="Education / Degree"
-                android:layout_marginTop="12dp">
-                <com.google.android.material.textfield.TextInputEditText
-                    android:id="@+id/etEducation"
+                <!-- Job -->
+                <com.google.android.material.textfield.TextInputLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:inputType="text" />
-            </com.google.android.material.textfield.TextInputLayout>
-        </LinearLayout>
+                    android:hint="Job / Occupation"
+                    android:layout_marginTop="16dp"
+                    app:boxBackgroundMode="outline"
+                    app:boxCornerRadiusTopStart="12dp"
+                    app:boxCornerRadiusTopEnd="12dp"
+                    app:boxCornerRadiusBottomStart="12dp"
+                    app:boxCornerRadiusBottomEnd="12dp"
+                    app:boxStrokeColor="@color/primary"
+                    app:boxStrokeWidth="1dp"
+                    app:boxStrokeWidthFocused="2dp"
+                    app:hintTextColor="@color/primary"
+                    app:startIconDrawable="@drawable/ic_work"
+                    app:startIconTint="@color/primary">
+                    <com.google.android.material.textfield.TextInputEditText
+                        android:id="@+id/etJob"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:inputType="text"
+                         />
+                </com.google.android.material.textfield.TextInputLayout>
+
+                <!-- Education -->
+                <com.google.android.material.textfield.TextInputLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:hint="Education / Degree"
+                    android:layout_marginTop="16dp"
+                    app:boxBackgroundMode="outline"
+                    app:boxCornerRadiusTopStart="12dp"
+                    app:boxCornerRadiusTopEnd="12dp"
+                    app:boxCornerRadiusBottomStart="12dp"
+                    app:boxCornerRadiusBottomEnd="12dp"
+                    app:boxStrokeColor="@color/primary"
+                    app:boxStrokeWidth="1dp"
+                    app:boxStrokeWidthFocused="2dp"
+                    app:hintTextColor="@color/primary"
+                    app:startIconDrawable="@drawable/ic_education"
+                    app:startIconTint="@color/primary">
+                    <com.google.android.material.textfield.TextInputEditText
+                        android:id="@+id/etEducation"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:inputType="text"
+                     />
+                </com.google.android.material.textfield.TextInputLayout>
+            </LinearLayout>
+        </com.google.android.material.card.MaterialCardView>
 
         <!-- Save / Continue Button -->
-        <Button
+        <com.google.android.material.button.MaterialButton
             android:id="@+id/btnSaveProfile"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
+            android:layout_height="56dp"
             android:text="Save and Continue"
             android:layout_marginBottom="24dp"
             android:backgroundTint="@color/primary"
-            android:textColor="@color/white"
-            android:elevation="4dp" />
-
+            android:textColor="@android:color/white"
+            app:cornerRadius="16dp"
+            android:gravity="center"
+            app:icon="@drawable/ic_check"
+            app:iconTint="@android:color/white"
+            app:iconGravity="textStart"
+            app:iconPadding="8dp"
+            android:elevation="4dp"
+            />
     </LinearLayout>
 </androidx.core.widget.NestedScrollView>

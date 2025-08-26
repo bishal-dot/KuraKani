@@ -137,7 +137,7 @@ public class EditProfileActivity extends AppCompatActivity implements PhotosAdap
                     etJob.setText(user.job != null ? user.job : "");
                     etEducation.setText(user.education != null ? user.education : "");
                     etBio.setText(user.about != null ? user.about : "");
-                    etInterests.setText(user.interests != null ? String.join(", ", user.interests) : "");
+                    etInterests.setText(user.getInterests() != null ? String.join(", ", user.getInterests()) : "");
 
                     String profileUrl = (user.profile != null && !user.profile.trim().isEmpty())
                             ? user.profile.trim() : null;
