@@ -1,55 +1,49 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.cardview.widget.CardView
+<LinearLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:layout_marginBottom="8dp"
-    app:cardBackgroundColor="@color/primary_color"
-    app:cardCornerRadius="12dp"
-    >
+    android:orientation="horizontal"
+    android:padding="12dp"
+    android:background="@drawable/curved_rectangle"
+    android:layout_marginBottom="8dp">
 
+    <!-- Profile Image -->
+    <ImageView
+        android:id="@+id/profileAvatar"
+        android:layout_width="60dp"
+        android:layout_height="60dp"
+        android:layout_marginEnd="12dp"
+        android:scaleType="centerCrop"
+        android:src="@drawable/john"
+        android:background="@drawable/circle_shape"
+        android:clipToOutline="true"/>
+
+    <!-- Name, Age, Bio -->
     <LinearLayout
-        android:orientation="horizontal"
-        android:padding="12dp"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content">
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_weight="1"
+        android:orientation="vertical">
 
-        <ImageView
-            android:id="@+id/profileAvatar"
-            android:layout_width="64dp"
-            android:layout_height="64dp"
-            android:layout_marginEnd="12dp"
-            android:scaleType="centerCrop"
-            android:src="@drawable/hero"
-            android:background="@drawable/circle_shape"
-            android:contentDescription="Profile avatar"
-            android:layout_gravity="center_vertical"
-            android:clipToOutline="true" />
+        <TextView
+            android:id="@+id/textNameAge"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="John, 25"
+            android:textSize="16sp"
+            android:textStyle="bold"
+            android:textColor="@android:color/black"/>
 
-        <LinearLayout
-            android:orientation="vertical"
-            android:layout_width="0dp"
-            android:layout_weight="1"
-            android:layout_height="wrap_content">
-
-            <TextView
-                android:id="@+id/textNameAge"
-                android:text="John, 24"
-                android:textStyle="bold"
-                android:textSize="16sp"
-                android:textColor="@color/white"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content" />
-
-            <TextView
-                android:id="@+id/textBio"
-                android:text="Chai lover • Bookworm • Traveler 🌏"
-                android:textSize="14sp"
-                android:textColor="@color/white"
-                android:layout_marginTop="4dp"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content" />
-        </LinearLayout>
+        <TextView
+            android:id="@+id/textBio"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="This is a short bio about the user..."
+            android:textSize="14sp"
+            android:textColor="@android:color/darker_gray"
+            android:ellipsize="end"
+            android:maxLines="2"/>
     </LinearLayout>
-</androidx.cardview.widget.CardView>
+
+</LinearLayout>

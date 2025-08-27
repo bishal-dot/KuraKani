@@ -128,19 +128,19 @@ public class EditProfileActivity extends AppCompatActivity implements PhotosAdap
         apiService.getProfile().enqueue(new Callback<ProfileResponse>() {
             @Override
             public void onResponse(Call<ProfileResponse> call, Response<ProfileResponse> response) {
-                if (response.isSuccessful() && response.body() != null && response.body().user != null) {
-                    ProfileResponse.User user = response.body().user;
+                if (response.isSuccessful() && response.body() != null && response.body().getUser() != null) {
+                    ProfileResponse.User user = response.body().getUser();
 
-                    etFullName.setText(user.fullname != null ? user.fullname : "");
-                    etAge.setText(user.age != null ? String.valueOf(user.age) : "");
-                    etPurpose.setText(user.purpose != null ? user.purpose : "");
-                    etJob.setText(user.job != null ? user.job : "");
-                    etEducation.setText(user.education != null ? user.education : "");
-                    etBio.setText(user.about != null ? user.about : "");
-                    etInterests.setText(user.interests != null ? String.join(", ", user.interests) : "");
+                    etFullName.setText(user.getFullname() != null ? user.getFullname() : "");
+                    etAge.setText(user.getAge() != null ? String.valueOf(user.getAge()) : "");
+                    etPurpose.setText(user.getPurpose() != null ? user.getPurpose() : "");
+                    etJob.setText(user.getJob() != null ? user.getJob() : "");
+                    etEducation.setText(user.getEducation() != null ? user.getEducation() : "");
+                    etBio.setText(user.getAbout() != null ? user.getAbout() : "");
+                    etInterests.setText(user.getInterests() != null ? String.join(", ", user.getInterests()) : "");
 
-                    String profileUrl = (user.profile != null && !user.profile.trim().isEmpty())
-                            ? user.profile.trim() : null;
+                    String profileUrl = (user.getProfile() != null && !user.getProfile().trim().isEmpty())
+                            ? user.getProfile().trim() : null;
 
                     Glide.with(EditProfileActivity.this)
                             .load(profileUrl != null ? profileUrl : R.drawable.john)
@@ -150,7 +150,7 @@ public class EditProfileActivity extends AppCompatActivity implements PhotosAdap
                             .into(profileImage);
 
                     uploadedPhotos.clear();
-                    if (user.photos != null) uploadedPhotos.addAll(user.getUserPhotos());
+                    if (user.getUserPhotos() != null) uploadedPhotos.addAll(user.getUserPhotos());
                     photosAdapter.notifyDataSetChanged();
 
                 } else {
@@ -217,8 +217,8 @@ public class EditProfileActivity extends AppCompatActivity implements PhotosAdap
     private void uploadOtherPhoto(Uri photoUri) {
         try {
             InputStream inputStream = getContentResolver().openInputStream(photoUri);
-            byte[] bytes = inputStream.readAllBytes();
-            inputStream.close();
+            byte[] bytes = readBytesFromStream(inputStream);
+            if (inputStream != null) inputStream.close();
 
             RequestBody requestFile = RequestBody.create(bytes, MediaType.parse("image/jpeg"));
             MultipartBody.Part body = MultipartBody.Part.createFormData("photos", "photo.jpg", requestFile);
@@ -250,6 +250,18 @@ public class EditProfileActivity extends AppCompatActivity implements PhotosAdap
             e.printStackTrace();
             Toast.makeText(this, "Failed to read image", Toast.LENGTH_SHORT).show();
         }
+    }
+
+    // ✅ Safe replacement for readAllBytes() compatible with API 26+
+    private byte[] readBytesFromStream(InputStream inputStream) throws IOException {
+        if (inputStream == null) return new byte[0];
+        ByteArrayOutputStream buffer = new ByteArrayOutputStream();
+        int nRead;
+        byte[] data = new byte[4096];
+        while ((nRead = inputStream.read(data, 0, data.length)) != -1) {
+            buffer.write(data, 0, nRead);
+        }
+        return buffer.toByteArray();
     }
 
     private void updateProfile() {
@@ -313,10 +325,10 @@ public class EditProfileActivity extends AppCompatActivity implements PhotosAdap
     @Override
     public void onPhotoDeleteClick(int position, ProfileResponse.UserPhoto photo) {
         ApiService apiService = RetrofitClient.getInstance(this).create(ApiService.class);
-        apiService.deletePhoto(photo.id).enqueue(new Callback<DeletePhotoResponse>() {
+        apiService.deletePhoto(photo.getId()).enqueue(new Callback<DeletePhotoResponse>() {
             @Override
             public void onResponse(Call<DeletePhotoResponse> call, Response<DeletePhotoResponse> response) {
-                if (response.isSuccessful() && response.body() != null && !response.body().error) {
+                if (response.isSuccessful() && response.body() != null && !response.body().isError()) {
                     uploadedPhotos.remove(position);
                     photosAdapter.notifyItemRemoved(position);
                     Toast.makeText(EditProfileActivity.this, "Photo deleted successfully", Toast.LENGTH_SHORT).show();

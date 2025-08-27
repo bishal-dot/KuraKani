@@ -1,211 +1,59 @@
 <?xml version="1.0" encoding="utf-8"?>
-<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/background"
-    tools:context=".IndividualChat">
+    android:background="@color/background">
 
-<!--    <androidx.constraintlayout.widget.ConstraintLayout-->
-<!--        android:layout_width="match_parent"-->
-<!--        android:layout_height="match_parent"-->
-<!--        android:background="@color/light_blue_bg">-->
-
-<!--        <LinearLayout-->
-<!--            android:layout_width="match_parent"-->
-<!--            android:layout_height="wrap_content"-->
-<!--            android:padding="10dp"-->
-<!--            android:gravity="center"-->
-<!--            app:layout_constraintEnd_toEndOf="parent"-->
-<!--            app:layout_constraintStart_toStartOf="parent"-->
-<!--            app:layout_constraintTop_toTopOf="parent">-->
-
-<!--            <ImageButton-->
-<!--                android:id="@+id/backButton"-->
-<!--                android:layout_width="40dp"-->
-<!--                android:layout_height="40dp"-->
-<!--                android:background="@drawable/circle_shape"-->
-<!--                android:src="@drawable/arrow_back" />-->
-
-<!--            <TextView-->
-<!--                android:layout_width="100dp"-->
-<!--                android:layout_height="wrap_content"-->
-<!--                android:text="Anil Sir"-->
-<!--                android:textSize="23sp"-->
-<!--                android:textColor="@color/black"-->
-<!--                android:textStyle="bold"-->
-<!--                android:layout_weight="1"-->
-<!--                android:gravity="center"-->
-<!--                />-->
-
-<!--&lt;!&ndash;            <ImageButton&ndash;&gt;-->
-<!--&lt;!&ndash;                android:layout_width="40dp"&ndash;&gt;-->
-<!--&lt;!&ndash;                android:layout_height="40dp"&ndash;&gt;-->
-<!--&lt;!&ndash;                android:backgroundTint="@color/primary_color"&ndash;&gt;-->
-<!--&lt;!&ndash;                android:src="@drawable/three_dots"&ndash;&gt;-->
-<!--&lt;!&ndash;                android:background="@drawable/circle_shape"/>&ndash;&gt;-->
-
-<!--        </LinearLayout>-->
-
-<!--        <LinearLayout-->
-<!--            android:layout_width="0dp"-->
-<!--            android:layout_height="wrap_content"-->
-<!--            android:orientation="horizontal"-->
-<!--            android:gravity="center"-->
-<!--            android:layout_marginBottom="10dp"-->
-<!--            app:layout_constraintBottom_toBottomOf="parent"-->
-<!--            app:layout_constraintEnd_toEndOf="parent"-->
-<!--            app:layout_constraintStart_toStartOf="parent">-->
-
-
-<!--            <EditText-->
-<!--                android:layout_width="match_parent"-->
-<!--                android:layout_height="wrap_content"-->
-<!--                android:layout_weight="1"-->
-<!--                android:hint="Message..."-->
-<!--                android:padding="10dp"-->
-<!--                android:textColor="@color/black"-->
-<!--                android:background="@color/white"-->
-<!--                />-->
-
-<!--            <ImageButton-->
-<!--                android:layout_width="40dp"-->
-<!--                android:layout_weight="0"-->
-<!--                android:layout_marginLeft="10dp"-->
-<!--                android:layout_height="40dp"-->
-<!--                android:background="@drawable/circle_shape"-->
-<!--                android:backgroundTint="@color/primary_color"-->
-<!--                android:src="@drawable/send" />-->
-<!--        </LinearLayout>-->
-
-
-<!--    </androidx.constraintlayout.widget.ConstraintLayout>-->
-    <!-- Header -->
-<!--    <LinearLayout-->
-<!--        android:layout_width="match_parent"-->
-<!--        android:layout_height="70dp"-->
-<!--        android:background="@color/primary_color"-->
-<!--        android:gravity="center"-->
-<!--        android:padding="12dp">-->
-
-<!--        <ImageButton-->
-<!--        android:id="@+id/backButton"-->
-<!--        android:layout_width="40dp"-->
-<!--        android:layout_height="40dp"-->
-<!--        android:background="@drawable/circle_shape"-->
-<!--        android:src="@drawable/arrow_back" />-->
-
-<!--        <TextView-->
-<!--            android:id="@+id/tvHeader"-->
-<!--            android:text="Chat with User #2"-->
-<!--            android:textStyle="bold"-->
-<!--            android:textSize="25sp"-->
-<!--            android:textColor="#FFFFFF"-->
-<!--            android:gravity="center"-->
-<!--            android:layout_weight="1"-->
-<!--            android:layout_width="wrap_content"-->
-<!--            android:layout_height="wrap_content"/>-->
-<!--    </LinearLayout>-->
-<!--    <LinearLayout-->
-<!--        android:layout_width="match_parent"-->
-<!--        android:layout_height="match_parent"-->
-<!--        android:orientation="vertical">-->
-
-<!--        <androidx.recyclerview.widget.RecyclerView-->
-<!--            android:id="@+id/recyclerViewMessages"-->
-<!--            android:layout_width="match_parent"-->
-<!--            android:layout_height="0dp"-->
-<!--            android:layout_weight="1"-->
-<!--            android:padding="8dp" />-->
-
-<!--        <LinearLayout-->
-<!--            android:layout_width="match_parent"-->
-<!--            android:layout_height="wrap_content"-->
-<!--            android:orientation="horizontal"-->
-<!--            android:padding="8dp">-->
-
-<!--            <EditText-->
-<!--                android:id="@+id/editTextMessage"-->
-<!--                android:layout_width="0dp"-->
-<!--                android:layout_height="wrap_content"-->
-<!--                android:layout_weight="1"-->
-<!--                android:hint="Type a message"/>-->
-
-<!--            <Button-->
-<!--                android:id="@+id/buttonSend"-->
-<!--                android:layout_width="wrap_content"-->
-<!--                android:layout_height="wrap_content"-->
-<!--                android:backgroundTint="@color/primary_color"-->
-<!--                android:text="Send"/>-->
-<!--        </LinearLayout>-->
-
-<!--    </LinearLayout>-->
-
-    <LinearLayout
-        android:orientation="vertical"
+    <!-- Toolbar / Header showing user name -->
+    <TextView
+        android:id="@+id/tvChatWithUser"
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:layout_height="wrap_content"
+        android:text="Chat with User"
+        android:textColor="@color/primary_color"
+        android:textSize="20sp"
+        android:textStyle="bold"
+        android:background="@color/white"
+        android:padding="20dp" />
 
-        <!-- header (optional) -->
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="75dp"
-            android:background="#FF4081"
-            android:padding="12dp">
+    <!-- Messages RecyclerView -->
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/rvMessages"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1"
+        android:clipToPadding="false"
+        android:padding="8dp" />
 
-            <ImageButton
-            android:id="@+id/backButton"
+    <!-- Input field to send new message -->
+    <LinearLayout
+        android:orientation="horizontal"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center"
+        android:padding="8dp">
+
+        <EditText
+            android:id="@+id/etMessage"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:hint="Type a message"
+            android:background="@drawable/curved_rectangle"
+            android:padding="12dp"
+            android:layout_margin="10dp"
+            android:inputType="textMultiLine" />
+
+        <ImageButton
+            android:id="@+id/btnSend"
             android:layout_width="50dp"
             android:layout_height="50dp"
-             android:contentDescription="BackButton"
             android:background="@drawable/circle_shape"
-            android:src="@drawable/arrow_back" />
-            <TextView
-                android:id="@+id/tvHeader"
-                android:text="Chat"
-                android:textSize="30sp"
-                android:textStyle="bold"
-                android:textColor="#FFFFFF"
-                android:gravity="center"
-                android:layout_weight="1"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"/>
-        </LinearLayout>
-
-        <androidx.recyclerview.widget.RecyclerView
-            android:id="@+id/recyclerViewMessages"
-            android:layout_width="match_parent"
-            android:layout_height="0dp"
-            android:layout_weight="1"
-            android:padding="8dp"
-            android:clipToPadding="false"/>
-
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="horizontal"
-            android:padding="8dp">
-
-            <EditText
-                android:id="@+id/etMessage"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:maxLines="4"
-                android:hint="Type a message..."
-                android:padding="12dp"
-                android:background="@drawable/bg_input"/>
-
-            <Button
-                android:id="@+id/btnSend"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Send"
-                android:backgroundTint="@color/primary_color"
-                android:layout_marginStart="8dp"/>
-        </LinearLayout>
+            android:clipToOutline="true"
+            android:backgroundTint="@color/primary_color"
+            android:src="@drawable/send"
+            android:contentDescription="Send" />
     </LinearLayout>
-
-
-</FrameLayout>
+</LinearLayout>

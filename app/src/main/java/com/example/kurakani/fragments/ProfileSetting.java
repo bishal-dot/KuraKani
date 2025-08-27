@@ -131,14 +131,14 @@ public class ProfileSetting extends Fragment {
             public void onResponse(Call<ProfileResponse> call, Response<ProfileResponse> response) {
                 if (!isAdded()) return; // Fragment detached, do nothing
 
-                if (response.isSuccessful() && response.body() != null && !response.body().error) {
-                    ProfileResponse.User user = response.body().user;
+                if (response.isSuccessful() && response.body() != null && !response.body().isError()) {
+                    ProfileResponse.User user = response.body().getUser();
 
                     if (user != null) {
-                        tvUserName.setText(user.fullname != null ? user.fullname : user.username);
-                        tvUserEmail.setText(user.email != null ? user.email : "-");
+                        tvUserName.setText(user.getFullname() != null ? user.getFullname() : user.getUsername());
+                        tvUserEmail.setText(user.getEmail() != null ? user.getEmail() : "-");
 
-                        String imageUrl = user.profile != null ? user.profile.trim() : null;
+                        String imageUrl = user.getProfile() != null ? user.getProfile().trim() : null;
 
                         if (getContext() != null) {
                             Glide.with(getContext())
