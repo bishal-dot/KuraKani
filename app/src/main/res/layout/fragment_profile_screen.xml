@@ -53,7 +53,6 @@
                     android:id="@+id/ivProfilePhoto"
                     android:layout_width="120dp"
                     android:layout_height="120dp"
-                    android:src="@drawable/john"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toTopOf="parent" />
@@ -326,6 +325,32 @@
             </androidx.constraintlayout.widget.ConstraintLayout>
         </com.google.android.material.card.MaterialCardView>
 
+        <!-- Upload Photo Banner -->
+        <com.google.android.material.card.MaterialCardView
+            android:id="@+id/uploadPhotoBanner"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginHorizontal="16dp"
+            android:layout_marginTop="16dp"
+            android:visibility="gone"
+            app:cardCornerRadius="12dp"
+            app:cardBackgroundColor="@color/primary_color_light"
+            app:layout_constraintTop_toBottomOf="@id/profileCard"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent">
+
+            <TextView
+                android:id="@+id/tvUploadBanner"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:padding="12dp"
+                android:text="You haven’t uploaded a profile picture yet. Tap here to add one!"
+                android:textColor="@color/white"
+                android:textAlignment="center"
+                android:textSize="14sp" />
+        </com.google.android.material.card.MaterialCardView>
+
+
         <!-- Photo Gallery -->
         <TextView
             android:layout_width="wrap_content"
@@ -336,7 +361,7 @@
             android:textColor="@color/primary_dark"
             android:textSize="18sp"
             android:textStyle="bold"
-            app:layout_constraintTop_toBottomOf="@id/profileCard"
+            app:layout_constraintTop_toBottomOf="@id/uploadPhotoBanner"
             app:layout_constraintStart_toStartOf="parent" />
 
 

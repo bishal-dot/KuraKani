@@ -49,6 +49,7 @@ public class ChangePasswordActivity extends AppCompatActivity {
         updateButton = findViewById(R.id.update_button);
         backButton = findViewById(R.id.back_button);
 
+//        api = RetrofitClient.getInstance(this).getApi();
         api = RetrofitClient.getClient(this).create(ApiService.class);
 
         // Password strength listener
@@ -130,7 +131,7 @@ public class ChangePasswordActivity extends AppCompatActivity {
                         Toast.makeText(ChangePasswordActivity.this, "Password updated successfully!", Toast.LENGTH_SHORT).show();
                         finish();
                     } else {
-                        Toast.makeText(ChangePasswordActivity.this, response.body().getMessage(), Toast.LENGTH_SHORT).show();
+                        Toast.makeText(ChangePasswordActivity.this, response.body().message, Toast.LENGTH_SHORT).show();
                     }
                 } else {
                     Toast.makeText(ChangePasswordActivity.this, "Something went wrong", Toast.LENGTH_SHORT).show();

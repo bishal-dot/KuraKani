@@ -1,9 +1,12 @@
 package com.example.kurakani.fragments;
 
+import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.text.TextUtils;
+import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -15,12 +18,14 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.bumptech.glide.Glide;
 import com.example.kurakani.R;
 import com.example.kurakani.Adapter.PhotosAdapter;
-import com.example.kurakani.model.ProfileResponse;
 import com.example.kurakani.model.DeletePhotoResponse;
+import com.example.kurakani.model.ProfileResponse;
 import com.example.kurakani.network.ApiService;
 import com.example.kurakani.network.RetrofitClient;
 import com.example.kurakani.views.EditProfileActivity;
 import com.google.android.material.button.MaterialButton;
+import com.google.android.material.card.MaterialCardView;
+import com.google.gson.JsonObject;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -36,18 +41,18 @@ public class ProfileScreen extends Fragment implements PhotosAdapter.PhotoClickL
     private MaterialButton btnEditProfile;
     private RecyclerView photoStripRecycler;
     private PhotosAdapter photosAdapter;
-    private List<ProfileResponse.UserPhoto> userPhotos = new ArrayList<>();
-
+    private MaterialCardView uploadPhotoBanner;
+    private TextView tvUploadBanner;
+    private List<ProfileResponse.User.UserPhoto> userPhotos = new ArrayList<>();
     private static final int EDIT_PROFILE_REQUEST = 1001;
 
-    public ProfileScreen() { }
+    public ProfileScreen() {}
 
     @Override
-    public android.view.View onCreateView(android.view.LayoutInflater inflater, android.view.ViewGroup container,
-                                          Bundle savedInstanceState) {
-        android.view.View view = inflater.inflate(R.layout.fragment_profile_screen, container, false);
+    public View onCreateView(android.view.LayoutInflater inflater, android.view.ViewGroup container,
+                             Bundle savedInstanceState) {
+        View view = inflater.inflate(R.layout.fragment_profile_screen, container, false);
 
-        // Bind views
         tvUsername = view.findViewById(R.id.tvUsername);
         tvFullName = view.findViewById(R.id.tvFullName);
         tvAge = view.findViewById(R.id.tvAge);
@@ -62,39 +67,31 @@ public class ProfileScreen extends Fragment implements PhotosAdapter.PhotoClickL
         backButton = view.findViewById(R.id.backButton);
         btnEditProfile = view.findViewById(R.id.btnEditProfile);
         photoStripRecycler = view.findViewById(R.id.photoStrip);
+        uploadPhotoBanner = view.findViewById(R.id.uploadPhotoBanner);
+        tvUploadBanner = view.findViewById(R.id.tvUploadBanner);
 
-        // RecyclerView
         photosAdapter = new PhotosAdapter(requireContext(), userPhotos, this);
         photoStripRecycler.setLayoutManager(new LinearLayoutManager(requireContext(), LinearLayoutManager.HORIZONTAL, false));
         photoStripRecycler.setAdapter(photosAdapter);
 
-        backButton.setOnClickListener(v -> {
-            if (isAdded()) getActivity().onBackPressed();
-        });
+        backButton.setOnClickListener(v -> { if (isAdded()) getActivity().onBackPressed(); });
 
-        btnEditProfile.setOnClickListener(v -> {
-            if (!isAdded() || getActivity() == null) return;
-            Intent intent = new Intent(requireActivity(), EditProfileActivity.class);
-            startActivityForResult(intent, EDIT_PROFILE_REQUEST);
-        });
+        tvUploadBanner.setOnClickListener(v -> openEditProfile());
+        btnEditProfile.setOnClickListener(v -> openEditProfile());
 
         fetchProfile();
-
         return view;
+    }
+
+    private void openEditProfile() {
+        if (!isAdded() || getActivity() == null) return;
+        startActivityForResult(new Intent(requireActivity(), EditProfileActivity.class), EDIT_PROFILE_REQUEST);
     }
 
     @Override
     public void onResume() {
         super.onResume();
-        fetchProfile(); // ensure refresh after edit
-    }
-
-    @Override
-    public void onActivityResult(int requestCode, int resultCode, Intent data) {
-        super.onActivityResult(requestCode, resultCode, data);
-        if (requestCode == EDIT_PROFILE_REQUEST && resultCode == android.app.Activity.RESULT_OK) {
-            fetchProfile(); // Refresh after profile update
-        }
+        fetchProfile();
     }
 
     private void fetchProfile() {
@@ -102,7 +99,6 @@ public class ProfileScreen extends Fragment implements PhotosAdapter.PhotoClickL
 
         SharedPreferences prefs = requireContext().getSharedPreferences("KurakaniPrefs", Context.MODE_PRIVATE);
         String token = prefs.getString("auth_token", "");
-
         if (token.isEmpty()) {
             Toast.makeText(requireContext(), "Token not found, try login/signup again", Toast.LENGTH_SHORT).show();
             return;
@@ -114,38 +110,37 @@ public class ProfileScreen extends Fragment implements PhotosAdapter.PhotoClickL
             public void onResponse(Call<ProfileResponse> call, Response<ProfileResponse> response) {
                 if (!isAdded()) return;
 
-                if (response.isSuccessful() && response.body() != null && !response.body().error) {
-                    ProfileResponse.User user = response.body().user;
+                if (response.isSuccessful() && response.body() != null && response.body().getUser() != null) {
+                    ProfileResponse.User user = response.body().getUser();
 
-                    if (user != null) {
-                        tvUsername.setText(user.username != null ? user.username : user.fullname);
-                        tvFullName.setText(user.fullname != null ? user.fullname : tvUsername.getText().toString());
-                        tvAge.setText(user.age != null ? String.valueOf(user.age) : "-");
-                        tvGender.setText(user.gender != null ? user.gender : "-");
-                        tvPurpose.setText(user.purpose != null ? user.purpose : "-");
-                        tvJob.setText(user.job != null ? user.job : "-");
-                        tvEducation.setText(user.education != null ? user.education : "-");
-                        tvBio.setText(user.about != null ? user.about : "-");
-                        tvInterests.setText(user.getInterests() != null ? String.join(", ", user.getInterests()) : "-");
-                        tvMatches.setText(String.valueOf(user.matches_count));
+                    tvUsername.setText(user.username != null ? user.username : user.fullname);
+                    tvFullName.setText(user.fullname != null ? user.fullname : tvUsername.getText().toString());
+                    tvAge.setText(user.age != null ? String.valueOf(user.age) : "-");
+                    tvGender.setText(user.gender != null ? user.gender : "-");
+                    tvPurpose.setText(user.purpose != null ? user.purpose : "-");
+                    tvJob.setText(user.job != null ? user.job : "-");
+                    tvEducation.setText(user.education != null ? user.education : "-");
+                    tvBio.setText(user.about != null ? user.about : "-");
+                    tvInterests.setText(user.interests != null && !user.interests.isEmpty() ? TextUtils.join(", ", user.interests) : "-");
+                    tvMatches.setText(String.valueOf(user.matches_count));
 
-                        String profileUrl = user.profile != null ? user.profile.trim() : null;
+                    String profileUrl = user.profile != null && !user.profile.trim().isEmpty() ? user.profile.trim() : null;
+                    Glide.with(requireContext())
+                            .load(profileUrl != null ? profileUrl + "?t=" + System.currentTimeMillis() : R.drawable.default_avatar)
+                            .placeholder(R.drawable.default_avatar)
+                            .error(R.drawable.default_avatar)
+                            .circleCrop()
+                            .into(ivProfilePhoto);
 
-                        // Glide with cache bypass
-                        Glide.with(requireContext())
-                                .load(profileUrl != null ? profileUrl + "?t=" + System.currentTimeMillis() : R.drawable.profile_icon)
-                                .placeholder(R.drawable.default_avatar)
-                                .error(R.drawable.default_avatar)
-                                .circleCrop()
-                                .into(ivProfilePhoto);
+                    uploadPhotoBanner.setVisibility(profileUrl == null ? View.VISIBLE : View.GONE);
 
-                        // Photos
-                        userPhotos.clear();
-                        if (user.photos != null && !user.photos.isEmpty()) {
-                            userPhotos.addAll(user.getUserPhotos());
+                    userPhotos.clear();
+                    if (user.photos != null && !user.photos.isEmpty()) {
+                        for (ProfileResponse.User.UserPhoto p : user.photos) {
+                            userPhotos.add(new ProfileResponse.User.UserPhoto(p.id, p.url));
                         }
-                        photosAdapter.notifyDataSetChanged();
                     }
+                    photosAdapter.notifyDataSetChanged();
 
                 } else {
                     Toast.makeText(requireContext(), "Failed to load profile", Toast.LENGTH_SHORT).show();
@@ -161,35 +156,45 @@ public class ProfileScreen extends Fragment implements PhotosAdapter.PhotoClickL
     }
 
     @Override
-    public void onPhotoDeleteClick(int position, ProfileResponse.UserPhoto photo) {
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (requestCode == EDIT_PROFILE_REQUEST && resultCode == Activity.RESULT_OK && data != null) {
+            String newProfileUrl = data.getStringExtra("profile_url");
+            if (newProfileUrl != null && !newProfileUrl.isEmpty()) {
+                Glide.with(requireContext())
+                        .load(newProfileUrl + "?t=" + System.currentTimeMillis())
+                        .placeholder(R.drawable.default_avatar)
+                        .error(R.drawable.default_avatar)
+                        .circleCrop()
+                        .into(ivProfilePhoto);
+                uploadPhotoBanner.setVisibility(View.GONE);
+            }
+        }
+    }
+
+    @Override
+    public void onPhotoDeleteClick(int position, ProfileResponse.User.UserPhoto photo) {
         if (!isAdded()) return;
-        new androidx.appcompat.app.AlertDialog.Builder(requireContext())
-                .setTitle("Delete Photo")
-                .setMessage("Are you sure you want to delete this photo?")
-                .setPositiveButton("Delete", (dialog, which) -> {
-                    ApiService apiService = RetrofitClient.getClient(requireContext()).create(ApiService.class);
-                    apiService.deletePhoto(photo.id).enqueue(new Callback<DeletePhotoResponse>() {
-                        @Override
-                        public void onResponse(Call<DeletePhotoResponse> call, Response<DeletePhotoResponse> response) {
-                            if (!isAdded()) return;
 
-                            if (response.isSuccessful() && response.body() != null && !response.body().error) {
-                                userPhotos.remove(position);
-                                photosAdapter.notifyItemRemoved(position);
-                                Toast.makeText(requireContext(), "Photo deleted successfully", Toast.LENGTH_SHORT).show();
-                            } else {
-                                Toast.makeText(requireContext(), "Failed to delete photo", Toast.LENGTH_SHORT).show();
-                            }
-                        }
+        ApiService apiService = RetrofitClient.getClient(requireContext()).create(ApiService.class);
+        apiService.deletePhoto(photo.id).enqueue(new Callback<DeletePhotoResponse>() {
+            @Override
+            public void onResponse(Call<DeletePhotoResponse> call, Response<DeletePhotoResponse> response) {
+                if (!isAdded()) return;
+                if (response.isSuccessful() && response.body() != null && !response.body().error) {
+                    userPhotos.remove(position);
+                    photosAdapter.notifyItemRemoved(position);
+                    Toast.makeText(requireContext(), "Photo deleted successfully", Toast.LENGTH_SHORT).show();
+                } else {
+                    Toast.makeText(requireContext(), "Failed to delete photo", Toast.LENGTH_SHORT).show();
+                }
+            }
 
-                        @Override
-                        public void onFailure(Call<DeletePhotoResponse> call, Throwable t) {
-                            if (isAdded())
-                                Toast.makeText(requireContext(), "Error: " + t.getMessage(), Toast.LENGTH_SHORT).show();
-                        }
-                    });
-                })
-                .setNegativeButton("Cancel", (dialog, which) -> dialog.dismiss())
-                .show();
+            @Override
+            public void onFailure(Call<DeletePhotoResponse> call, Throwable t) {
+                if (isAdded())
+                    Toast.makeText(requireContext(), "Error: " + t.getMessage(), Toast.LENGTH_SHORT).show();
+            }
+        });
     }
 }

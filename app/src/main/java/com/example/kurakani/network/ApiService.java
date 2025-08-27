@@ -13,8 +13,10 @@
     import com.example.kurakani.model.UploadPhotosResponse;
     import com.example.kurakani.model.SearchResponse;
     import com.example.kurakani.model.VerificationResponse;
+    import com.example.kurakani.viewmodel.MatchesModel;
     import com.google.gson.JsonObject;
 
+    import java.util.HashMap;
     import java.util.List;
     import java.util.Map;
 
@@ -47,28 +49,23 @@
         @POST("user/register")
         Call<SignupResponse> registerUser(@Body SignupRequest request);
 
+        //profile verification
         @Multipart
-        @POST("verifygender/temp")
-        Call<VerificationResponse> verifyGenderTemp(
-                @Part MultipartBody.Part photo,
-                @Part("user_gender") RequestBody userGender,
-                @Part("temp_token") RequestBody tempToken
+        @POST("profile/verify")
+        Call<VerificationResponse> verifyGender(
+                @Header("Authorization") String token,
+                @Part MultipartBody.Part photo
         );
 
         // Matches your protected route: Route::post('user/completeProfile' ...)
-        @POST("profile/temp")
-        Call<ResponseBody> completeProfileTemp(
+        @POST("profile/create")
+        Call<ProfileResponse> createProfile(
                 @Header("Authorization") String token,
                 @Body ProfileRequest request
         );
-
-        @POST("profile/finalize")
-        Call<ProfileResponse> finalizeProfile(
-                @Header("Authorization") String tempToken
-        );
-
+        
         @GET("user/profile")
-        Call<ResponseBody> getProfile();
+        Call<ProfileResponse> getProfile();
 
         @GET("users/others")
         Call<List<ProfileResponse.User>> otherUsers();
@@ -82,14 +79,20 @@
 
         // Upload multiple photos
         @Multipart
-        @POST("user/profile/photos")
-        Call<UploadPhotosResponse> uploadPhotos(
-                @Part List<MultipartBody.Part> photos
+        @POST("user/profilephoto")
+        Call<JsonObject> uploadProfilePhoto(
+                @Part MultipartBody.Part profile
         );
+
 
         // Get all photos
         @GET("photos")
         Call<GetPhotosResponse> getPhotos();
+
+        // Upload profile photo
+        @Multipart
+        @POST("profile/photos")
+        Call<UploadPhotosResponse> uploadPhotos(@Part List<MultipartBody.Part> photos);
 
         // Delete a photo
         @DELETE("profile/photos/{photoId}")
@@ -137,5 +140,34 @@
                 @Field("otp") String otp,
                 @Field("new_password") String newPassword,
                 @Field("new_password_confirmation") String confirmPassword
+        );
+
+        // Match Notifications
+        @POST("send-match")
+        @FormUrlEncoded
+        Call<Void> sendNotification(
+                @Field("user_id") int userId,
+                @Field("title") String title,
+                @Field("body") String body
+        );
+
+        // update FCM Token
+        @POST("update-fcm-token")
+        Call<Void> updateFcmToken(@Body HashMap<String, String> body);
+
+        // Saving matched users in DB
+        @FormUrlEncoded
+        @POST("match")
+        Call<Void> sendMatch(
+                @Header("Authorization") String authToken,
+                @Field("user_id") int userId,
+                @Field("matched_user_id") int matchedUserId
+        );
+
+        // Fetch matches filtered by status
+        @GET("matches")
+        Call<List<MatchesModel>> getMatches(
+                @Query("user_id") int userId,
+                @Query("status") String status // pass null for "All"
         );
     }

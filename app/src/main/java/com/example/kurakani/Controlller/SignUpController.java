@@ -1,14 +1,11 @@
 package com.example.kurakani.Controlller;
 
-import android.content.Context;
 import android.util.Log;
-
 import com.example.kurakani.model.SignupRequest;
 import com.example.kurakani.model.SignupResponse;
 import com.example.kurakani.network.ApiService;
 import com.example.kurakani.network.RetrofitClient;
 import com.example.kurakani.views.SignupActivity;
-
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
@@ -46,8 +43,31 @@ public class SignUpController {
             @Override
             public void onResponse(Call<SignupResponse> call, Response<SignupResponse> response) {
                 if (response.isSuccessful() && response.body() != null && !response.body().isError()) {
-                    view.showMessage(response.body().getMessage());
-                    view.goToLogin();
+                    SignupResponse.User user = response.body().getUser();
+                    String token = response.body().getToken();
+                    if (user == null || token == null) {
+                        view.showError("Invalid user data received");
+                        return;
+                    }
+
+                    // Save token in SharedPreferences
+                    view.getSharedPreferences("user_profile", view.MODE_PRIVATE)
+                            .edit()
+                            .putString("signup_token", token)
+                            .putString("user_email", user.getEmail())
+                            .putInt("user_id", user.getId())
+                            .apply();
+
+                    // Navigate to profile creation
+                    view.goToProfileSetup(user.getId(), user.getEmail());
+
+                    // Handle null profile_complete safely
+                    boolean profileComplete = user.isProfileComplete() != null && user.isProfileComplete();
+
+
+                        // Navigate to profile creation
+                        view.goToProfileSetup(user.getId(), user.getEmail());
+
                 } else {
                     String msg = response.body() != null ? response.body().getMessage() : "Signup failed: " + response.code();
                     view.showError(msg);

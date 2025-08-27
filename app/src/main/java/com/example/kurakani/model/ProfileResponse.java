@@ -1,58 +1,81 @@
 package com.example.kurakani.model;
 
-import androidx.annotation.Nullable;
+import com.google.gson.annotations.SerializedName;
 
-import java.util.ArrayList;
+import java.io.Serializable;
 import java.util.List;
 
 public class ProfileResponse {
-    public boolean error;
-    public String message;
-    public User user;
 
-    public static class User {
+    private boolean success;
+    private String message;
+    private String token;
+    private User user;
+
+    public boolean isSuccess() { return success; }
+    public String getMessage() { return message; }
+    public String getToken() { return token; }
+    public User getUser() { return user; }
+
+    // Make User Serializable
+    public static class User implements Serializable {
+        @SerializedName("id")
         public int id;
-        @Nullable public String fullname;
-        @Nullable public String username;
-        @Nullable public String email;
 
-        @Nullable public Integer age;
-        @Nullable public String gender;
-        @Nullable public String purpose;
-        @Nullable public String about;
-        @Nullable public String bio;
-        @Nullable public String job;
-        @Nullable public String education;
-        @Nullable public String profile; // full URL
-        public boolean is_verified;
-        public int matches_count;
-        @Nullable public List<Photo> photos;
+        @SerializedName("fullname")
+        public String fullname;
 
-        @Nullable public List<String> interests; // No Gson, handled manually
+        @SerializedName("username")
+        public String username;
 
-        public static class Photo {
+        @SerializedName("email")
+        public String email;
+
+        @SerializedName("age")
+        public Integer age;
+
+        @SerializedName("gender")
+        public String gender;
+
+        @SerializedName("purpose")
+        public String purpose;
+
+        @SerializedName("about")
+        public String about;
+
+        @SerializedName("job")
+        public String job;
+
+        @SerializedName("education")
+        public String education;
+
+        @SerializedName("profile")
+        public String profile;
+
+        @SerializedName("interests")
+        public List<String> interests;
+
+        @SerializedName("photos")
+        public List<UserPhoto> photos;
+
+        @SerializedName("matches_count")
+        public Integer matches_count;
+
+        @SerializedName("is_verified")
+        public Boolean is_verified;
+
+        // Make nested UserPhoto Serializable too
+        public static class UserPhoto implements Serializable {
+            @SerializedName("id")
             public int id;
+
+            @SerializedName("url")
             public String url;
-        }
 
-        public List<UserPhoto> getUserPhotos() {
-            List<UserPhoto> list = new ArrayList<>();
-            if (photos != null) {
-                for (Photo p : photos) {
-                    list.add(new UserPhoto(p.id, p.url));
-                }
+            public UserPhoto(int id, String url) {
+                this.id = id;
+                this.url = url;
             }
-            return list;
-        }
-    }
-
-    public static class UserPhoto {
-        public final int id;
-        public final String url;
-
-        public UserPhoto(int id, String url) {
-            this.id = id;
-            this.url = url;
         }
     }
 }

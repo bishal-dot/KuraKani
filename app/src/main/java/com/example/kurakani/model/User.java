@@ -3,7 +3,7 @@ package com.example.kurakani.model;
 public class User {
     private int id;
     private String username;
-    private String email;
+    public String email;
     private Boolean profile_complete;
     private Boolean is_verified;
 
@@ -19,6 +19,8 @@ public class User {
     public Boolean isProfileComplete() { return profile_complete != null && profile_complete; }
     public void setProfileComplete(Boolean profile_complete) { this.profile_complete = profile_complete; }
 
-    public Boolean getIsVerified() { return is_verified; }
+    public boolean isVerified() {
+        return is_verified;
+    }
     public void setIsVerified(Boolean is_verified) { this.is_verified = is_verified; }
 }

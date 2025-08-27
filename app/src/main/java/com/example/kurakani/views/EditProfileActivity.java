@@ -2,7 +2,6 @@ package com.example.kurakani.views;
 
 import android.app.Activity;
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.graphics.Bitmap;
 import android.net.Uri;
 import android.os.Bundle;
@@ -29,8 +28,6 @@ import com.google.android.material.card.MaterialCardView;
 import com.google.android.material.textfield.TextInputEditText;
 import com.google.gson.JsonObject;
 
-import java.io.ByteArrayOutputStream;
-import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -52,23 +49,16 @@ public class EditProfileActivity extends AppCompatActivity implements PhotosAdap
     private MaterialButton saveButton;
     private RecyclerView photosRecyclerView;
 
-    private List<ProfileResponse.UserPhoto> uploadedPhotos = new ArrayList<>();
+    private List<ProfileResponse.User.UserPhoto> uploadedPhotos = new ArrayList<>();
     private PhotosAdapter photosAdapter;
     private ActivityResultLauncher<Intent> pickPhotoLauncher;
     private boolean isPickingProfilePhoto = false;
+    private List<Uri> selectedPhotoUris = new ArrayList<>();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_edit_profile);
-
-        SharedPreferences prefs = getSharedPreferences("KurakaniPrefs", MODE_PRIVATE);
-        String token = prefs.getString("auth_token", null);
-        if (token == null || token.isEmpty()) {
-            Toast.makeText(this, "Please login first", Toast.LENGTH_SHORT).show();
-            finish();
-            return;
-        }
 
         initViews();
         initRecyclerView();
@@ -108,28 +98,39 @@ public class EditProfileActivity extends AppCompatActivity implements PhotosAdap
                 new ActivityResultContracts.StartActivityForResult(),
                 result -> {
                     if (result.getResultCode() == Activity.RESULT_OK && result.getData() != null) {
-                        Uri photoUri = result.getData().getData();
-                        if (photoUri != null) {
-                            if (isPickingProfilePhoto) uploadProfilePhoto(photoUri);
-                            else uploadOtherPhoto(photoUri);
+                        if (isPickingProfilePhoto) {
+                            Uri photoUri = result.getData().getData();
+                            if (photoUri != null) uploadProfilePhoto(photoUri);
+                        } else {
+                            selectedPhotoUris.clear();
+                            if (result.getData().getClipData() != null) {
+                                int count = result.getData().getClipData().getItemCount();
+                                for (int i = 0; i < count; i++) {
+                                    selectedPhotoUris.add(result.getData().getClipData().getItemAt(i).getUri());
+                                }
+                            } else if (result.getData().getData() != null) {
+                                selectedPhotoUris.add(result.getData().getData());
+                            }
+                            if (!selectedPhotoUris.isEmpty()) uploadMultiplePhotos(selectedPhotoUris);
                         }
                     }
                 });
     }
 
+
     private void pickImage(boolean isProfile) {
         isPickingProfilePhoto = isProfile;
         Intent intent = new Intent(Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
+        if (!isProfile) intent.putExtra(Intent.EXTRA_ALLOW_MULTIPLE, true);
         pickPhotoLauncher.launch(intent);
     }
-
     private void fetchUserProfile() {
-        ApiService apiService = RetrofitClient.getInstance(this).create(ApiService.class);
+        ApiService apiService = RetrofitClient.getClient(this).create(ApiService.class);
         apiService.getProfile().enqueue(new Callback<ProfileResponse>() {
             @Override
             public void onResponse(Call<ProfileResponse> call, Response<ProfileResponse> response) {
-                if (response.isSuccessful() && response.body() != null && response.body().user != null) {
-                    ProfileResponse.User user = response.body().user;
+                if (response.isSuccessful() && response.body() != null && response.body().getUser() != null) {
+                    ProfileResponse.User user = response.body().getUser();
 
                     etFullName.setText(user.fullname != null ? user.fullname : "");
                     etAge.setText(user.age != null ? String.valueOf(user.age) : "");
@@ -137,11 +138,9 @@ public class EditProfileActivity extends AppCompatActivity implements PhotosAdap
                     etJob.setText(user.job != null ? user.job : "");
                     etEducation.setText(user.education != null ? user.education : "");
                     etBio.setText(user.about != null ? user.about : "");
-                    etInterests.setText(user.getInterests() != null ? String.join(", ", user.getInterests()) : "");
+                    etInterests.setText(user.interests != null && !user.interests.isEmpty() ? String.join(", ", user.interests) : "");
 
-                    String profileUrl = (user.profile != null && !user.profile.trim().isEmpty())
-                            ? user.profile.trim() : null;
-
+                    String profileUrl = (user.profile != null && !user.profile.trim().isEmpty()) ? user.profile.trim() : null;
                     Glide.with(EditProfileActivity.this)
                             .load(profileUrl != null ? profileUrl : R.drawable.john)
                             .placeholder(R.drawable.john)
@@ -150,9 +149,12 @@ public class EditProfileActivity extends AppCompatActivity implements PhotosAdap
                             .into(profileImage);
 
                     uploadedPhotos.clear();
-                    if (user.photos != null) uploadedPhotos.addAll(user.getUserPhotos());
+                    if (user.photos != null) {
+                        for (ProfileResponse.User.UserPhoto p : user.photos) {
+                            uploadedPhotos.add(new ProfileResponse.User.UserPhoto(p.id, p.url));
+                        }
+                    }
                     photosAdapter.notifyDataSetChanged();
-
                 } else {
                     Toast.makeText(EditProfileActivity.this, "Failed to load profile", Toast.LENGTH_SHORT).show();
                 }
@@ -167,38 +169,38 @@ public class EditProfileActivity extends AppCompatActivity implements PhotosAdap
 
     private void uploadProfilePhoto(Uri photoUri) {
         try {
-            Bitmap bitmap = MediaStore.Images.Media.getBitmap(getContentResolver(), photoUri);
-            ByteArrayOutputStream baos = new ByteArrayOutputStream();
-            bitmap.compress(Bitmap.CompressFormat.JPEG, 80, baos);
-            String profileBase64 = android.util.Base64.encodeToString(baos.toByteArray(), android.util.Base64.DEFAULT);
+            InputStream inputStream = getContentResolver().openInputStream(photoUri);
+            byte[] bytes = inputStream.readAllBytes();
+            inputStream.close();
 
-            Map<String, Object> map = new HashMap<>();
-            map.put("profile_photo_base64", profileBase64);
+            RequestBody requestFile = RequestBody.create(bytes, MediaType.parse("image/*"));
+            MultipartBody.Part body = MultipartBody.Part.createFormData("profile", "profile.jpg", requestFile);
 
-            ApiService apiService = RetrofitClient.getInstance(this).create(ApiService.class);
-            apiService.updateProfile(map).enqueue(new Callback<JsonObject>() {
+            ApiService apiService = RetrofitClient.getClient(this).create(ApiService.class);
+            apiService.uploadProfilePhoto(body).enqueue(new Callback<JsonObject>() {
                 @Override
                 public void onResponse(Call<JsonObject> call, Response<JsonObject> response) {
                     if (response.isSuccessful() && response.body() != null) {
                         try {
-                            String updatedProfileUrl = response.body()
-                                    .getAsJsonObject("user")
-                                    .get("profile")
-                                    .getAsString();
+                            String updatedProfileUrl = response.body().get("profile_url").getAsString();
 
                             Glide.with(EditProfileActivity.this)
-                                    .load(updatedProfileUrl)
+                                    .load(updatedProfileUrl + "?t=" + System.currentTimeMillis())
                                     .circleCrop()
                                     .placeholder(R.drawable.john)
                                     .error(R.drawable.john)
                                     .into(profileImage);
 
+                            Intent resultIntent = new Intent();
+                            resultIntent.putExtra("profile_url", updatedProfileUrl);
+                            setResult(Activity.RESULT_OK, resultIntent);
+
                             Toast.makeText(EditProfileActivity.this, "Profile photo updated!", Toast.LENGTH_SHORT).show();
                         } catch (Exception e) {
-                            Toast.makeText(EditProfileActivity.this, "Updated photo not found", Toast.LENGTH_SHORT).show();
+                            Toast.makeText(EditProfileActivity.this, "Failed to get uploaded photo URL", Toast.LENGTH_SHORT).show();
                         }
                     } else {
-                        Toast.makeText(EditProfileActivity.this, "Failed to update profile photo", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(EditProfileActivity.this, "Failed to upload profile photo", Toast.LENGTH_SHORT).show();
                     }
                 }
 
@@ -208,48 +210,49 @@ public class EditProfileActivity extends AppCompatActivity implements PhotosAdap
                 }
             });
 
-        } catch (IOException e) {
+        } catch (Exception e) {
             e.printStackTrace();
             Toast.makeText(this, "Failed to read image", Toast.LENGTH_SHORT).show();
         }
     }
 
-    private void uploadOtherPhoto(Uri photoUri) {
+    private void uploadMultiplePhotos(List<Uri> uris) {
+        List<MultipartBody.Part> parts = new ArrayList<>();
         try {
-            InputStream inputStream = getContentResolver().openInputStream(photoUri);
-            byte[] bytes = inputStream.readAllBytes();
-            inputStream.close();
-
-            RequestBody requestFile = RequestBody.create(bytes, MediaType.parse("image/jpeg"));
-            MultipartBody.Part body = MultipartBody.Part.createFormData("photos", "photo.jpg", requestFile);
-
-            ApiService apiService = RetrofitClient.getInstance(this).create(ApiService.class);
-            apiService.uploadPhotos(List.of(body)).enqueue(new Callback<UploadPhotosResponse>() {
-                @Override
-                public void onResponse(Call<UploadPhotosResponse> call, Response<UploadPhotosResponse> response) {
-                    if (response.isSuccessful() && response.body() != null) {
-                        if (response.body().photos != null) {
-                            for (UploadPhotosResponse.Photo p : response.body().photos) {
-                                uploadedPhotos.add(new ProfileResponse.UserPhoto(p.id, p.url));
-                            }
-                            photosAdapter.notifyDataSetChanged();
-                            Toast.makeText(EditProfileActivity.this, "Photo uploaded successfully!", Toast.LENGTH_SHORT).show();
-                        }
-                    } else {
-                        Toast.makeText(EditProfileActivity.this, "Upload failed: " + response.code(), Toast.LENGTH_SHORT).show();
-                    }
-                }
-
-                @Override
-                public void onFailure(Call<UploadPhotosResponse> call, Throwable t) {
-                    Toast.makeText(EditProfileActivity.this, "Photo upload failed: " + t.getMessage(), Toast.LENGTH_SHORT).show();
-                }
-            });
-
-        } catch (IOException e) {
+            for (int i = 0; i < uris.size(); i++) {
+                InputStream inputStream = getContentResolver().openInputStream(uris.get(i));
+                byte[] bytes = inputStream.readAllBytes();
+                inputStream.close();
+                RequestBody requestFile = RequestBody.create(bytes, MediaType.parse("image/*"));
+                parts.add(MultipartBody.Part.createFormData("photos[]", "photo_" + i + ".jpg", requestFile));
+            }
+        } catch (Exception e) {
             e.printStackTrace();
-            Toast.makeText(this, "Failed to read image", Toast.LENGTH_SHORT).show();
+            Toast.makeText(this, "Failed to read images", Toast.LENGTH_SHORT).show();
+            return;
         }
+
+        ApiService apiService = RetrofitClient.getClient(this).create(ApiService.class);
+        apiService.uploadPhotos(parts).enqueue(new Callback<UploadPhotosResponse>() {
+            @Override
+            public void onResponse(Call<UploadPhotosResponse> call, Response<UploadPhotosResponse> response) {
+                if (response.isSuccessful() && response.body() != null && !response.body().error) {
+                    for (UploadPhotosResponse.Photo p : response.body().photos) {
+                        uploadedPhotos.add(new ProfileResponse.User.UserPhoto(p.id, p.url));
+                    }
+                    photosAdapter.notifyDataSetChanged();
+                    selectedPhotoUris.clear();
+                    Toast.makeText(EditProfileActivity.this, "Photos uploaded successfully!", Toast.LENGTH_SHORT).show();
+                } else {
+                    Toast.makeText(EditProfileActivity.this, "Failed to upload photos", Toast.LENGTH_SHORT).show();
+                }
+            }
+
+            @Override
+            public void onFailure(Call<UploadPhotosResponse> call, Throwable t) {
+                Toast.makeText(EditProfileActivity.this, "Error uploading photos: " + t.getMessage(), Toast.LENGTH_SHORT).show();
+            }
+        });
     }
 
     private void updateProfile() {
@@ -276,28 +279,14 @@ public class EditProfileActivity extends AppCompatActivity implements PhotosAdap
         if (!about.isEmpty()) map.put("about", about);
         if (!interestsList.isEmpty()) map.put("interests", interestsList);
 
-        ApiService apiService = RetrofitClient.getInstance(this).create(ApiService.class);
+        ApiService apiService = RetrofitClient.getClient(this).create(ApiService.class);
         apiService.updateProfile(map).enqueue(new Callback<JsonObject>() {
             @Override
             public void onResponse(Call<JsonObject> call, Response<JsonObject> response) {
                 if (response.isSuccessful() && response.body() != null) {
-                    try {
-                        JsonObject userObj = response.body().getAsJsonObject("user");
-                        String updatedProfileUrl = userObj.get("profile").getAsString();
-
-                        Glide.with(EditProfileActivity.this)
-                                .load(updatedProfileUrl)
-                                .circleCrop()
-                                .placeholder(R.drawable.default_avatar)
-                                .error(R.drawable.default_avatar)
-                                .into(profileImage);
-
-                        Toast.makeText(EditProfileActivity.this, "Profile updated successfully!", Toast.LENGTH_SHORT).show();
-                        setResult(Activity.RESULT_OK);
-                        finish();
-                    } catch (Exception e) {
-                        Toast.makeText(EditProfileActivity.this, "Updated profile not found", Toast.LENGTH_SHORT).show();
-                    }
+                    Toast.makeText(EditProfileActivity.this, "Profile updated successfully!", Toast.LENGTH_SHORT).show();
+                    setResult(Activity.RESULT_OK);
+                    finish();
                 } else {
                     Toast.makeText(EditProfileActivity.this, "Failed to update profile", Toast.LENGTH_SHORT).show();
                 }
@@ -311,8 +300,8 @@ public class EditProfileActivity extends AppCompatActivity implements PhotosAdap
     }
 
     @Override
-    public void onPhotoDeleteClick(int position, ProfileResponse.UserPhoto photo) {
-        ApiService apiService = RetrofitClient.getInstance(this).create(ApiService.class);
+    public void onPhotoDeleteClick(int position, ProfileResponse.User.UserPhoto photo) {
+        ApiService apiService = RetrofitClient.getClient(this).create(ApiService.class);
         apiService.deletePhoto(photo.id).enqueue(new Callback<DeletePhotoResponse>() {
             @Override
             public void onResponse(Call<DeletePhotoResponse> call, Response<DeletePhotoResponse> response) {

@@ -52,61 +52,6 @@
             </LinearLayout>
         </com.google.android.material.card.MaterialCardView>
 
-        <!-- Profile Photo -->
-        <com.google.android.material.card.MaterialCardView
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            app:cardCornerRadius="16dp"
-            app:cardElevation="8dp"
-            app:strokeColor="#20FFFFFF"
-            app:strokeWidth="1dp"
-            android:backgroundTint="@android:color/white"
-            android:layout_marginBottom="20dp">
-
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="vertical"
-                android:gravity="center"
-                android:padding="24dp">
-
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="Profile Photo"
-                    android:textSize="18sp"
-                    android:textStyle="bold"
-                    android:textColor="@android:color/black"
-                    />
-
-                <RelativeLayout
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="16dp">
-
-                    <ImageView
-                        android:id="@+id/profilePhoto"
-                        android:layout_width="140dp"
-                        android:layout_height="140dp"
-                        android:tint="@color/primary"
-                        android:src="@drawable/ic_person"
-                        android:scaleType="centerCrop"
-                        android:background="@drawable/circle_shape"
-                        android:contentDescription="Profile photo" />
-
-                </RelativeLayout>
-
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="Tap to add photo"
-                    android:textSize="14sp"
-                    android:layout_marginTop="12dp"
-                    android:textColor="#666666"
-            />
-            </LinearLayout>
-        </com.google.android.material.card.MaterialCardView>
-
         <!-- Input Fields Section -->
         <com.google.android.material.card.MaterialCardView
             android:layout_width="match_parent"

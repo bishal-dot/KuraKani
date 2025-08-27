@@ -74,16 +74,17 @@
                     android:background="@drawable/circle_shape"
                     android:scaleType="centerCrop"
                     android:clipToOutline="true"
-                    android:src="@drawable/john" />
+                    />
 
                 <ImageView
                     android:id="@+id/editImageButton"
                     android:layout_width="24dp"
                     android:layout_height="24dp"
                     android:scaleType="centerCrop"
+                    android:background="@drawable/circle_shape"
                     android:layout_alignBottom="@id/profileImage"
                     android:layout_alignEnd="@id/profileImage"
-                    android:src="@drawable/editicon" />
+                    android:src="@drawable/addicon" />
             </RelativeLayout>
 
             <TextView

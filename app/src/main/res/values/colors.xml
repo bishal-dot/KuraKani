@@ -24,4 +24,5 @@
     <color name="password_medium">#FFA500</color>
     <color name="password_strong">#4CAF50</color>
     <color name="bg_password_strength_weak">#E0E0E0</color>
+    <color name="ripple_color">#33000000</color>
 </resources>

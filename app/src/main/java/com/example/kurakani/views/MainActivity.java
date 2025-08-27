@@ -6,18 +6,44 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.util.Log;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.example.kurakani.R;
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
+import com.google.firebase.messaging.FirebaseMessaging;
 
 public class MainActivity extends AppCompatActivity {
 
-    private static final int SPLASH_DELAY = 3000; // 3 seconds
+    private static final int SPLASH_DELAY = 5000; // 5 seconds
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main); // ensure this XML exists
+
+        // ✅ Fetch FCM token
+        FirebaseMessaging.getInstance().getToken()
+                .addOnCompleteListener(new OnCompleteListener<String>() {
+                    @Override
+                    public void onComplete(@NonNull Task<String> task) {
+                        if (!task.isSuccessful()) {
+                            Log.w("MainActivity", "Fetching FCM registration token failed", task.getException());
+                            return;
+                        }
+
+                        // Get new FCM registration token
+                        String fcmToken = task.getResult();
+                        Log.d("MainActivity", "FCM Token: " + fcmToken);
+
+                        // (Optional) Save it locally if needed
+                        SharedPreferences prefs = getSharedPreferences("KurakaniPrefs", MODE_PRIVATE);
+                        prefs.edit().putString("fcm_token", fcmToken).apply();
+
+                        // TODO: send fcmToken to your backend with user authentication if required
+                    }
+                });
 
         new Handler(getMainLooper()).postDelayed(() -> {
             SharedPreferences sharedPreferences = getSharedPreferences("KurakaniPrefs", MODE_PRIVATE);

@@ -1,6 +1,8 @@
 package com.example.kurakani.fragments;
 
+import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.graphics.Canvas;
 import android.os.Bundle;
 import android.view.LayoutInflater;
@@ -46,8 +48,31 @@ public class HomePageFragment extends Fragment {
     private Button btnRefreshProfiles;
     private ImageView btnMatch, btnReject;
 
+    private View unverifiedOverlay;
+    private Button btnVerifyAccount;
+
+    private boolean isLoggedInUserVerified = false;
     private static final int DAILY_SWIPE_LIMIT = 5;
     private int dailySwipeCount = 0;
+
+    private static final String ARG_USER = "arg_user";
+    private ProfileResponse.User loggedInUser;
+
+    public static HomePageFragment newInstance(ProfileResponse.User user) {
+        HomePageFragment fragment = new HomePageFragment();
+        Bundle args = new Bundle();
+        args.putSerializable("user", user);
+        fragment.setArguments(args);
+        return fragment;
+    }
+
+    @Override
+    public void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        if (getArguments() != null) {
+            loggedInUser = (ProfileResponse.User) getArguments().getSerializable(ARG_USER);
+        }
+    }
 
     @Nullable
     @Override
@@ -58,6 +83,17 @@ public class HomePageFragment extends Fragment {
 
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
+        unverifiedOverlay = view.findViewById(R.id.unverifiedOverlay);
+        btnVerifyAccount = view.findViewById(R.id.btnVerifyAccount);
+
+        btnVerifyAccount.setOnClickListener(v -> {
+            // Navigate to ProfilePictureVerificationFragment
+            getParentFragmentManager().beginTransaction()
+                    .replace(R.id.fragmentContainer, new ProfilePictureVerification())
+                    .addToBackStack(null)
+                    .commit();
+        });
+
         recyclerView = view.findViewById(R.id.recyclerViewProfiles);
         tvWelcome = view.findViewById(R.id.tvWelcome);
         tvNoProfiles = view.findViewById(R.id.tvNoProfiles);
@@ -67,11 +103,7 @@ public class HomePageFragment extends Fragment {
         btnReject = view.findViewById(R.id.btnReject);
         tvSearch = view.findViewById(R.id.tvSearch);
 
-        tvSearch.setOnClickListener(v -> {
-            // Open SearchActivity
-            Intent intent = new Intent(getActivity(), SearchActivity.class);
-            startActivity(intent);
-        });
+        tvSearch.setOnClickListener(v -> startActivity(new Intent(getActivity(), SearchActivity.class)));
 
         fetchLoggedInUser();
 
@@ -91,13 +123,21 @@ public class HomePageFragment extends Fragment {
             }
         });
 
-        adapter.setOnItemClickListener(profile -> fetchFullProfileAndOpen(profile.getId()));
+        adapter.setOnItemClickListener(profile -> {
+            if (!isLoggedInUserVerified) {
+                Toast.makeText(getContext(), "Verify your account to view profiles", Toast.LENGTH_SHORT).show();
+                return;
+            }
+            if (!profile.isVerified()) {
+                Toast.makeText(getContext(), "Cannot view unverified user profile", Toast.LENGTH_SHORT).show();
+                return;
+            }
+            fetchFullProfileAndOpen(profile.getId());
+        });
 
         recyclerView.setLayoutManager(new LinearLayoutManager(getContext()) {
             @Override
-            public boolean canScrollVertically() {
-                return false; // prevent scroll
-            }
+            public boolean canScrollVertically() { return false; }
         });
         recyclerView.setAdapter(adapter);
 
@@ -123,12 +163,25 @@ public class HomePageFragment extends Fragment {
 
             @Override
             public void onSwiped(@NonNull RecyclerView.ViewHolder viewHolder, int direction) {
+                if (!isLoggedInUserVerified) {
+                    Toast.makeText(getContext(), "Verify your account to swipe profiles", Toast.LENGTH_SHORT).show();
+                    adapter.notifyItemChanged(viewHolder.getAdapterPosition());
+                    return;
+                }
+
                 if (viewHolder.getAdapterPosition() != 0) {
                     adapter.notifyItemChanged(viewHolder.getAdapterPosition());
-                    return; // only top card swipeable
+                    return;
                 }
 
                 ProfileModel profile = profileList.get(0);
+
+                if (!profile.isVerified()) {
+                    Toast.makeText(getContext(), "Cannot match/unmatch unverified user", Toast.LENGTH_SHORT).show();
+                    adapter.notifyItemChanged(0);
+                    return;
+                }
+
                 if (direction == ItemTouchHelper.RIGHT) adapter.swipeListener.onMatch(profile);
                 else adapter.swipeListener.onReject(profile);
 
@@ -153,19 +206,39 @@ public class HomePageFragment extends Fragment {
         new ItemTouchHelper(simpleCallback).attachToRecyclerView(recyclerView);
     }
 
-
     private void setupButtons() {
         btnMatch.setOnClickListener(v -> {
+            if (!isLoggedInUserVerified) {
+                Toast.makeText(getContext(), "Verify your account to match users", Toast.LENGTH_SHORT).show();
+                return;
+            }
+
             if (!profileList.isEmpty()) {
                 ProfileModel profile = profileList.get(0);
+                if (!profile.isVerified()) {
+                    Toast.makeText(getContext(), "Cannot match with unverified user", Toast.LENGTH_SHORT).show();
+                    return;
+                }
+
                 adapter.swipeListener.onMatch(profile);
                 removeTopProfile();
+                saveMatch(profile.getId(), profile.getFullname());
             }
         });
 
         btnReject.setOnClickListener(v -> {
+            if (!isLoggedInUserVerified) {
+                Toast.makeText(getContext(), "Verify your account to reject users", Toast.LENGTH_SHORT).show();
+                return;
+            }
+
             if (!profileList.isEmpty()) {
                 ProfileModel profile = profileList.get(0);
+                if (!profile.isVerified()) {
+                    Toast.makeText(getContext(), "Cannot reject unverified user", Toast.LENGTH_SHORT).show();
+                    return;
+                }
+
                 adapter.swipeListener.onReject(profile);
                 removeTopProfile();
             }
@@ -197,7 +270,36 @@ public class HomePageFragment extends Fragment {
             public void onResponse(Call<List<ProfileResponse.User>> call, Response<List<ProfileResponse.User>> response) {
                 if (response.isSuccessful() && response.body() != null) {
                     profileList.clear();
-                    for (ProfileResponse.User user : response.body()) {
+
+                    // Ensure we have loggedInUser loaded (from fetchLoggedInUser or ARG_USER)
+                    String myGender = loggedInUser != null && loggedInUser.gender != null
+                            ? loggedInUser.gender.toLowerCase()
+                            : null;
+
+                    List<ProfileResponse.User> filteredUsers = new ArrayList<>();
+
+                    if (myGender != null) {
+                        if (myGender.equals("male")) {
+                            for (ProfileResponse.User u : response.body()) {
+                                if (u.gender != null && u.gender.equalsIgnoreCase("female")) {
+                                    filteredUsers.add(u);
+                                }
+                            }
+                        } else if (myGender.equals("female")) {
+                            for (ProfileResponse.User u : response.body()) {
+                                if (u.gender != null && u.gender.equalsIgnoreCase("male")) {
+                                    filteredUsers.add(u);
+                                }
+                            }
+                        } else {
+                            // if gender is unknown, show all
+                            filteredUsers.addAll(response.body());
+                        }
+                    } else {
+                        filteredUsers.addAll(response.body());
+                    }
+
+                    for (ProfileResponse.User user : filteredUsers) {
                         List<String> interestsList = new ArrayList<>();
                         if (user.interests != null) {
                             try {
@@ -214,10 +316,19 @@ public class HomePageFragment extends Fragment {
                                 user.username,
                                 user.age != null ? user.age : 0,
                                 user.profile,
-                                interestsList
+                                interestsList,
+                                user.is_verified != null ? user.is_verified : false
                         ));
                     }
+
                     adapter.notifyDataSetChanged();
+
+                    if (profileList.isEmpty()) {
+                        showNoProfilesMessage();
+                    } else {
+                        recyclerView.setVisibility(View.VISIBLE);
+                        tvNoProfiles.setVisibility(View.GONE);
+                    }
                 }
             }
 
@@ -228,6 +339,7 @@ public class HomePageFragment extends Fragment {
         });
     }
 
+
     private void fetchFullProfileAndOpen(int userId) {
         ApiService api = RetrofitClient.getInstance(getContext()).create(ApiService.class);
         api.getUserProfile(userId).enqueue(new Callback<ProfileResponse.User>() {
@@ -235,7 +347,13 @@ public class HomePageFragment extends Fragment {
             public void onResponse(Call<ProfileResponse.User> call, Response<ProfileResponse.User> response) {
                 if (response.isSuccessful() && response.body() != null) {
                     ProfileModel fullProfile = convertApiUserToProfile(response.body());
-                    ProfileExpanded fragment = ProfileExpanded.newInstance(fullProfile);
+
+                    if (!fullProfile.isVerified()) {
+                        Toast.makeText(getContext(), "Cannot view unverified user profile", Toast.LENGTH_SHORT).show();
+                        return;
+                    }
+
+                    com.example.kurakani.fragments.ProfileExpanded fragment = com.example.kurakani.fragments.ProfileExpanded.newInstance(fullProfile);
                     getParentFragmentManager().beginTransaction()
                             .replace(R.id.fragmentContainer, fragment)
                             .addToBackStack(null)
@@ -250,7 +368,7 @@ public class HomePageFragment extends Fragment {
         });
     }
 
-    private ProfileModel convertApiUserToProfile(ProfileResponse.User apiUser) {
+    public ProfileModel convertApiUserToProfile(ProfileResponse.User apiUser) {
         int age = apiUser.age != null ? apiUser.age : 0;
         String fullname = apiUser.fullname != null ? apiUser.fullname : "";
         String username = apiUser.username != null ? apiUser.username : "";
@@ -266,7 +384,7 @@ public class HomePageFragment extends Fragment {
         List<String> interests = apiUser.interests != null ? apiUser.interests : new ArrayList<>();
         List<String> photos = new ArrayList<>();
         if (apiUser.photos != null) {
-            for (ProfileResponse.User.Photo photo : apiUser.photos) {
+            for (ProfileResponse.User.UserPhoto photo : apiUser.photos) {
                 if (photo != null && photo.url != null && !photo.url.isEmpty()) {
                     String fullUrl = photo.url.startsWith("http") ? photo.url : RetrofitClient.BASE_URL + "storage/" + photo.url;
                     photos.add(fullUrl);
@@ -274,7 +392,7 @@ public class HomePageFragment extends Fragment {
             }
         }
 
-        return new ProfileModel(apiUser.id, fullname, username, age, gender, purpose, about, profile, interests, photos);
+        return new ProfileModel(apiUser.id, fullname, username, age, gender, purpose, about, profile, interests, photos, apiUser.is_verified != null ? apiUser.is_verified : false);
     }
 
     private void fetchLoggedInUser() {
@@ -282,11 +400,21 @@ public class HomePageFragment extends Fragment {
         api.getProfile().enqueue(new Callback<ProfileResponse>() {
             @Override
             public void onResponse(Call<ProfileResponse> call, Response<ProfileResponse> response) {
-                if (response.isSuccessful() && response.body() != null && response.body().user != null) {
-                    String fullname = response.body().user.fullname;
-                    tvWelcome.setText("Welcome, " + (fullname != null ? fullname : response.body().user.username));
+                if (response.isSuccessful() && response.body() != null && response.body().getUser() != null) {
+                    isLoggedInUserVerified = response.body().getUser().is_verified != null && response.body().getUser().is_verified;
+                    String fullname = response.body().getUser().fullname;
+                    tvWelcome.setText("Welcome, " + (fullname != null ? fullname : response.body().getUser().username));
                 } else {
                     tvWelcome.setText("Welcome, User");
+                }
+                if (response.isSuccessful() && response.body() != null && response.body().getUser() != null) {
+                    boolean isVerified = Boolean.TRUE.equals(response.body().getUser().is_verified);
+
+                    if (!isVerified) {
+                        unverifiedOverlay.setVisibility(View.VISIBLE);
+                    } else {
+                        unverifiedOverlay.setVisibility(View.GONE);
+                    }
                 }
             }
 
@@ -294,6 +422,8 @@ public class HomePageFragment extends Fragment {
             public void onFailure(Call<ProfileResponse> call, Throwable t) {
                 tvWelcome.setText("Welcome, User");
             }
+
+
         });
     }
 
@@ -316,5 +446,34 @@ public class HomePageFragment extends Fragment {
     private void hidePremiumOverlay() {
         premiumOverlay.setVisibility(View.GONE);
         recyclerView.setVisibility(View.VISIBLE);
+    }
+
+    private void saveMatch(int matchedUserId, String fullname) {
+        ApiService api = RetrofitClient.getInstance(getContext()).create(ApiService.class);
+        SharedPreferences prefs = getContext().getSharedPreferences("KurakaniPrefs", Context.MODE_PRIVATE);
+        String token = prefs.getString("auth_token", null);
+        int currentUserId = prefs.getInt("user_id", -1);
+
+        if (token == null || currentUserId == -1) {
+            Toast.makeText(getContext(), "User not logged in", Toast.LENGTH_SHORT).show();
+            return;
+        }
+
+        api.sendMatch("Bearer " + token, currentUserId, matchedUserId)
+                .enqueue(new Callback<Void>() {
+                    @Override
+                    public void onResponse(Call<Void> call, Response<Void> response) {
+                        if (response.isSuccessful()) {
+                            Toast.makeText(getContext(), "You matched with " + fullname + " 🎉", Toast.LENGTH_LONG).show();
+                        } else {
+                            Toast.makeText(getContext(), "Failed to save match: " + response.code(), Toast.LENGTH_SHORT).show();
+                        }
+                    }
+
+                    @Override
+                    public void onFailure(Call<Void> call, Throwable t) {
+                        Toast.makeText(getContext(), "Error: " + t.getMessage(), Toast.LENGTH_SHORT).show();
+                    }
+                });
     }
 }

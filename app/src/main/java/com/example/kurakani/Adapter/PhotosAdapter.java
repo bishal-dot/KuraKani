@@ -18,14 +18,14 @@ import java.util.List;
 public class PhotosAdapter extends RecyclerView.Adapter<PhotosAdapter.PhotoViewHolder> {
 
     private final Context context;
-    private final List<ProfileResponse.UserPhoto> photos;
+    private final List<ProfileResponse.User.UserPhoto> photos; // <-- fixed type
     private final PhotoClickListener listener;
 
     public interface PhotoClickListener {
-        void onPhotoDeleteClick(int position, ProfileResponse.UserPhoto photo);
+        void onPhotoDeleteClick(int position, ProfileResponse.User.UserPhoto photo);
     }
 
-    public PhotosAdapter(Context context, List<ProfileResponse.UserPhoto> photos, PhotoClickListener listener) {
+    public PhotosAdapter(Context context, List<ProfileResponse.User.UserPhoto> photos, PhotoClickListener listener) {
         this.context = context;
         this.photos = photos;
         this.listener = listener;
@@ -40,15 +40,19 @@ public class PhotosAdapter extends RecyclerView.Adapter<PhotosAdapter.PhotoViewH
 
     @Override
     public void onBindViewHolder(@NonNull PhotoViewHolder holder, int position) {
-        ProfileResponse.UserPhoto photo = photos.get(position);
+        ProfileResponse.User.UserPhoto photo = photos.get(position);
 
-        Glide.with(context)
-                .load(photo.url)
+        Glide.with(holder.itemView.getContext())
+                .load(photo.url != null ? photo.url : R.drawable.profile_icon)
                 .placeholder(R.drawable.profile_icon)
                 .error(R.drawable.profile_icon)
                 .into(holder.ivPhoto);
 
-        holder.btnDelete.setOnClickListener(v -> listener.onPhotoDeleteClick(position, photo));
+        holder.btnDelete.setOnClickListener(v -> {
+            if (listener != null) {
+                listener.onPhotoDeleteClick(position, photo);
+            }
+        });
     }
 
     @Override
@@ -57,8 +61,7 @@ public class PhotosAdapter extends RecyclerView.Adapter<PhotosAdapter.PhotoViewH
     }
 
     static class PhotoViewHolder extends RecyclerView.ViewHolder {
-        ImageView ivPhoto;
-        ImageView btnDelete;
+        ImageView ivPhoto, btnDelete;
 
         public PhotoViewHolder(@NonNull View itemView) {
             super(itemView);

@@ -15,4 +15,8 @@ public class SearchResponse {
 
     public List<String> getInterests() { return interests; }
 
+    public void setUsers(List<ProfileModel> users) {
+        this.users = users;
+    }
+
 }

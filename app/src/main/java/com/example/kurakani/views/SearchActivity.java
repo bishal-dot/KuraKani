@@ -164,7 +164,10 @@ public class SearchActivity extends AppCompatActivity {
                         progressBar.setVisibility(View.GONE);
 
                         if (response.isSuccessful() && response.body() != null) {
-                            profileList.addAll(response.body().getUsers());
+                            // Filter out unverified users if needed
+                            for (ProfileModel user : response.body().getUsers()) {
+                                if (user.isVerified()) profileList.add(user);
+                            }
                             emptyState.setVisibility(profileList.isEmpty() ? View.VISIBLE : View.GONE);
                         } else {
                             emptyState.setVisibility(View.VISIBLE);
@@ -180,4 +183,5 @@ public class SearchActivity extends AppCompatActivity {
                     }
                 });
     }
+
 }

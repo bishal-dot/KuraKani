@@ -15,11 +15,12 @@ public class ProfileModel implements Serializable {
     private String profile; // profile image URL
     private List<String> interests;
     private List<String> photos;
+    private boolean isVerified;
 
     // Full constructor
     public ProfileModel(int id, String fullname, String username, int age, String gender,
                         String purpose, String about, String profile,
-                        List<String> interests, List<String> photos) {
+                        List<String> interests, List<String> photos, boolean isVerified ) {
         this.id = id;
         this.fullname = fullname != null ? fullname : "";
         this.username = username != null ? username : "";
@@ -30,12 +31,13 @@ public class ProfileModel implements Serializable {
         this.profile = profile != null ? profile : "";
         this.interests = interests != null ? interests : new ArrayList<>();
         this.photos = photos != null ? photos : new ArrayList<>();
+        this.isVerified = isVerified;
     }
 
     // Minimal constructor for homepage
     public ProfileModel(int id, String fullname, String username, int age,
-                        String profile, List<String> interests) {
-        this(id, fullname, username, age, "", "", "", profile, interests, new ArrayList<>());
+                        String profile, List<String> interests, Boolean isVerified) {
+        this(id, fullname, username, age, "", "", "", profile, interests, new ArrayList<>(), isVerified);
     }
 
     // Getters
@@ -49,4 +51,5 @@ public class ProfileModel implements Serializable {
     public String getProfile() { return profile; }
     public List<String> getInterests() { return interests; }
     public List<String> getPhotos() { return photos; }
+    public boolean isVerified() { return isVerified; }
 }

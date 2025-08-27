@@ -5,10 +5,10 @@ import com.google.gson.annotations.SerializedName;
 public class ApiResponse {
 
     @SerializedName("error")
-    private boolean error;
+    public boolean error;
 
     @SerializedName("message")
-    private String message;
+    public String message;
 
     public boolean isError() {
         return error;

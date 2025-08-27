@@ -4,7 +4,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/light_blue_bg">
+    android:background="@color/background">
 
     <!-- Welcome -->
     <TextView
@@ -12,9 +12,9 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="Welcome, User"
-        android:textSize="20sp"
+        android:textSize="22sp"
+        android:textColor="@color/primary_color"
         android:textStyle="bold"
-        android:textColor="@android:color/black"
         android:layout_marginTop="24dp"
         android:layout_marginStart="16dp"
         app:layout_constraintTop_toTopOf="parent"
@@ -22,6 +22,7 @@
 
     <!-- Search -->
     <LinearLayout
+        xmlns:app="http://schemas.android.com/apk/res-auto"
         android:id="@+id/layoutSearch"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
@@ -40,8 +41,10 @@
             android:layout_height="wrap_content"
             android:hint="Search by name or hobby"
             android:textColor="@android:color/black"
+            android:textColorHint="#60EB5B78"
             android:textSize="16sp"
             android:drawableStart="@drawable/search"
+            android:drawableTint="@color/primary_color"
             android:drawablePadding="8dp"
             android:padding="8dp"/>
     </LinearLayout>
@@ -130,5 +133,46 @@
             android:background="@drawable/circle_background_match"
             android:padding="12dp"/>
     </LinearLayout>
+    <FrameLayout
+        android:id="@+id/unverifiedOverlay"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:background="#AA000000"
+        android:visibility="gone"
+        android:clickable="true"
+        android:focusable="true"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent">
 
+        <LinearLayout
+            android:orientation="vertical"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:padding="24dp"
+            android:background="@drawable/overlay_card_bg"
+            android:layout_gravity="center">
+
+            <TextView
+                android:id="@+id/tvOverlayMessage"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Verify your account to unlock all features"
+                android:textColor="@android:color/white"
+                android:textSize="16sp"
+                android:textAlignment="center"/>
+
+            <Button
+                android:id="@+id/btnVerifyAccount"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Verify Now"
+                android:layout_marginTop="16dp"/>
+        </LinearLayout>
+    </FrameLayout>
 </androidx.constraintlayout.widget.ConstraintLayout>
+    <!-- Unverified User Overlay -->
+
+

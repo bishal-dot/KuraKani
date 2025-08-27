@@ -4,9 +4,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.widget.CheckBox;
 import android.widget.Toast;
-
 import androidx.appcompat.app.AppCompatActivity;
-
 import com.example.kurakani.Controlller.SignUpController;
 import com.example.kurakani.R;
 import com.google.android.material.button.MaterialButton;
@@ -59,8 +57,19 @@ public class SignupActivity extends AppCompatActivity {
         etConfirmPassword.setError(null);
     }
 
+    // Navigate to login after signup (optional)
     public void goToLogin() {
         startActivity(new Intent(this, LoginActivity.class));
+        finish();
+    }
+
+    // Navigate to profile creation after signup
+    public void goToProfileSetup(int userId, String email) {
+        Intent intent = new Intent(this, HomePageActivity.class);
+        intent.putExtra("open_profile_setup", true);
+        intent.putExtra("user_id", userId);
+        intent.putExtra("user_email", email);
+        startActivity(intent);
         finish();
     }
 }

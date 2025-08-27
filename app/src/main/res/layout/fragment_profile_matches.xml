@@ -1,33 +1,81 @@
-<?xml version="1.0" encoding="utf-8"?>
 <LinearLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
     android:layout_marginTop="10dp"
+    android:background="@color/background"
     tools:context=".fragments.ProfileMatches">
 
-    <!-- Top Heading -->
     <TextView
         android:id="@+id/textMatchesHeading"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Matches"
+        android:text="Your Matches"
         android:textStyle="bold"
+        android:padding="10dp"
+        android:layout_marginTop="20dp"
         android:textSize="24sp"
-        android:textColor="#111"
-        android:layout_marginBottom="12dp" />
+        android:textColor="@color/primary_color"
+        android:layout_marginBottom="20dp" />
 
-    <!-- Match Cards List -->
-    <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/recyclerMatches"
+    <Spinner
+        android:id="@+id/spinnerFilter"
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
+        android:layout_marginBottom="12dp"
+        android:paddingStart="16dp"
+        android:paddingEnd="16dp"
+        android:spinnerMode="dropdown"
+        android:background="@drawable/spinner_background"
+        android:popupBackground="@color/white"
+        android:dropDownVerticalOffset="8dp"
+        android:dropDownWidth="match_parent"
+        android:entries="@array/match_filter_options"
+        android:gravity="center_vertical"
+        android:elevation="4dp"/>
+
+    <!-- FrameLayout to overlay empty state on RecyclerView -->
+    <FrameLayout
         android:layout_width="match_parent"
         android:layout_height="0dp"
-        android:layout_weight="1"
-        android:clipToPadding="false"
-        android:paddingBottom="12dp"
-        android:scrollbars="vertical"
-        tools:listitem="@layout/item_match" />
+        android:layout_weight="1">
 
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/recyclerMatches"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:clipToPadding="false"
+            android:paddingBottom="12dp"
+            android:scrollbars="vertical"
+            tools:listitem="@layout/item_match" />
+
+        <LinearLayout
+            android:id="@+id/emptyStateContainer"
+            android:orientation="vertical"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:gravity="center"
+            android:visibility="gone">
+
+            <ImageView
+                android:id="@+id/ivEmptyIcon"
+                android:layout_width="80dp"
+                android:layout_height="80dp"
+                android:src="@drawable/empty" />
+
+            <TextView
+                android:id="@+id/tvEmptyState"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="No matches found"
+                android:textColor="@color/primary_color"
+                android:textSize="20sp"
+                android:gravity="center"
+                android:layout_marginTop="12dp"/>
+        </LinearLayout>
+
+    </FrameLayout>
 </LinearLayout>
