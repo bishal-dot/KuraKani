@@ -26,7 +26,6 @@ import com.example.kurakani.model.ProfileRequest;
 import com.example.kurakani.model.ProfileResponse;
 import com.example.kurakani.network.ApiService;
 import com.example.kurakani.network.RetrofitClient;
-import com.example.kurakani.views.HomePageActivity;
 import com.example.kurakani.views.LoginActivity;
 import com.google.android.material.textfield.TextInputEditText;
 import com.google.gson.Gson;
@@ -34,7 +33,6 @@ import com.google.gson.Gson;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
 import retrofit2.Call;
@@ -161,7 +159,6 @@ public class ProfileSetupFragment extends Fragment {
 
         Log.d("PROFILE_REQUEST", new Gson().toJson(request));
 
-        // ✅ Get token safely
         Context ctx = getContext() != null ? getContext() : getActivity();
         if (ctx == null) {
             Toast.makeText(getContext(), "Context not available", Toast.LENGTH_SHORT).show();
@@ -171,7 +168,6 @@ public class ProfileSetupFragment extends Fragment {
         String token = ctx.getSharedPreferences("KurakaniPrefs", Activity.MODE_PRIVATE)
                 .getString("auth_token", null);
 
-        Log.d("TOKEN_DEBUG", "Token: " + token);
         if (token == null) {
             Toast.makeText(getContext(), "User not logged in!", Toast.LENGTH_LONG).show();
             return;
@@ -179,31 +175,25 @@ public class ProfileSetupFragment extends Fragment {
 
         ApiService apiService = RetrofitClient.getClient(ctx).create(ApiService.class);
 
+        // ✅ Updated callback to JsonObject
         apiService.completeProfile(request)
-                .enqueue(new Callback<ProfileResponse>() {
+                .enqueue(new Callback<ProfileResponse.User>() {
                     @Override
-                    public void onResponse(Call<ProfileResponse> call, Response<ProfileResponse> response) {
+                    public void onResponse(Call<ProfileResponse.User> call, Response<ProfileResponse.User> response) {
                         if (response.isSuccessful() && response.body() != null) {
-                            ProfileResponse body = response.body();
-                            if (!body.error) {
-                                saveToPrefs(body.user);
-                                Intent intent = new Intent(getActivity(), LoginActivity.class);
-                                intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
-                                startActivity(intent);
-                            } else {
-                                Toast.makeText(getContext(), "Error: " + body.message, Toast.LENGTH_LONG).show();
-                            }
+                            ProfileResponse.User user = response.body();
+                            // Assume user is valid if object is returned
+                            saveToPrefs(user);
+                            Intent intent = new Intent(getActivity(), LoginActivity.class);
+                            intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+                            startActivity(intent);
                         } else {
-                            try {
-                                String errorBody = response.errorBody() != null ? response.errorBody().string() : "";
-                                Log.e("API_ERROR", "Server error: " + response.code() + ", " + errorBody);
-                                Toast.makeText(getContext(), "Server error: " + response.code(), Toast.LENGTH_LONG).show();
-                            } catch (Exception e) { e.printStackTrace(); }
+                            Toast.makeText(getContext(), "Server error: " + response.code(), Toast.LENGTH_LONG).show();
                         }
                     }
 
                     @Override
-                    public void onFailure(Call<ProfileResponse> call, Throwable t) {
+                    public void onFailure(Call<ProfileResponse.User> call, Throwable t) {
                         Log.e("API_FAILURE", t.getMessage(), t);
                         Toast.makeText(getContext(), "Network error: " + t.getMessage(), Toast.LENGTH_LONG).show();
                     }
@@ -213,20 +203,20 @@ public class ProfileSetupFragment extends Fragment {
     private void saveToPrefs(ProfileResponse.User user) {
         if (getActivity() != null && user != null) {
             String interestsStr = "";
-            if (user.interests != null && !user.interests.isEmpty()) {
-                interestsStr = String.join(",", user.interests);
+            if (user.getInterests() != null && !user.getInterests().isEmpty()) {
+                interestsStr = String.join(",", user.getInterests());
             }
 
             getActivity().getSharedPreferences("user_profile", Activity.MODE_PRIVATE).edit()
-                    .putString("fullname", user.fullname)
-                    .putInt("age", user.age != null ? user.age : 0)
-                    .putString("gender", user.gender)
-                    .putString("purpose", user.purpose != null ? user.purpose : "")
-                    .putString("job", user.job != null ? user.job : "")
+                    .putString("fullname", user.getFullname())
+                    .putInt("age", user.getAge() != null ? user.getAge() : 0)
+                    .putString("gender", user.getGender())
+                    .putString("purpose", user.getPurpose() != null ? user.getPurpose() : "")
+                    .putString("job", user.getJob() != null ? user.getJob() : "")
                     .putString("interests", interestsStr)
-                    .putString("education", user.education != null ? user.education : "")
-                    .putString("about", user.bio != null ? user.bio : (user.about != null ? user.about : ""))
-                    .putString("profile_photo", user.profile)
+                    .putString("education", user.getEducation() != null ? user.getEducation() : "")
+                    .putString("about", user.getBio() != null ? user.getBio() : (user.getAbout() != null ? user.getAbout() : ""))
+                    .putString("profile_photo", user.getProfile() != null ? user.getProfile() : "")
                     .apply();
         }
     }

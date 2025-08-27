@@ -22,11 +22,11 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.kurakani.Adapter.ProfileAdapter;
 import com.example.kurakani.R;
-import com.example.kurakani.model.LoginResponse;
 import com.example.kurakani.model.ProfileResponse;
+import com.example.kurakani.model.User;
+import com.example.kurakani.viewmodel.ProfileModel;
 import com.example.kurakani.network.ApiService;
 import com.example.kurakani.network.RetrofitClient;
-import com.example.kurakani.viewmodel.ProfileModel;
 import com.example.kurakani.views.SearchActivity;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
@@ -70,10 +70,7 @@ public class HomePageFragment extends Fragment {
         btnReject = view.findViewById(R.id.btnReject);
         tvSearch = view.findViewById(R.id.tvSearch);
 
-        tvSearch.setOnClickListener(v -> {
-            Intent intent = new Intent(getActivity(), SearchActivity.class);
-            startActivity(intent);
-        });
+        tvSearch.setOnClickListener(v -> startActivity(new Intent(getActivity(), SearchActivity.class)));
 
         fetchLoggedInUser();
 
@@ -97,9 +94,7 @@ public class HomePageFragment extends Fragment {
 
         recyclerView.setLayoutManager(new LinearLayoutManager(getContext()) {
             @Override
-            public boolean canScrollVertically() {
-                return false;
-            }
+            public boolean canScrollVertically() { return false; }
         });
         recyclerView.setAdapter(adapter);
 
@@ -161,8 +156,6 @@ public class HomePageFragment extends Fragment {
                 ProfileModel profile = profileList.get(0);
                 adapter.swipeListener.onMatch(profile);
                 removeTopProfile();
-
-                // ✅ Save match in backend
                 saveMatch(profile.getId(), profile.getFullname());
             }
         });
@@ -196,28 +189,19 @@ public class HomePageFragment extends Fragment {
 
     private void fetchProfiles() {
         ApiService api = RetrofitClient.getInstance(getContext()).create(ApiService.class);
-        api.otherUsers().enqueue(new Callback<List<ProfileResponse.User>>() {
+        api.otherUsers().enqueue(new Callback<List<User>>() {
             @Override
-            public void onResponse(Call<List<ProfileResponse.User>> call, Response<List<ProfileResponse.User>> response) {
+            public void onResponse(Call<List<User>> call, Response<List<User>> response) {
                 if (response.isSuccessful() && response.body() != null) {
                     profileList.clear();
-                    for (ProfileResponse.User user : response.body()) {
-                        List<String> interestsList = new ArrayList<>();
-                        if (user.interests != null) {
-                            try {
-                                interestsList = new Gson().fromJson(user.interests.toString(),
-                                        new TypeToken<List<String>>(){}.getType());
-                            } catch (Exception e) {
-                                interestsList = Arrays.asList(user.interests.toString().split(","));
-                            }
-                        }
-
+                    for (User user : response.body()) {
+                        List<String> interestsList = user.getInterests() != null ? user.getInterests() : new ArrayList<>();
                         profileList.add(new ProfileModel(
-                                user.id,
-                                user.fullname != null ? user.fullname : user.username,
-                                user.username,
-                                user.age != null ? user.age : 0,
-                                user.profile,
+                                user.getId(),
+                                user.getFullname() != null ? user.getFullname() : user.getUsername(),
+                                user.getUsername(),
+                                user.getAge() != null ? user.getAge() : 0,
+                                user.getProfile(),
                                 interestsList
                         ));
                     }
@@ -226,7 +210,7 @@ public class HomePageFragment extends Fragment {
             }
 
             @Override
-            public void onFailure(Call<List<ProfileResponse.User>> call, Throwable t) {
+            public void onFailure(Call<List<User>> call, Throwable t) {
                 Toast.makeText(getContext(), "Failed to load profiles", Toast.LENGTH_SHORT).show();
             }
         });
@@ -234,11 +218,12 @@ public class HomePageFragment extends Fragment {
 
     private void fetchFullProfileAndOpen(int userId) {
         ApiService api = RetrofitClient.getInstance(getContext()).create(ApiService.class);
-        api.getUserProfile(userId).enqueue(new Callback<ProfileResponse.User>() {
+        api.getUserProfile(userId).enqueue(new Callback<User>() {
             @Override
-            public void onResponse(Call<ProfileResponse.User> call, Response<ProfileResponse.User> response) {
+            public void onResponse(Call<User> call, Response<User> response) {
                 if (response.isSuccessful() && response.body() != null) {
-                    ProfileModel fullProfile = convertApiUserToProfile(response.body());
+                    User apiUser = response.body();
+                    ProfileModel fullProfile = convertApiUserToProfile(apiUser);
                     ProfileExpanded fragment = ProfileExpanded.newInstance(fullProfile);
                     getParentFragmentManager().beginTransaction()
                             .replace(R.id.fragmentContainer, fragment)
@@ -248,37 +233,20 @@ public class HomePageFragment extends Fragment {
             }
 
             @Override
-            public void onFailure(Call<ProfileResponse.User> call, Throwable t) {
+            public void onFailure(Call<User> call, Throwable t) {
                 Toast.makeText(getContext(), "Failed to load profile", Toast.LENGTH_SHORT).show();
             }
         });
     }
 
-    public ProfileModel convertApiUserToProfile(ProfileResponse.User apiUser) {
-        int age = apiUser.age != null ? apiUser.age : 0;
-        String fullname = apiUser.fullname != null ? apiUser.fullname : "";
-        String username = apiUser.username != null ? apiUser.username : "";
-        String gender = apiUser.gender != null ? apiUser.gender : "";
-        String purpose = apiUser.purpose != null ? apiUser.purpose : "";
-        String about = apiUser.about != null ? apiUser.about : "";
+    private ProfileModel convertApiUserToProfile(User apiUser) {
+        int age = apiUser.getAge() != null ? apiUser.getAge() : 0;
+        String fullname = apiUser.getFullname() != null ? apiUser.getFullname() : "";
+        String username = apiUser.getUsername() != null ? apiUser.getUsername() : "";
+        String profile = apiUser.getProfile() != null ? apiUser.getProfile() : "";
+        List<String> interests = apiUser.getInterests() != null ? apiUser.getInterests() : new ArrayList<>();
 
-        String profile = "";
-        if (apiUser.profile != null && !apiUser.profile.isEmpty()) {
-            profile = apiUser.profile.startsWith("http") ? apiUser.profile : RetrofitClient.BASE_URL + "storage/" + apiUser.profile;
-        }
-
-        List<String> interests = apiUser.interests != null ? apiUser.interests : new ArrayList<>();
-        List<String> photos = new ArrayList<>();
-        if (apiUser.photos != null) {
-            for (ProfileResponse.User.Photo photo : apiUser.photos) {
-                if (photo != null && photo.url != null && !photo.url.isEmpty()) {
-                    String fullUrl = photo.url.startsWith("http") ? photo.url : RetrofitClient.BASE_URL + "storage/" + photo.url;
-                    photos.add(fullUrl);
-                }
-            }
-        }
-
-        return new ProfileModel(apiUser.id, fullname, username, age, gender, purpose, about, profile, interests, photos);
+        return new ProfileModel(apiUser.getId(), fullname, username, age, profile, interests);
     }
 
     private void fetchLoggedInUser() {
@@ -286,9 +254,9 @@ public class HomePageFragment extends Fragment {
         api.getProfile().enqueue(new Callback<ProfileResponse>() {
             @Override
             public void onResponse(Call<ProfileResponse> call, Response<ProfileResponse> response) {
-                if (response.isSuccessful() && response.body() != null && response.body().user != null) {
-                    String fullname = response.body().user.fullname;
-                    tvWelcome.setText("Welcome, " + (fullname != null ? fullname : response.body().user.username));
+                if (response.isSuccessful() && response.body() != null && response.body().getUser() != null) {
+                    String fullname = response.body().getUser().getFullname();
+                    tvWelcome.setText("Welcome, " + (fullname != null ? fullname : response.body().getUser().getUsername()));
                 } else {
                     tvWelcome.setText("Welcome, User");
                 }
@@ -322,7 +290,6 @@ public class HomePageFragment extends Fragment {
         recyclerView.setVisibility(View.VISIBLE);
     }
 
-    //  Save match in Laravel + send notification
     private void saveMatch(int matchedUserId, String fullname) {
         ApiService api = RetrofitClient.getInstance(getContext()).create(ApiService.class);
 
@@ -358,7 +325,4 @@ public class HomePageFragment extends Fragment {
                     }
                 });
     }
-
-
-
 }

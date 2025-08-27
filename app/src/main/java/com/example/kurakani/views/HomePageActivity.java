@@ -73,7 +73,7 @@ public class HomePageActivity extends AppCompatActivity {
         currentTab = tabId;
     }
 
-    private void switchFragment(Fragment fragment, boolean addToBackStack) {
+    public void switchFragment(Fragment fragment, boolean addToBackStack) {
         androidx.fragment.app.FragmentTransaction transaction = getSupportFragmentManager()
                 .beginTransaction()
                 .replace(R.id.fragmentContainer, fragment);

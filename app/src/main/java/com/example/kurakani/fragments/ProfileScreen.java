@@ -114,22 +114,22 @@ public class ProfileScreen extends Fragment implements PhotosAdapter.PhotoClickL
             public void onResponse(Call<ProfileResponse> call, Response<ProfileResponse> response) {
                 if (!isAdded()) return;
 
-                if (response.isSuccessful() && response.body() != null && !response.body().error) {
-                    ProfileResponse.User user = response.body().user;
+                if (response.isSuccessful() && response.body() != null && !response.body().isError()) {
+                    ProfileResponse.User user = response.body().getUser();
 
                     if (user != null) {
-                        tvUsername.setText(user.username != null ? user.username : user.fullname);
-                        tvFullName.setText(user.fullname != null ? user.fullname : tvUsername.getText().toString());
-                        tvAge.setText(user.age != null ? String.valueOf(user.age) : "-");
-                        tvGender.setText(user.gender != null ? user.gender : "-");
-                        tvPurpose.setText(user.purpose != null ? user.purpose : "-");
-                        tvJob.setText(user.job != null ? user.job : "-");
-                        tvEducation.setText(user.education != null ? user.education : "-");
-                        tvBio.setText(user.about != null ? user.about : "-");
-                        tvInterests.setText(user.interests != null ? String.join(", ", user.interests) : "-");
-                        tvMatches.setText(String.valueOf(user.matches_count));
+                        tvUsername.setText(user.getUsername() != null ? user.getUsername() : user.getFullname());
+                        tvFullName.setText(user.getFullname() != null ? user.getFullname() : tvUsername.getText().toString());
+                        tvAge.setText(user.getAge() != null ? String.valueOf(user.getAge()) : "-");
+                        tvGender.setText(user.getGender() != null ? user.getGender() : "-");
+                        tvPurpose.setText(user.getPurpose() != null ? user.getPurpose() : "-");
+                        tvJob.setText(user.getJob() != null ? user.getJob() : "-");
+                        tvEducation.setText(user.getEducation() != null ? user.getEducation() : "-");
+                        tvBio.setText(user.getAbout() != null ? user.getAbout() : "-");
+                        tvInterests.setText(user.getInterests() != null ? String.join(", ", user.getInterests()) : "-");
+                        tvMatches.setText(String.valueOf(user.getMatchesCount()));
 
-                        String profileUrl = user.profile != null ? user.profile.trim() : null;
+                        String profileUrl = user.getProfile() != null ? user.getProfile().trim() : null;
 
                         // Glide with cache bypass
                         Glide.with(requireContext())
@@ -141,7 +141,7 @@ public class ProfileScreen extends Fragment implements PhotosAdapter.PhotoClickL
 
                         // Photos
                         userPhotos.clear();
-                        if (user.photos != null && !user.photos.isEmpty()) {
+                        if (user.getPhotos() != null && !user.getPhotos().isEmpty()) {
                             userPhotos.addAll(user.getUserPhotos());
                         }
                         photosAdapter.notifyDataSetChanged();
@@ -168,12 +168,12 @@ public class ProfileScreen extends Fragment implements PhotosAdapter.PhotoClickL
                 .setMessage("Are you sure you want to delete this photo?")
                 .setPositiveButton("Delete", (dialog, which) -> {
                     ApiService apiService = RetrofitClient.getClient(requireContext()).create(ApiService.class);
-                    apiService.deletePhoto(photo.id).enqueue(new Callback<DeletePhotoResponse>() {
+                    apiService.deletePhoto(photo.getId()).enqueue(new Callback<DeletePhotoResponse>() {
                         @Override
                         public void onResponse(Call<DeletePhotoResponse> call, Response<DeletePhotoResponse> response) {
                             if (!isAdded()) return;
 
-                            if (response.isSuccessful() && response.body() != null && !response.body().error) {
+                            if (response.isSuccessful() && response.body() != null && !response.body().isError()) {
                                 userPhotos.remove(position);
                                 photosAdapter.notifyItemRemoved(position);
                                 Toast.makeText(requireContext(), "Photo deleted successfully", Toast.LENGTH_SHORT).show();

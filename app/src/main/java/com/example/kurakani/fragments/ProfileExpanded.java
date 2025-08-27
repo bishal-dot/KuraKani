@@ -17,10 +17,10 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.bumptech.glide.Glide;
 import com.example.kurakani.Adapter.OtherProfilePhotosAdapter;
 import com.example.kurakani.R;
+import com.example.kurakani.model.User;
 import com.example.kurakani.network.ApiService;
 import com.example.kurakani.network.RetrofitClient;
 import com.example.kurakani.viewmodel.ProfileModel;
-import com.example.kurakani.model.ProfileResponse;
 import com.google.android.material.appbar.MaterialToolbar;
 import com.google.android.material.chip.Chip;
 import com.google.android.material.chip.ChipGroup;
@@ -104,9 +104,9 @@ public class ProfileExpanded extends Fragment {
 
     private void fetchProfileFromApi(int userId) {
         ApiService api = RetrofitClient.getInstance(requireContext()).create(ApiService.class);
-        api.getUserProfile(userId).enqueue(new Callback<ProfileResponse.User>() {
+        api.getUserProfile(userId).enqueue(new Callback<User>() {  // FIXED
             @Override
-            public void onResponse(Call<ProfileResponse.User> call, Response<ProfileResponse.User> response) {
+            public void onResponse(Call<User> call, Response<User> response) {
                 if (response.isSuccessful() && response.body() != null) {
                     profile = convertApiUserToProfile(response.body());
                     displayProfile(profile);
@@ -116,37 +116,40 @@ public class ProfileExpanded extends Fragment {
             }
 
             @Override
-            public void onFailure(Call<ProfileResponse.User> call, Throwable t) {
+            public void onFailure(Call<User> call, Throwable t) {
                 Log.e("ProfileExpanded", "Failed to load profile: " + t.getMessage());
             }
         });
     }
 
-    private ProfileModel convertApiUserToProfile(ProfileResponse.User apiUser) {
-        int age = apiUser.age != null ? apiUser.age : 0;
-        String fullname = apiUser.fullname != null ? apiUser.fullname : "";
-        String username = apiUser.username != null ? apiUser.username : "";
-        String gender = apiUser.gender != null ? apiUser.gender : "";
-        String purpose = apiUser.purpose != null ? apiUser.purpose : "";
-        String about = apiUser.about != null ? apiUser.about : "";
+    private ProfileModel convertApiUserToProfile(User apiUser) {
+        int age = apiUser.getAge() != null ? apiUser.getAge() : 0;
+        String fullname = apiUser.getFullname() != null ? apiUser.getFullname() : "";
+        String username = apiUser.getUsername() != null ? apiUser.getUsername() : "";
+        String gender = apiUser.getGender() != null ? apiUser.getGender() : "";
+        String purpose = apiUser.getPurpose() != null ? apiUser.getPurpose() : "";
+        String about = apiUser.getAbout() != null ? apiUser.getAbout() : "";
 
         String profileUrl = "";
-        if (apiUser.profile != null && !apiUser.profile.isEmpty()) {
-            profileUrl = apiUser.profile.startsWith("http") ? apiUser.profile : RetrofitClient.BASE_URL + "storage/" + apiUser.profile;
+        if (apiUser.getProfile() != null && !apiUser.getProfile().isEmpty()) {
+            profileUrl = apiUser.getProfile().startsWith("http")
+                    ? apiUser.getProfile()
+                    : RetrofitClient.BASE_URL + "storage/" + apiUser.getProfile();
         }
 
-        List<String> interests = apiUser.interests != null ? apiUser.interests : new ArrayList<>();
+        List<String> interests = apiUser.getInterests() != null ? apiUser.getInterests() : new ArrayList<>();
         List<String> photos = new ArrayList<>();
-        if (apiUser.photos != null) {
-            for (ProfileResponse.User.Photo photo : apiUser.photos) {
-                if (photo != null && photo.url != null && !photo.url.isEmpty()) {
-                    String fullUrl = photo.url.startsWith("http") ? photo.url : RetrofitClient.BASE_URL + "storage/" + photo.url;
+        if (apiUser.getPhotos() != null) {
+            for (User.Photo photo : apiUser.getPhotos()) {
+                if (photo != null && photo.getUrl() != null && !photo.getUrl().isEmpty()) {
+                    String fullUrl = photo.getUrl().startsWith("http") ? photo.getUrl() : RetrofitClient.BASE_URL + "storage/" + photo.getUrl();
                     photos.add(fullUrl);
                 }
             }
+
         }
 
-        return new ProfileModel(apiUser.id, fullname, username, age, gender, purpose, about, profileUrl, interests, photos);
+        return new ProfileModel(apiUser.getId(), fullname, username, age, gender, purpose, about, profileUrl, interests, photos);
     }
 
     private void displayProfile(ProfileModel profile) {

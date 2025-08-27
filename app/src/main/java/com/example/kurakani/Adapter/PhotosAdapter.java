@@ -43,7 +43,7 @@ public class PhotosAdapter extends RecyclerView.Adapter<PhotosAdapter.PhotoViewH
         ProfileResponse.UserPhoto photo = photos.get(position);
 
         Glide.with(context)
-                .load(photo.url)
+                .load(photo.getUrl())
                 .placeholder(R.drawable.profile_icon)
                 .error(R.drawable.profile_icon)
                 .into(holder.ivPhoto);

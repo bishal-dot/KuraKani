@@ -1,0 +1,38 @@
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/messageContainer"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    android:padding="4dp">
+
+    <!-- Horizontal container for bubble + timestamp -->
+    <LinearLayout
+        android:id="@+id/messageBubbleContainer"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical">
+
+        <!-- Timestamp -->
+        <TextView
+            android:id="@+id/tvTimestamp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="12:45 PM"
+            android:textSize="10sp"
+            android:textColor="@color/black"
+            android:layout_marginBottom="2dp"
+            android:visibility="gone" />
+
+        <!-- Message bubble -->
+        <TextView
+            android:id="@+id/tvMessage"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:padding="10dp"
+            android:text="Message text goes here"
+            android:maxWidth="250dp"
+            android:textColor="@android:color/white"
+            android:background="@drawable/bg_bubble_received"/>
+    </LinearLayout>
+</LinearLayout>

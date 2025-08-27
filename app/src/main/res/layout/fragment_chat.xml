@@ -1,118 +1,113 @@
 <?xml version="1.0" encoding="utf-8"?>
-<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
+    android:orientation="vertical"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/light_blue_bg"
-    tools:context=".Chat">
+    android:clipChildren="false"
+    android:clipToPadding="false"
+    android:background="@color/background"
+    android:padding="16dp">
 
-    <androidx.constraintlayout.widget.ConstraintLayout
+    <!-- Chat List Title -->
+    <TextView
+        android:id="@+id/tvChatListTitle"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Chats"
+        android:textColor="@color/primary_color"
+        android:textSize="24sp"
+        android:textStyle="bold"
+        android:layout_marginBottom="12dp"/>
+
+    <!-- Search Bar -->
+    <androidx.appcompat.widget.AppCompatAutoCompleteTextView
+        android:id="@+id/searchView"
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:layout_height="50dp"
+        android:hint="Search users..."
+        android:textColor="@color/primary_color"
+        android:textColorHint="#99CCCCCC"
+        android:imeOptions="actionSearch"
+        android:inputType="text|textAutoComplete"
+        android:background="@drawable/curved_rectangle"
+        android:drawableStart="@drawable/ic_search"
+        android:drawableEnd="@drawable/ic_reject"
+        android:drawableTint="@color/primary_color"
+        android:drawablePadding="12dp"
+        android:paddingStart="16dp"
+        android:paddingEnd="16dp"
+        android:completionThreshold="1"
+        android:dropDownHeight="wrap_content"
+        android:dropDownWidth="match_parent"
+        android:dropDownVerticalOffset="8dp"
+        android:dropDownHorizontalOffset="0dp"
+        android:focusableInTouchMode="true"
+        android:layout_marginBottom="16dp"/>
 
-        <LinearLayout
-            android:id="@+id/linearLayout6"
-            android:layout_width="match_parent"
+
+
+    <!-- Empty State Layout -->
+    <LinearLayout
+        android:id="@+id/emptyStateLayout"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical"
+        android:gravity="center"
+        android:visibility="gone"
+        android:padding="24dp">
+
+        <ImageView
+            android:id="@+id/ivEmptyState"
+            android:layout_width="150dp"
+            android:layout_height="150dp"
+            android:src="@drawable/ic_no_matches"
+            android:contentDescription="No chats"
+            android:layout_marginBottom="16dp"
+            app:tint="@color/primary_color" />
+
+        <TextView
+            android:id="@+id/tvEmptyTitle"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:text="No Chats Yet"
+            android:textColor="@color/dark_gray"
+            android:textSize="20sp"
+            android:textStyle="bold"
             android:gravity="center"
-            android:orientation="vertical"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent">
+            android:layout_marginBottom="8dp"/>
 
-            <TextView
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:gravity="center"
-                android:text="Inbox"
-                android:textSize="28sp"
-                android:textColor="@color/primary_color"
-                android:textStyle="bold" />
-
-            <com.google.android.material.search.SearchBar
-                android:id="@+id/searchBar"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:visibility="visible"
-                android:hint="Search"
-                />
-
-        </LinearLayout>
-
-        <com.google.android.material.card.MaterialCardView
-            android:id="@+id/ivProfileButton"
-            android:layout_width="match_parent"
+        <TextView
+            android:id="@+id/tvEmptySubtitle"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginTop="10dp"
-            android:backgroundTint="@color/white"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/linearLayout6">
+            android:text="Start a conversation by searching for users above."
+            android:textColor="@color/dark_gray"
+            android:textSize="16sp"
+            android:gravity="center"
+            android:layout_marginBottom="16dp"/>
 
-            <androidx.constraintlayout.widget.ConstraintLayout
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:padding="10dp">
+        <Button
+            android:id="@+id/btnStartChat"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Search Users"
+            android:backgroundTint="@color/primary_color"
+            android:textColor="@android:color/white"
+            android:paddingHorizontal="24dp"
+            android:paddingVertical="12dp"
+            android:layout_marginTop="8dp"/>
+    </LinearLayout>
 
-                <ImageView
-                    android:id="@+id/imageView3"
-                    android:layout_width="70dp"
-                    android:layout_height="70dp"
-                    android:scaleType="centerCrop"
-                    android:src="@drawable/john"
-                    android:background="@drawable/circle_shape"
-                    android:clipToOutline="true"
-                    android:backgroundTint="@color/primary_color"
-                    app:layout_constraintBottom_toBottomOf="parent"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toTopOf="parent" />
-
-                <TextView
-                    android:id="@+id/textView21"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginStart="12dp"
-                    android:text="Anil Sir"
-                    android:textColor="@color/black"
-                    android:textSize="20sp"
-                    android:textStyle="bold"
-                    app:layout_constraintBottom_toBottomOf="parent"
-                    app:layout_constraintStart_toEndOf="@+id/imageView3"
-                    app:layout_constraintTop_toTopOf="parent"
-                    app:layout_constraintVertical_bias="0.0" />
-
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginStart="12dp"
-                    android:text="tmro project best xa"
-                    android:textColor="@color/black"
-                    android:textSize="18sp"
-                    app:layout_constraintBottom_toBottomOf="parent"
-                    app:layout_constraintStart_toEndOf="@+id/imageView3"
-                    app:layout_constraintTop_toBottomOf="@+id/textView21"
-                    app:layout_constraintVertical_bias="0.25" />
-
-                <TextView
-                    android:layout_width="80dp"
-                    android:layout_height="wrap_content"
-                    android:gravity="center"
-                    android:text="2:23 PM"
-                    android:textColor="@color/black"
-                    android:textSize="15sp"
-                    app:layout_constraintBottom_toBottomOf="parent"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintHorizontal_bias="1.0"
-                    app:layout_constraintStart_toEndOf="@+id/textView21"
-                    app:layout_constraintTop_toTopOf="parent"
-                    app:layout_constraintVertical_bias="0.0" />
-
-            </androidx.constraintlayout.widget.ConstraintLayout>
-
-        </com.google.android.material.card.MaterialCardView>
-
-    </androidx.constraintlayout.widget.ConstraintLayout>
-
-</FrameLayout>
+    <!-- RecyclerView for chat users -->
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/rvChatList"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1"
+        android:clipToPadding="false"
+        android:paddingTop="8dp"
+        android:paddingBottom="8dp"
+        android:divider="@android:color/transparent"
+        android:dividerHeight="8dp"/>
+</LinearLayout>

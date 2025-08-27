@@ -16,7 +16,7 @@ import com.google.firebase.messaging.FirebaseMessaging;
 
 public class MainActivity extends AppCompatActivity {
 
-    private static final int SPLASH_DELAY = 5000; // 5 seconds
+    private static final int SPLASH_DELAY = 4000; // 4 seconds
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
