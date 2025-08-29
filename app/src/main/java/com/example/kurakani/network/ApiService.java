@@ -145,23 +145,38 @@ public interface ApiService {
     @POST("messages/send")
     Call<com.example.kurakani.model.Message> sendMessage(@Body SendMessageRequest request);
 
-    class SendMessageRequest {
+    public static class SendMessageRequest {
         private int receiver_id;
-        private String message;
+        private String message;   // optional for text
+        private String imageUrl;  // optional for image
 
+        // Constructor for text-only messages
         public SendMessageRequest(int receiver_id, String message) {
             this.receiver_id = receiver_id;
             this.message = message;
+            this.imageUrl = null;
         }
 
-        public int getReceiver_id() {
-            return receiver_id;
+        // Constructor for image-only messages
+        public SendMessageRequest(int receiver_id, String imageUrl, boolean isImage) {
+            this.receiver_id = receiver_id;
+            this.message = null;
+            this.imageUrl = imageUrl;
         }
 
-        public String getMessage() {
-            return message;
+        // Constructor for both text and image messages
+        public SendMessageRequest(int receiver_id, String message, String imageUrl) {
+            this.receiver_id = receiver_id;
+            this.message = message;
+            this.imageUrl = imageUrl;
         }
+
+        // Getters (optional, if Retrofit/Gson needs them)
+        public int getReceiver_id() { return receiver_id; }
+        public String getMessage() { return message; }
+        public String getImageUrl() { return imageUrl; }
     }
+
 
     //    Search users in chat
     @GET("messages/search")

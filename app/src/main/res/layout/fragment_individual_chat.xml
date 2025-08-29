@@ -1,39 +1,85 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout
+<androidx.constraintlayout.widget.ConstraintLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
-    android:orientation="vertical"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/rootLayout"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/background">
+    android:background="@color/background"
+    android:fitsSystemWindows="true">
 
-    <!-- Toolbar / Header showing user name -->
-    <TextView
-        android:id="@+id/tvChatWithUser"
-        android:layout_width="match_parent"
+    <!-- Toolbar / Header: Profile Image + User Name -->
+    <LinearLayout
+        android:id="@+id/chatHeaderLayout"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:text="Chat with User"
-        android:textColor="@color/primary_color"
-        android:textSize="20sp"
-        android:textStyle="bold"
+        android:orientation="horizontal"
+        android:gravity="center_vertical"
+        android:padding="18dp"
         android:background="@color/white"
-        android:padding="20dp" />
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent">
+
+        <ImageView
+            android:id="@+id/ivChatUserProfile"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            android:src="@drawable/default_avatar"
+            android:contentDescription="Chat user profile"
+            android:scaleType="centerCrop"
+            android:layout_marginEnd="12dp"
+            android:backgroundTint="@color/gray_light"
+            android:background="@drawable/circle_shape" />
+
+        <TextView
+            android:id="@+id/tvChatWithUser"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Chat with User"
+            android:textColor="@color/primary_color"
+            android:textSize="20sp"
+            android:textStyle="bold"/>
+    </LinearLayout>
 
     <!-- Messages RecyclerView -->
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/rvMessages"
-        android:layout_width="match_parent"
+        android:layout_width="0dp"
         android:layout_height="0dp"
-        android:layout_weight="1"
         android:clipToPadding="false"
-        android:padding="8dp" />
+        android:paddingTop="8dp"
+        android:paddingBottom="8dp"
+        android:scrollbars="vertical"
+        app:layout_constraintTop_toBottomOf="@id/chatHeaderLayout"
+        app:layout_constraintBottom_toTopOf="@id/inputLayout"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"/>
 
-    <!-- Input field to send new message -->
+    <!-- Input layout anchored to bottom -->
     <LinearLayout
+        android:id="@+id/inputLayout"
         android:orientation="horizontal"
-        android:layout_width="match_parent"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:gravity="center"
-        android:padding="8dp">
+        android:gravity="center_vertical"
+        android:padding="4dp"
+        android:background="@drawable/curved_rectangle"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent">
+
+        <!-- Image Picker Button -->
+        <ImageButton
+            android:id="@+id/btnPickImage"
+            android:layout_width="50dp"
+            android:layout_height="50dp"
+            android:layout_marginEnd="8dp"
+            android:background="@drawable/circle_shape"
+            android:clipToOutline="true"
+            android:backgroundTint="@color/primary_color"
+            android:src="@android:drawable/ic_media_play"
+            android:contentDescription="Pick Image" />
 
         <EditText
             android:id="@+id/etMessage"
@@ -41,10 +87,13 @@
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:hint="Type a message"
-            android:background="@drawable/curved_rectangle"
+            android:background="@android:color/transparent"
             android:padding="12dp"
-            android:layout_margin="10dp"
-            android:inputType="textMultiLine" />
+            android:layout_marginEnd="8dp"
+            android:inputType="textMultiLine"
+            android:scrollHorizontally="false"
+            android:maxLines="5"
+            android:imeOptions="actionSend" />
 
         <ImageButton
             android:id="@+id/btnSend"
@@ -56,4 +105,5 @@
             android:src="@drawable/send"
             android:contentDescription="Send" />
     </LinearLayout>
-</LinearLayout>
+
+</androidx.constraintlayout.widget.ConstraintLayout>

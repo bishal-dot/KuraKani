@@ -4,38 +4,61 @@ import java.io.Serializable;
 
 public class Message implements Serializable {
 
+    // Default placeholders
+    private static final String DEFAULT_AVATAR_URL = "https://example.com/default_profile.png";
+    private static final String DEFAULT_IMAGE_URL  = "https://example.com/default_message.png";
+    // 👆 You can replace with a real placeholder image (or leave null if you want Glide to handle it)
+
     private int id;
     private int sender_id;
     private int receiver_id;
     private String message;
     private String created_at;
 
-    // Getter for message ID
+    // New fields for image support
+    private String imageUrl;          // URL of message image
+    private String senderProfileUrl;  // URL of sender profile image
+
+    // --- Getters ---
     public int getId() {
         return id;
     }
 
-    // Getter for sender ID (renamed to standard getter)
+    public static String getDefaultImageUrl() {
+        return DEFAULT_IMAGE_URL;
+    }
+
     public int getSenderId() {
         return sender_id;
     }
 
-    // Getter for receiver ID (renamed to standard getter)
     public int getReceiverId() {
         return receiver_id;
     }
 
-    // Getter for message text
     public String getMessage() {
         return message;
     }
 
-    // Getter for created_at timestamp (renamed to standard getter)
     public String getCreatedAt() {
         return created_at;
     }
 
-    // Optional setters (if needed)
+    // ✅ Safe getter for message image URL
+    public String getImageUrl() {
+        return (imageUrl != null && !imageUrl.isEmpty())
+                ? imageUrl
+                : DEFAULT_IMAGE_URL;
+    }
+
+    // ✅ Safe getter for sender profile image URL
+    public String getSenderProfileUrl() {
+        return (senderProfileUrl != null && !senderProfileUrl.isEmpty())
+                ? senderProfileUrl
+                : DEFAULT_AVATAR_URL;
+    }
+
+    // --- Setters ---
     public void setId(int id) {
         this.id = id;
     }
@@ -54,5 +77,13 @@ public class Message implements Serializable {
 
     public void setCreatedAt(String created_at) {
         this.created_at = created_at;
+    }
+
+    public void setImageUrl(String imageUrl) {
+        this.imageUrl = imageUrl;
+    }
+
+    public void setSenderProfileUrl(String senderProfileUrl) {
+        this.senderProfileUrl = senderProfileUrl;
     }
 }
