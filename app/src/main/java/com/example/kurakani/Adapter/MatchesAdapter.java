@@ -43,7 +43,7 @@ public class MatchesAdapter extends RecyclerView.Adapter<MatchesAdapter.ViewHold
         if ("Matched".equalsIgnoreCase(match.getStatus())) {
             holder.tvMatchStatus.setTextColor(Color.GREEN);
         } else {
-            holder.tvMatchStatus.setTextColor(Color.YELLOW);
+            holder.tvMatchStatus.setTextColor(Color.RED);
         }
     }
 
