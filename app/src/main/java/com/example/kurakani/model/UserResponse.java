@@ -1,6 +1,6 @@
 package com.example.kurakani.model;
 
-public class User {
+public class UserResponse {
     private int id;
     private String username;
     public String email;

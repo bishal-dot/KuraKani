@@ -20,7 +20,7 @@ public class ProfileResponse {
     // Make User Serializable
     public static class User implements Serializable {
         @SerializedName("id")
-        public int id;
+        public Integer id;
 
         @SerializedName("fullname")
         public String fullname;
@@ -63,6 +63,18 @@ public class ProfileResponse {
 
         @SerializedName("is_verified")
         public Boolean is_verified;
+
+        @SerializedName("unread_count")
+        private Integer unreadCount;
+
+        public int getUnreadCount() {
+            return unreadCount;
+        }
+
+        public void setUnreadCount(int unreadCount) {
+            this.unreadCount = unreadCount;
+        }
+
 
         // Make nested UserPhoto Serializable too
         public static class UserPhoto implements Serializable {

@@ -1,6 +1,6 @@
 package com.example.kurakani.Adapter;
 
-import android.text.TextUtils;
+import android.content.Context;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -13,7 +13,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
 import com.example.kurakani.R;
-import com.example.kurakani.viewmodel.ProfileModel;
+import com.example.kurakani.model.ProfileResponse;
 import com.google.android.material.chip.Chip;
 import com.google.android.material.chip.ChipGroup;
 
@@ -21,9 +21,11 @@ import java.util.List;
 
 public class SearchProfileAdapter extends RecyclerView.Adapter<SearchProfileAdapter.ProfileViewHolder> {
 
-    private List<ProfileModel> profileList;
+    private Context context;
+    private List<ProfileResponse.User> profileList;
 
-    public SearchProfileAdapter(List<ProfileModel> profileList) {
+    public SearchProfileAdapter(Context context, List<ProfileResponse.User> profileList) {
+        this.context = context;
         this.profileList = profileList;
     }
 
@@ -37,25 +39,23 @@ public class SearchProfileAdapter extends RecyclerView.Adapter<SearchProfileAdap
 
     @Override
     public void onBindViewHolder(@NonNull ProfileViewHolder holder, int position) {
-        ProfileModel profile = profileList.get(position);
+        ProfileResponse.User profile = profileList.get(position);
 
-        holder.userName.setText(profile.getFullname() + ", " + profile.getAge());
+        holder.userName.setText((profile.fullname != null ? profile.fullname : "Unknown")
+                + ", " + (profile.age != null ? profile.age : "-"));
 
-        // Set profile image
         Glide.with(holder.itemView.getContext())
-                .load(profile.getProfile())
+                .load(profile.profile != null ? profile.profile : "")
                 .placeholder(R.drawable.default_avatar)
                 .into(holder.profileImage);
 
-        // Add interest chips dynamically
         holder.interestsChipGroup.removeAllViews();
-        List<String> interests = profile.getInterests();
-        if (interests != null && !interests.isEmpty()) {
-            for (String interest : interests) {
+        if (profile.interests != null && !profile.interests.isEmpty()) {
+            for (String interest : profile.interests) {
                 Chip chip = new Chip(holder.itemView.getContext());
                 chip.setText(interest);
-                chip.setClickable(false);
                 chip.setCheckable(false);
+                chip.setClickable(false);
                 holder.interestsChipGroup.addView(chip);
             }
         }

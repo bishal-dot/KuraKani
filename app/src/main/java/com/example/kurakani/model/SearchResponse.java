@@ -7,15 +7,13 @@ import java.util.List;
 
 public class SearchResponse {
     private boolean success;
-    private List<ProfileModel> users;
-    private List<String> interests;
+    private List<ProfileResponse.User> users;
 
     public boolean isSuccess() { return success; }
-    public List<ProfileModel> getUsers() { return users; }
+    public List<ProfileResponse.User> getUsers() { return users; }
 
-    public List<String> getInterests() { return interests; }
 
-    public void setUsers(List<ProfileModel> users) {
+    public void setUsers(List<ProfileResponse.User> users) {
         this.users = users;
     }
 

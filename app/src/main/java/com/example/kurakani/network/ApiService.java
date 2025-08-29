@@ -15,14 +15,10 @@
     import com.example.kurakani.model.VerificationResponse;
     import com.example.kurakani.viewmodel.MatchesModel;
     import com.google.gson.JsonObject;
-
     import java.util.HashMap;
     import java.util.List;
     import java.util.Map;
-
     import okhttp3.MultipartBody;
-    import okhttp3.RequestBody;
-    import okhttp3.ResponseBody;
     import retrofit2.Call;
     import retrofit2.http.Body;
     import retrofit2.http.DELETE;
@@ -30,7 +26,6 @@
     import retrofit2.http.Field;
     import retrofit2.http.GET;
     import retrofit2.http.Header;
-    import retrofit2.http.Headers;
     import retrofit2.http.Multipart;
     import retrofit2.http.POST;
     import retrofit2.http.Part;
@@ -63,7 +58,7 @@
                 @Header("Authorization") String token,
                 @Body ProfileRequest request
         );
-        
+
         @GET("user/profile")
         Call<ProfileResponse> getProfile();
 
@@ -85,9 +80,8 @@
         );
 
 
-        // Get all photos
-        @GET("photos")
-        Call<GetPhotosResponse> getPhotos();
+    @GET("photos")
+    Call<GetPhotosResponse> getPhotos();
 
         // Upload profile photo
         @Multipart
@@ -98,32 +92,24 @@
         @DELETE("profile/photos/{photoId}")
         Call<DeletePhotoResponse> deletePhoto(@Path("photoId") int photoId);
 
-        @GET("search/users")
-        Call<SearchResponse> searchUsers(
-                @Query("search") String search,
-                @Query("interests") String interests
-        );
+    @GET("search/users")
+    Call<SearchResponse> searchUsers(
+            @Query("search") String search
+    );
 
-        @GET("search/interests")
-        Call<List<String>> getInterests();
+    @GET("search/interests")
+    Call<List<String>> getInterests();
 
-        // Sending and Receiving messages
-        // GET messages/{otherUserId}
-        @GET("messages/{otherUserId}")
-        Call<List<Message>> getMessages(@Path("otherUserId") int otherUserId);
+    @POST("user/changepassword")
+    Call<ApiResponse> changePassword(@Body ChangePasswordRequest request);
 
-        // POST messages/{otherUserId}
-        @FormUrlEncoded
-        @POST("messages/{otherUserId}")
-        Call<Message> sendMessage(
-                @Path("otherUserId") int otherUserId,
-                @Field("message") String message
-        );
-
-        //change password
-        @POST("user/changepassword")
-        Call<ApiResponse> changePassword(@Body ChangePasswordRequest request);
-
+    @POST("send-match")
+    @FormUrlEncoded
+    Call<Void> sendNotification(
+            @Field("user_id") int userId,
+            @Field("title") String title,
+            @Field("body") String body
+    );
         // reset passowrd
         @FormUrlEncoded
         @POST("password/send-otp")
@@ -143,31 +129,59 @@
         );
 
         // Match Notifications
-        @POST("send-match")
-        @FormUrlEncoded
-        Call<Void> sendNotification(
-                @Field("user_id") int userId,
-                @Field("title") String title,
-                @Field("body") String body
-        );
+//        @POST("send-match")
+//        @FormUrlEncoded
+//        Call<Void> sendNotification(
+//                @Field("user_id") int userId,
+//                @Field("title") String title,
+//                @Field("body") String body
+//        );
 
-        // update FCM Token
-        @POST("update-fcm-token")
-        Call<Void> updateFcmToken(@Body HashMap<String, String> body);
+    @POST("update-fcm-token")
+    Call<Void> updateFcmToken(@Body HashMap<String, String> body);
 
-        // Saving matched users in DB
-        @FormUrlEncoded
-        @POST("match")
-        Call<Void> sendMatch(
-                @Header("Authorization") String authToken,
-                @Field("user_id") int userId,
-                @Field("matched_user_id") int matchedUserId
-        );
+    @FormUrlEncoded
+    @POST("match")
+    Call<Void> sendMatch(
+            @Header("Authorization") String authToken,
+            @Field("user_id") int userId,
+            @Field("matched_user_id") int matchedUserId
+    );
 
-        // Fetch matches filtered by status
-        @GET("matches")
-        Call<List<MatchesModel>> getMatches(
-                @Query("user_id") int userId,
-                @Query("status") String status // pass null for "All"
-        );
-    }
+    @GET("matches")
+    Call<List<MatchesModel>> getMatches(
+            @Query("user_id") int userId,
+            @Query("status") String status
+    );
+
+    // ==========================
+    // Chat / Message API Methods
+    // ==========================
+
+        // 1️⃣ Send message
+        class SendMessageRequest {
+            public int receiver_id;
+            public String message;
+
+            public SendMessageRequest(int receiver_id, String message) {
+                this.receiver_id = receiver_id;
+                this.message = message;
+            }
+        }
+
+        @POST("messages/send")
+        Call<Message> sendMessage(@Body SendMessageRequest request);
+
+        // 2️⃣ Get messages with a user
+        @GET("messages/{userId}")
+        Call<List<Message>> getMessages(@Path("userId") int userId);
+
+        // 3️⃣ Get all chat users
+        @GET("messages")
+        Call<List<ProfileResponse.User>> getChatUsers();
+
+        // 4️⃣ Search users for dropdown
+        @GET("messages/search")
+        Call<List<ProfileResponse.User>> searchChatUsers(@Query("search") String searchQuery);
+
+}

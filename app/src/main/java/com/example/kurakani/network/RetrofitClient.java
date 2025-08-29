@@ -12,11 +12,12 @@ import retrofit2.converter.gson.GsonConverterFactory;
 
 public class RetrofitClient {
 
-    public static final String BASE_URL = "http://192.168.1.10:8000/api/";
-    public static int CURRENT_USER_ID = 1;
+    public static final String BASE_URL = "http://192.168.1.66:8000/api/";
+
+    // Removed hardcoded value
+    // public static int CURRENT_USER_ID = 1;
 
     private static Retrofit retrofit = null;
-
     private static Retrofit retrofitNoUserId = null;
     private static Retrofit retrofitWithUserId = null;
 
@@ -34,6 +35,9 @@ public class RetrofitClient {
             SharedPreferences prefs = context.getSharedPreferences("KurakaniPrefs", Context.MODE_PRIVATE);
             String token = prefs.getString("auth_token", null);
 
+            // Get the current logged-in user's ID dynamically
+            int currentUserId = prefs.getInt("user_id", -1); // default -1 if not found
+
             Request.Builder builder = original.newBuilder()
                     .method(original.method(), original.body());
 
@@ -42,8 +46,8 @@ public class RetrofitClient {
             }
 
             // Include X-User-Id for API calls that require it
-            if (includeUserId) {
-                builder.header("X-User-Id", String.valueOf(CURRENT_USER_ID));
+            if (includeUserId && currentUserId != -1) {
+                builder.header("X-User-Id", String.valueOf(currentUserId));
             }
 
             return chain.proceed(builder.build());
@@ -81,7 +85,7 @@ public class RetrofitClient {
 
                 return chain.proceed(requestBuilder.build());
             });
-            // Create a lenient Gson instance
+
             Gson gson = new GsonBuilder()
                     .setLenient()
                     .create();
@@ -94,7 +98,6 @@ public class RetrofitClient {
         }
         return retrofit;
     }
-
 
     public static Retrofit getClient(Context context) {
         if (retrofitNoUserId == null) {
