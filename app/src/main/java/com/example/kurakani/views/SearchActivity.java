@@ -19,8 +19,10 @@ import com.example.kurakani.Adapter.SearchProfileAdapter;
 import com.example.kurakani.R;
 import com.example.kurakani.model.ProfileResponse;
 import com.example.kurakani.model.SearchResponse;
+import com.example.kurakani.model.User;
 import com.example.kurakani.network.ApiService;
 import com.example.kurakani.network.RetrofitClient;
+import com.example.kurakani.viewmodel.ProfileModel;
 import com.google.android.material.appbar.MaterialToolbar;
 import com.google.android.material.chip.Chip;
 import com.google.android.material.chip.ChipGroup;
@@ -159,7 +161,7 @@ public class SearchActivity extends AppCompatActivity {
             public void onResponse(Call<SearchResponse> call, Response<SearchResponse> response) {
                 progressBar.setVisibility(View.GONE);
                 if (response.isSuccessful() && response.body() != null && response.body().getUsers() != null) {
-                    profileList.addAll(response.body().getUsers());
+                    profileList.addAll(response.body().getUser());
                     emptyState.setVisibility(profileList.isEmpty() ? View.VISIBLE : View.GONE);
                     adapter.notifyDataSetChanged();
                 } else {

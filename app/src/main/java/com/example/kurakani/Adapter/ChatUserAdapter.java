@@ -1,5 +1,6 @@
 package com.example.kurakani.Adapter;
 
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -11,22 +12,25 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
 import com.example.kurakani.R;
-import com.example.kurakani.model.ProfileResponse;
+import com.example.kurakani.model.User;
 
 import java.util.ArrayList;
 import java.util.List;
 
 public class ChatUserAdapter extends RecyclerView.Adapter<ChatUserAdapter.ChatUserViewHolder> {
 
-    private final List<ProfileResponse.User> userList;
+    private final List<User> userList;
+    private final List<User> userListFull; // backup for search
     private final OnItemClickListener listener;
 
     public interface OnItemClickListener {
-        void onItemClick(ProfileResponse.User user);
+        void onItemClick(User user);
     }
 
-    public ChatUserAdapter(List<ProfileResponse.User> userList, OnItemClickListener listener) {
+    public ChatUserAdapter(List<User> userList, OnItemClickListener listener) {
         this.userList = userList != null ? userList : new ArrayList<>();
+        this.userListFull = new ArrayList<>();
+        if (userList != null) this.userListFull.addAll(userList);
         this.listener = listener;
     }
 
@@ -40,13 +44,13 @@ public class ChatUserAdapter extends RecyclerView.Adapter<ChatUserAdapter.ChatUs
 
     @Override
     public void onBindViewHolder(@NonNull ChatUserViewHolder holder, int position) {
-        ProfileResponse.User user = userList.get(position);
+        User user = userList.get(position);
 
-        holder.tvUserName.setText(user.fullname != null ? user.fullname : "Unknown");
+        holder.tvUserName.setText(user.getFullname() != null ? user.getFullname() : "Unknown");
 
-        if (user.photos != null && !user.photos.isEmpty() && user.photos.get(0).url != null) {
+        if (user.getPhotos() != null && !user.getPhotos().isEmpty() && user.getPhotos().get(0).getUrl() != null) {
             Glide.with(holder.itemView.getContext())
-                    .load(user.photos.get(0).url)
+                    .load(user.getPhotos().get(0).getUrl())
                     .placeholder(R.drawable.default_avatar)
                     .error(R.drawable.default_avatar)
                     .circleCrop()
@@ -55,7 +59,7 @@ public class ChatUserAdapter extends RecyclerView.Adapter<ChatUserAdapter.ChatUs
             holder.imgUserAvatar.setImageResource(R.drawable.default_avatar);
         }
 
-        int unreadCount = user.getUnreadCount();
+        int unreadCount = Math.max(0, user.getUnreadCount());
         if (unreadCount > 0) {
             holder.tvUnreadIndicator.setVisibility(View.VISIBLE);
             holder.tvUnreadIndicator.setText(String.valueOf(unreadCount));
@@ -73,9 +77,14 @@ public class ChatUserAdapter extends RecyclerView.Adapter<ChatUserAdapter.ChatUs
         return userList.size();
     }
 
-    public void updateList(List<ProfileResponse.User> newList) {
+    public void updateList(List<User> newList) {
         userList.clear();
         if (newList != null) userList.addAll(newList);
+
+        userListFull.clear();
+        if (newList != null) userListFull.addAll(newList);
+
+        Log.d("ChatUserAdapter", "Adapter updated with " + userList.size() + " users.");
         notifyDataSetChanged();
     }
 
@@ -90,5 +99,8 @@ public class ChatUserAdapter extends RecyclerView.Adapter<ChatUserAdapter.ChatUs
             imgUserAvatar = itemView.findViewById(R.id.imgUserAvatar);
             tvUnreadIndicator = itemView.findViewById(R.id.tvUnreadIndicator);
         }
+    }
+    public List<User> getUser() {
+        return userList; // assuming your adapter stores its data in 'userList'
     }
 }

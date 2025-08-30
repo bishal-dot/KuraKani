@@ -35,9 +35,6 @@ public class RetrofitClient {
             SharedPreferences prefs = context.getSharedPreferences("KurakaniPrefs", Context.MODE_PRIVATE);
             String token = prefs.getString("auth_token", null);
 
-            // Get the current logged-in user's ID dynamically
-            int currentUserId = prefs.getInt("user_id", -1); // default -1 if not found
-
             Request.Builder builder = original.newBuilder()
                     .method(original.method(), original.body());
 
@@ -45,9 +42,12 @@ public class RetrofitClient {
                 builder.header("Authorization", "Bearer " + token);
             }
 
-            // Include X-User-Id for API calls that require it
-            if (includeUserId && currentUserId != -1) {
-                builder.header("X-User-Id", String.valueOf(currentUserId));
+            // Include dynamic X-User-Id
+            if (includeUserId) {
+                int currentUserId = prefs.getInt("user_id", -1); // fetch logged-in user ID
+                if (currentUserId != -1) {
+                    builder.header("X-User-Id", String.valueOf(currentUserId));
+                }
             }
 
             return chain.proceed(builder.build());
@@ -57,22 +57,18 @@ public class RetrofitClient {
     }
 
     private static Gson getLenientGson() {
-        return new GsonBuilder()
-                .setLenient()
-                .create();
+        return new GsonBuilder().setLenient().create();
     }
 
     public static Retrofit getInstance(Context context) {
         if (retrofit == null) {
+            OkHttpClient.Builder httpClient = new OkHttpClient.Builder();
             HttpLoggingInterceptor logging = new HttpLoggingInterceptor();
             logging.setLevel(HttpLoggingInterceptor.Level.BODY);
-
-            OkHttpClient.Builder httpClient = new OkHttpClient.Builder();
             httpClient.addInterceptor(logging);
 
             httpClient.addInterceptor(chain -> {
                 Request original = chain.request();
-
                 SharedPreferences prefs = context.getSharedPreferences("KurakaniPrefs", Context.MODE_PRIVATE);
                 String token = prefs.getString("auth_token", null);
 
@@ -86,14 +82,10 @@ public class RetrofitClient {
                 return chain.proceed(requestBuilder.build());
             });
 
-            Gson gson = new GsonBuilder()
-                    .setLenient()
-                    .create();
-
             retrofit = new Retrofit.Builder()
                     .baseUrl(BASE_URL)
                     .client(httpClient.build())
-                    .addConverterFactory(GsonConverterFactory.create())
+                    .addConverterFactory(GsonConverterFactory.create(getLenientGson()))
                     .build();
         }
         return retrofit;
@@ -114,7 +106,7 @@ public class RetrofitClient {
         if (retrofitWithUserId == null) {
             retrofitWithUserId = new Retrofit.Builder()
                     .baseUrl(BASE_URL)
-                    .client(buildClient(context, true))
+                    .client(buildClient(context, true)) // now uses dynamic logged-in user ID
                     .addConverterFactory(GsonConverterFactory.create(getLenientGson()))
                     .build();
         }

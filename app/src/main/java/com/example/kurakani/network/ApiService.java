@@ -12,6 +12,7 @@
     import com.example.kurakani.model.SignupResponse;
     import com.example.kurakani.model.UploadPhotosResponse;
     import com.example.kurakani.model.SearchResponse;
+    import com.example.kurakani.model.User;
     import com.example.kurakani.model.VerificationResponse;
     import com.example.kurakani.viewmodel.MatchesModel;
     import com.google.gson.JsonObject;
@@ -158,30 +159,48 @@
     // Chat / Message API Methods
     // ==========================
 
-        // 1️⃣ Send message
-        class SendMessageRequest {
-            public int receiver_id;
-            public String message;
+        @GET("search")
+        Call<List<User>> searchChatUsers(@Query("query") String query);
 
-            public SendMessageRequest(int receiver_id, String message) {
-                this.receiver_id = receiver_id;
-                this.message = message;
-            }
+    @GET("messages")
+    Call<List<User>> getChatUsers();
+
+    @GET("messages/{userId}")
+    Call<List<com.example.kurakani.model.Message>> getMessages(@Path("userId") int userId);
+
+    @POST("messages/send")
+    Call<com.example.kurakani.model.Message> sendMessage(@Body SendMessageRequest request);
+
+    public static class SendMessageRequest {
+        private int receiver_id;
+        private String message;   // optional for text
+        private String imageUrl;  // optional for image
+
+        // Constructor for text-only messages
+        public SendMessageRequest(int receiver_id, String message) {
+            this.receiver_id = receiver_id;
+            this.message = message;
+            this.imageUrl = null;
         }
 
-        @POST("messages/send")
-        Call<Message> sendMessage(@Body SendMessageRequest request);
+        // Constructor for image-only messages
+        public SendMessageRequest(int receiver_id, String imageUrl, boolean isImage) {
+            this.receiver_id = receiver_id;
+            this.message = null;
+            this.imageUrl = imageUrl;
+        }
 
-        // 2️⃣ Get messages with a user
-        @GET("messages/{userId}")
-        Call<List<Message>> getMessages(@Path("userId") int userId);
+        // Constructor for both text and image messages
+        public SendMessageRequest(int receiver_id, String message, String imageUrl) {
+            this.receiver_id = receiver_id;
+            this.message = message;
+            this.imageUrl = imageUrl;
+        }
 
-        // 3️⃣ Get all chat users
-        @GET("messages")
-        Call<List<ProfileResponse.User>> getChatUsers();
-
-        // 4️⃣ Search users for dropdown
-        @GET("messages/search")
-        Call<List<ProfileResponse.User>> searchChatUsers(@Query("search") String searchQuery);
+        // Getters (optional, if Retrofit/Gson needs them)
+        public int getReceiver_id() { return receiver_id; }
+        public String getMessage() { return message; }
+        public String getImageUrl() { return imageUrl; }
+    }
 
 }

@@ -4,7 +4,6 @@ import android.content.Context;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
@@ -28,12 +27,11 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.bumptech.glide.Glide;
 import com.example.kurakani.Adapter.ChatUserAdapter;
 import com.example.kurakani.R;
-import com.example.kurakani.model.ProfileResponse;
+import com.example.kurakani.model.User;
 import com.example.kurakani.network.ApiService;
 import com.example.kurakani.network.RetrofitClient;
 import com.example.kurakani.views.HomePageActivity;
 
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -47,10 +45,8 @@ public class ChatFragment extends Fragment {
     private ChatUserAdapter adapter;
     private AutoCompleteTextView searchView;
     private LinearLayout tvEmptyState;
-    private ArrayAdapter<ProfileResponse.User> searchAdapter;
+    private ArrayAdapter<User> searchAdapter;
     private Button btnStartChat;
-
-    private static final String TAG = "ChatFragmentDebug";
 
     @Nullable
     @Override
@@ -63,28 +59,25 @@ public class ChatFragment extends Fragment {
         tvEmptyState = view.findViewById(R.id.emptyStateLayout);
         btnStartChat = view.findViewById(R.id.btnStartChat);
 
-        adapter = new ChatUserAdapter(new ArrayList<>(), this::openIndividualChat);
-        rvChatList.setLayoutManager(new LinearLayoutManager(getContext()));
-        rvChatList.setAdapter(adapter);
-
-        setupSearchAdapter();
-        setupSearchView();
-
         btnStartChat.setOnClickListener(v -> {
             searchView.requestFocus();
             searchView.setText("");
             showKeyboard();
         });
 
+        adapter = new ChatUserAdapter(new ArrayList<>(), this::openIndividualChat);
+        rvChatList.setLayoutManager(new LinearLayoutManager(getContext()));
+        rvChatList.setAdapter(adapter);
+
+        setupSearchAdapter();
+        setupSearchView();
         fetchChatUsers();
 
         return view;
     }
 
     private void setupSearchAdapter() {
-        searchAdapter = new ArrayAdapter<ProfileResponse.User>(
-                getContext(), R.layout.item_user_dropdown, new ArrayList<>()
-        ) {
+        searchAdapter = new ArrayAdapter<User>(getContext(), R.layout.item_user_dropdown, new ArrayList<>()) {
             @NonNull
             @Override
             public View getView(int position, @Nullable View convertView, @NonNull ViewGroup parent) {
@@ -93,21 +86,22 @@ public class ChatFragment extends Fragment {
                     view = LayoutInflater.from(getContext()).inflate(R.layout.item_user_dropdown, parent, false);
                 }
 
-                ProfileResponse.User user = getItem(position);
+                User user = getItem(position);
                 TextView tvUsername = view.findViewById(R.id.tvUsername);
                 ImageView ivAvatar = view.findViewById(R.id.ivUserAvatar);
 
-                if (user == null || user.id == 0) {
+                if (user == null || user.getId() == 0) {
                     tvUsername.setText("No users found");
                     tvUsername.setTextColor(getResources().getColor(R.color.gray));
                     ivAvatar.setVisibility(View.GONE);
                 } else {
-                    tvUsername.setText(user.fullname);
+                    tvUsername.setText(user.getFullname());
                     tvUsername.setTextColor(getResources().getColor(R.color.primary_color));
                     ivAvatar.setVisibility(View.VISIBLE);
-                    if (user.photos != null && !user.photos.isEmpty() && user.photos.get(0).url != null) {
+                    if (user.getPhotos() != null && !user.getPhotos().isEmpty() &&
+                            user.getPhotos().get(0).getUrl() != null) {
                         Glide.with(getContext())
-                                .load(user.photos.get(0).url)
+                                .load(user.getPhotos().get(0).getUrl())
                                 .placeholder(R.drawable.default_avatar)
                                 .circleCrop()
                                 .into(ivAvatar);
@@ -122,6 +116,7 @@ public class ChatFragment extends Fragment {
         searchView.setAdapter(searchAdapter);
         searchView.setThreshold(1);
 
+        // Fix dropdown width/height and position
         searchView.setDropDownWidth(ViewGroup.LayoutParams.MATCH_PARENT);
         searchView.setDropDownVerticalOffset(10);
         searchView.setDropDownAnchor(searchView.getId());
@@ -129,23 +124,38 @@ public class ChatFragment extends Fragment {
     }
 
     private void setupSearchView() {
-        searchView.addTextChangedListener(new TextWatcher() {
-            @Override public void beforeTextChanged(CharSequence s, int start, int count, int after) { }
-            @Override public void onTextChanged(CharSequence s, int start, int before, int count) {
-                String query = s.toString().trim();
-                if (!query.isEmpty()) searchUsersFromApi(query);
-                else fetchChatUsers();
-            }
-            @Override public void afterTextChanged(Editable s) { }
-        });
-
         searchView.setOnItemClickListener((parent, view, position, id) -> {
-            ProfileResponse.User user = searchAdapter.getItem(position);
-            if (user != null && user.id > 0) openIndividualChat(user);
+            User user = searchAdapter.getItem(position);
+            if (user != null && user.getId() > 0) openIndividualChat(user);
             searchView.setText("");
             hideKeyboard();
         });
 
+        searchView.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) { }
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+                String query = s.toString().trim();
+                if (!query.isEmpty()) searchUsersFromApi(query);
+                else fetchChatUsers();
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) { }
+        });
+
+        // Focus + show keyboard
+        searchView.setOnTouchListener((v, event) -> {
+            if (event.getAction() == MotionEvent.ACTION_UP) {
+                searchView.requestFocus();
+                showKeyboard();
+            }
+            return false;
+        });
+
+        // Keyboard search action
         searchView.setOnEditorActionListener((v, actionId, event) -> {
             if (actionId == EditorInfo.IME_ACTION_SEARCH) {
                 String query = searchView.getText().toString().trim();
@@ -155,6 +165,7 @@ public class ChatFragment extends Fragment {
             return false;
         });
 
+        // Clear drawable click
         searchView.setOnTouchListener((v, event) -> {
             if (event.getAction() == MotionEvent.ACTION_UP) {
                 if (event.getRawX() >= (searchView.getRight() - searchView.getCompoundDrawables()[2].getBounds().width())) {
@@ -168,19 +179,18 @@ public class ChatFragment extends Fragment {
 
     private void searchUsersFromApi(String query) {
         ApiService apiService = RetrofitClient.getInstance(getContext()).create(ApiService.class);
-        Call<List<ProfileResponse.User>> call = apiService.searchChatUsers(query);
+        Call<List<User>> call = apiService.searchChatUsers(query);
 
-        call.enqueue(new Callback<List<ProfileResponse.User>>() {
+        call.enqueue(new Callback<List<User>>() {
             @Override
-            public void onResponse(Call<List<ProfileResponse.User>> call, Response<List<ProfileResponse.User>> response) {
-                List<ProfileResponse.User> users = new ArrayList<>();
-                if (response.isSuccessful() && response.body() != null) {
+            public void onResponse(Call<List<User>> call, Response<List<User>> response) {
+                List<User> users = new ArrayList<>();
+                if (response.isSuccessful() && response.body() != null && !response.body().isEmpty()) {
                     users.addAll(response.body());
                 } else {
-                    // Show empty state if API fails
-                    ProfileResponse.User dummy = new ProfileResponse.User();
-                    dummy.id = 0;
-                    dummy.fullname = "No users found";
+                    User dummy = new User();
+                    dummy.setId(0);
+                    dummy.setFullname("No users found");
                     users.add(dummy);
                 }
 
@@ -188,6 +198,7 @@ public class ChatFragment extends Fragment {
                 searchAdapter.addAll(users);
                 searchAdapter.notifyDataSetChanged();
 
+                // Force proper dropdown display
                 searchView.post(() -> {
                     searchView.dismissDropDown();
                     searchView.showDropDown();
@@ -198,20 +209,20 @@ public class ChatFragment extends Fragment {
             }
 
             @Override
-            public void onFailure(Call<List<ProfileResponse.User>> call, Throwable t) {
-                Toast.makeText(getContext(), "Search failed: " + t.getMessage(), Toast.LENGTH_LONG).show();
+            public void onFailure(Call<List<User>> call, Throwable t) {
+                Toast.makeText(getContext(), "Search failed: " + t.getMessage(), Toast.LENGTH_SHORT).show();
             }
         });
     }
 
     private void fetchChatUsers() {
         ApiService apiService = RetrofitClient.getInstance(getContext()).create(ApiService.class);
-        Call<List<ProfileResponse.User>> call = apiService.getChatUsers();
+        Call<List<User>> call = apiService.getChatUsers();
 
-        call.enqueue(new Callback<List<ProfileResponse.User>>() {
+        call.enqueue(new Callback<List<User>>() {
             @Override
-            public void onResponse(Call<List<ProfileResponse.User>> call, Response<List<ProfileResponse.User>> response) {
-                List<ProfileResponse.User> users = new ArrayList<>();
+            public void onResponse(Call<List<User>> call, Response<List<User>> response) {
+                List<User> users = new ArrayList<>();
                 if (response.isSuccessful() && response.body() != null) {
                     users.addAll(response.body());
                 }
@@ -220,38 +231,46 @@ public class ChatFragment extends Fragment {
             }
 
             @Override
-            public void onFailure(Call<List<ProfileResponse.User>> call, Throwable t) {
-                Toast.makeText(getContext(), "Error fetching chat users: " + t.getMessage(), Toast.LENGTH_SHORT).show();
+            public void onFailure(Call<List<User>> call, Throwable t) {
+                Toast.makeText(getContext(), "Error: " + t.getMessage(), Toast.LENGTH_SHORT).show();
+                adapter.updateList(new ArrayList<>());
+                updateEmptyState(true);
             }
         });
     }
 
-    private void openIndividualChat(ProfileResponse.User user) {
-        if (user == null || user.id <= 0) return;
+    private void openIndividualChat(User user) {
+        if (user == null || user.getId() <= 0) return;
 
         Bundle bundle = new Bundle();
         bundle.putSerializable("chatUser", user);
 
-        IndividualChat fragment = new IndividualChat();
-        fragment.setArguments(bundle);
+        IndividualChat individualChatFragment = new IndividualChat();
+        individualChatFragment.setArguments(bundle);
 
         if (getActivity() instanceof HomePageActivity) {
-            ((HomePageActivity) getActivity()).switchFragment(fragment, true);
+            ((HomePageActivity) getActivity()).switchFragment(individualChatFragment, true);
         }
     }
 
     private void updateEmptyState(boolean isEmpty) {
-        tvEmptyState.setVisibility(isEmpty ? View.VISIBLE : View.GONE);
-        rvChatList.setVisibility(isEmpty ? View.GONE : View.VISIBLE);
+        if (tvEmptyState != null && rvChatList != null) {
+            tvEmptyState.setVisibility(isEmpty ? View.VISIBLE : View.GONE);
+            rvChatList.setVisibility(isEmpty ? View.GONE : View.VISIBLE);
+        }
     }
 
     private void showKeyboard() {
-        InputMethodManager imm = (InputMethodManager) getContext().getSystemService(Context.INPUT_METHOD_SERVICE);
-        if (imm != null) imm.showSoftInput(searchView, InputMethodManager.SHOW_IMPLICIT);
+        if (getContext() != null) {
+            InputMethodManager imm = (InputMethodManager) getContext().getSystemService(Context.INPUT_METHOD_SERVICE);
+            if (imm != null) imm.showSoftInput(searchView, InputMethodManager.SHOW_IMPLICIT);
+        }
     }
 
     private void hideKeyboard() {
-        InputMethodManager imm = (InputMethodManager) getContext().getSystemService(Context.INPUT_METHOD_SERVICE);
-        if (imm != null) imm.hideSoftInputFromWindow(searchView.getWindowToken(), 0);
+        if (getContext() != null) {
+            InputMethodManager imm = (InputMethodManager) getContext().getSystemService(Context.INPUT_METHOD_SERVICE);
+            if (imm != null) imm.hideSoftInputFromWindow(searchView.getWindowToken(), 0);
+        }
     }
 }
